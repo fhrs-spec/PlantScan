@@ -1,874 +1,196 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  --cream:#F4F1EA;--moss:#2D5016;--moss2:#3A6B1A;
-  --sage:#6B9E5E;--leaf:#4E8B3A;--leaf-light:#7BBF6A;
-  --mist:#E4EFD8;--mist2:#D0E4BE;--bark:#5C3D1E;--soil:#1E2D0E;
-  --gold:#C8A84B;--white:#FFFFFF;
-  --danger:#B83232;--danger-bg:#FDEAEA;
-  --warn:#C47A1A;--warn-bg:#FEF4E0;
-  --safe:#2E7D4F;--safe-bg:#E6F4EC;
-  --shadow:0 4px 24px rgba(45,80,22,0.10);
-  --shadow-sm:0 2px 10px rgba(45,80,22,0.07);
-  --radius:20px;--radius-sm:12px;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);color:var(--soil);min-height:100vh;overflow-x:hidden;}
-
-.bg-deco{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
-.bg-deco span{position:absolute;border-radius:50%;filter:blur(60px);opacity:0.22;}
-.bg-deco span:nth-child(1){width:400px;height:400px;background:#7BBF6A;top:-100px;right:-80px;}
-.bg-deco span:nth-child(2){width:300px;height:300px;background:#4E8B3A;bottom:10%;left:-60px;}
-.bg-deco span:nth-child(3){width:200px;height:200px;background:#C8A84B;bottom:30%;right:5%;}
-
-/* NAV */
-nav{position:sticky;top:0;z-index:100;background:rgba(244,241,234,0.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(110,158,94,0.2);padding:0 1.5rem;}
-.nav-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px;}
-.nav-logo{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;color:var(--moss);text-decoration:none;}
-.nav-logo .mark{width:34px;height:34px;background:var(--moss);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.nav-logo .mark svg{width:20px;height:20px;}
-.nav-links{display:flex;align-items:center;gap:4px;}
-.nav-links a{font-size:0.82rem;font-weight:500;color:var(--sage);padding:6px 12px;border-radius:100px;text-decoration:none;transition:all 0.2s;}
-.nav-links a:hover,.nav-links a.active{background:var(--mist);color:var(--moss);}
-.nav-links a.cta{background:var(--moss);color:white;margin-left:4px;}
-.nav-links a.cta:hover{background:var(--leaf);}
-.nav-hamburger{display:none;width:36px;height:36px;background:none;border:none;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
-.nav-hamburger span{width:20px;height:2px;background:var(--moss);border-radius:2px;display:block;}
-@media(max-width:560px){
-  .nav-links{display:none;}.nav-hamburger{display:flex;}
-  .nav-links.open{display:flex;flex-direction:column;align-items:flex-start;position:absolute;top:58px;left:0;right:0;background:rgba(244,241,234,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(110,158,94,0.2);padding:0.75rem 1.5rem 1rem;gap:2px;}
-  .nav-links.open a{width:100%;border-radius:var(--radius-sm);}
-}
-
-.wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
-
-/* HERO */
-.hero{text-align:center;margin-bottom:2.5rem;}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--mist);border:1px solid var(--mist2);padding:5px 14px;border-radius:100px;font-size:0.78rem;font-weight:600;color:var(--moss);margin-bottom:1.1rem;letter-spacing:0.03em;}
-.pulse{width:8px;height:8px;border-radius:50%;background:var(--leaf);flex-shrink:0;animation:pulse 2s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.6;transform:scale(0.85);}}
-h1{font-family:'Fraunces',serif;font-size:clamp(2.2rem,5.5vw,3.2rem);font-weight:700;color:var(--moss);letter-spacing:-0.04em;line-height:1.08;margin-bottom:0.9rem;}
-h1 em{font-style:italic;color:var(--leaf);}
-.hero-sub{font-size:0.96rem;color:var(--sage);font-weight:300;line-height:1.7;max-width:480px;margin:0 auto 1.6rem;}
-.hero-stats{display:inline-flex;align-items:center;gap:0;background:white;border:1px solid rgba(110,158,94,0.2);border-radius:100px;overflow:hidden;box-shadow:var(--shadow-sm);}
-.stat{padding:8px 18px;font-size:0.78rem;display:flex;align-items:center;gap:6px;}
-.stat:not(:last-child){border-right:1px solid rgba(110,158,94,0.15);}
-.stat strong{font-weight:600;color:var(--moss);}
-.stat span{color:var(--sage);}
-@media(max-width:480px){.hero-stats{flex-direction:column;border-radius:var(--radius-sm);width:100%;}.stat:not(:last-child){border-right:none;border-bottom:1px solid rgba(110,158,94,0.15);}}
-
-/* UPLOAD ZONE */
-.upload-zone{border:2px dashed rgba(110,158,94,0.45);border-radius:var(--radius);background:rgba(255,255,255,0.6);padding:2rem 1.5rem;text-align:center;transition:all 0.25s;position:relative;overflow:hidden;}
-.upload-zone.drag-over{border-color:var(--leaf);border-style:solid;background:rgba(255,255,255,0.85);box-shadow:var(--shadow);}
-.upload-icon{width:64px;height:64px;background:linear-gradient(135deg,var(--mist),var(--mist2));border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:var(--shadow-sm);transition:transform 0.3s;}
-.upload-icon svg{width:28px;height:28px;color:var(--leaf);}
-.upload-zone h3{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:500;color:var(--moss);margin-bottom:0.35rem;}
-.upload-zone > p{font-size:0.85rem;color:var(--sage);margin-bottom:1.3rem;font-weight:300;}
-
-.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:0;}
-.btn-primary{background:var(--moss);color:white;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.88rem;font-weight:600;padding:0.65rem 1.5rem;border-radius:100px;border:none;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:7px;}
-.btn-primary:hover{background:var(--leaf);transform:scale(1.03);}
-.btn-primary:disabled{background:var(--sage);opacity:0.5;cursor:not-allowed;transform:none;}
-.btn-primary svg,.btn-secondary svg{width:16px;height:16px;}
-.btn-secondary{background:white;color:var(--moss);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.88rem;font-weight:500;padding:0.65rem 1.4rem;border-radius:100px;border:1.5px solid rgba(110,158,94,0.35);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:7px;}
-.btn-secondary:hover{background:var(--mist);border-color:var(--sage);}
-.btn-secondary:disabled{opacity:0.45;cursor:not-allowed;}
-#file-input{display:none;}
-
-/* ═══════════════════════════════════
-   PLANT PICKER — FITUR BARU
-═══════════════════════════════════ */
-.picker-wrap{
-  margin-top:1.5rem;
-  border-top:1px solid rgba(110,158,94,0.15);
-  padding-top:1.4rem;
-}
-.picker-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:1rem;
-}
-.picker-label{
-  display:flex;align-items:center;gap:8px;
-  font-size:0.82rem;font-weight:600;color:var(--moss);
-}
-.picker-label .required-dot{
-  width:7px;height:7px;border-radius:50%;
-  background:var(--danger);flex-shrink:0;
-}
-.picker-label .step-badge{
-  background:var(--mist);color:var(--moss);
-  font-size:0.7rem;font-weight:700;
-  padding:2px 9px;border-radius:100px;
-  letter-spacing:0.04em;
-}
-.picker-search-wrap{position:relative;}
-.picker-search{
-  width:160px;
-  font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:0.8rem;color:var(--soil);
-  background:white;
-  border:1px solid rgba(110,158,94,0.25);
-  border-radius:100px;
-  padding:6px 12px 6px 30px;
-  outline:none;transition:border 0.2s;
-}
-.picker-search:focus{border-color:var(--leaf);}
-.picker-search-icon{
-  position:absolute;left:10px;top:50%;
-  transform:translateY(-50%);
-  width:13px;height:13px;color:var(--sage);
-  pointer-events:none;
-}
-
-/* Selected plant banner */
-.selected-banner{
-  display:none;
-  align-items:center;gap:10px;
-  background:linear-gradient(135deg,var(--moss),var(--moss2));
-  border-radius:var(--radius-sm);
-  padding:10px 14px;
-  margin-bottom:1rem;
-  animation:slideDown 0.3s cubic-bezier(0.16,1,0.3,1);
-}
-.selected-banner.show{display:flex;}
-@keyframes slideDown{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
-.selected-banner .s-emoji{font-size:1.4rem;line-height:1;}
-.selected-banner .s-info{flex:1;min-width:0;}
-.selected-banner .s-name{font-size:0.88rem;font-weight:600;color:white;line-height:1.3;}
-.selected-banner .s-latin{font-size:0.72rem;color:rgba(255,255,255,0.65);font-style:italic;}
-.selected-banner .s-clear{
-  background:rgba(255,255,255,0.18);border:none;cursor:pointer;
-  color:white;font-size:0.72rem;font-weight:600;
-  padding:4px 10px;border-radius:100px;
-  transition:background 0.2s;white-space:nowrap;
-  font-family:'Plus Jakarta Sans',sans-serif;
-}
-.selected-banner .s-clear:hover{background:rgba(255,255,255,0.3);}
-.selected-banner .s-check{
-  width:24px;height:24px;border-radius:50%;
-  background:rgba(255,255,255,0.2);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.selected-banner .s-check svg{width:13px;height:13px;color:white;}
-
-/* Plant grid */
-.plant-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
-  gap:8px;
-}
-.plant-card{
-  background:white;
-  border:1.5px solid rgba(110,158,94,0.18);
-  border-radius:var(--radius-sm);
-  padding:10px 6px 8px;
-  text-align:center;cursor:pointer;
-  transition:all 0.18s;
-  position:relative;overflow:hidden;
-  user-select:none;
-}
-.plant-card:hover{
-  border-color:var(--sage);
-  transform:translateY(-2px);
-  box-shadow:var(--shadow-sm);
-}
-.plant-card.selected{
-  border-color:var(--leaf);
-  background:var(--mist);
-  box-shadow:0 0 0 2px rgba(78,139,58,0.2);
-}
-.plant-card.hidden{display:none;}
-.plant-card .p-emoji{font-size:1.6rem;display:block;margin-bottom:4px;line-height:1.2;}
-.plant-card .p-name{font-size:0.72rem;font-weight:600;color:var(--moss);line-height:1.3;display:block;}
-.plant-card .p-latin{font-size:0.62rem;color:var(--sage);font-style:italic;display:block;margin-top:1px;}
-.plant-card .check-mark{
-  position:absolute;top:5px;right:5px;
-  width:16px;height:16px;border-radius:50%;
-  background:var(--leaf);
-  display:none;align-items:center;justify-content:center;
-}
-.plant-card.selected .check-mark{display:flex;}
-.check-mark svg{width:9px;height:9px;color:white;}
-.plant-card .disease-count{
-  display:inline-block;margin-top:4px;
-  background:var(--mist);color:var(--moss);
-  font-size:0.6rem;font-weight:600;
-  padding:2px 6px;border-radius:100px;
-}
-.plant-card.selected .disease-count{background:rgba(78,139,58,0.15);}
-
-/* No result */
-.no-result{
-  text-align:center;padding:1.5rem;
-  font-size:0.82rem;color:var(--sage);
-  display:none;
-  grid-column:1/-1;
-}
-
-/* Upload hint ketika belum pilih tanaman */
-.upload-hint{
-  display:flex;align-items:center;gap:8px;
-  background:var(--warn-bg);
-  border:1px solid rgba(196,122,26,0.25);
-  border-radius:var(--radius-sm);
-  padding:9px 13px;
-  margin-top:1rem;
-  font-size:0.8rem;color:var(--warn);
-  font-weight:500;
-  animation:fadeIn 0.3s;
-}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-.upload-hint svg{width:15px;height:15px;flex-shrink:0;}
-.upload-hint.hidden{display:none;}
-
-/* ───── RESULT ───── */
-#result-section{display:none;margin-top:1.5rem;}
-.result-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:1.25rem;align-items:start;}
-@media(max-width:620px){.result-grid{grid-template-columns:1fr;}}
-
-.preview-card{background:white;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(110,158,94,0.18);box-shadow:var(--shadow-sm);}
-.preview-img-wrap{position:relative;}
-.preview-img-wrap img{width:100%;height:230px;object-fit:cover;display:block;}
-.img-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(30,45,14,0.55));padding:1rem 1rem 0.75rem;display:flex;align-items:flex-end;justify-content:space-between;}
-.img-label{font-size:0.75rem;color:rgba(255,255,255,0.85);font-weight:500;}
-.img-badge{background:rgba(255,255,255,0.2);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.3);padding:3px 10px;border-radius:100px;font-size:0.72rem;color:white;font-weight:500;}
-.plant-tag-overlay{
-  position:absolute;top:10px;left:10px;
-  background:rgba(45,80,22,0.75);backdrop-filter:blur(6px);
-  border-radius:100px;padding:4px 10px;
-  display:flex;align-items:center;gap:5px;
-  font-size:0.72rem;color:white;font-weight:500;
-}
-.preview-meta{padding:0.85rem 1rem;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(110,158,94,0.1);}
-.meta-info{min-width:0;}
-.fname{font-size:0.8rem;color:var(--soil);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;}
-.fsize{font-size:0.72rem;color:var(--sage);}
-.change-btn{font-size:0.78rem;color:var(--leaf);background:var(--mist);border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;padding:5px 12px;border-radius:100px;transition:all 0.15s;white-space:nowrap;font-weight:500;}
-.change-btn:hover{background:var(--mist2);}
-
-.tips-card{background:white;border-radius:var(--radius);padding:1.1rem;margin-top:1rem;border:1px solid rgba(110,158,94,0.18);box-shadow:var(--shadow-sm);}
-.tips-title{font-size:0.72rem;font-weight:600;color:var(--moss);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:0.6rem;}
-.tip-item{display:flex;gap:8px;font-size:0.78rem;color:var(--sage);padding:4px 0;line-height:1.5;align-items:flex-start;}
-.tip-dot{width:5px;height:5px;border-radius:50%;background:var(--leaf);flex-shrink:0;margin-top:6px;}
-
-.result-card{background:white;border-radius:var(--radius);border:1px solid rgba(110,158,94,0.18);box-shadow:var(--shadow-sm);overflow:hidden;}
-
-.loading-state{padding:2.5rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1rem;}
-.spinner-wrap{position:relative;width:56px;height:56px;}
-.spinner-track{width:56px;height:56px;border-radius:50%;border:3px solid var(--mist);position:absolute;top:0;left:0;}
-.spinner-fill{width:56px;height:56px;border-radius:50%;border:3px solid transparent;border-top-color:var(--leaf);position:absolute;top:0;left:0;animation:spin 0.85s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.spinner-leaf{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;animation:breathe 2s ease-in-out infinite;}
-@keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(0.88);}}
-.loading-text{font-family:'Fraunces',serif;font-size:1rem;font-weight:500;color:var(--moss);}
-.loading-step{font-size:0.8rem;color:var(--sage);}
-.loading-bar-bg{width:160px;height:4px;background:var(--mist);border-radius:4px;overflow:hidden;}
-.loading-bar-fill{height:100%;background:var(--leaf);border-radius:4px;width:0%;transition:width 0.6s ease;}
-
-.diag-header{background:linear-gradient(135deg,var(--moss),var(--moss2));padding:1.25rem 1.3rem;color:white;}
-.diag-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;font-size:0.72rem;font-weight:600;margin-bottom:0.75rem;letter-spacing:0.04em;}
-.badge-danger{background:rgba(184,50,50,0.3);color:#FFA8A8;}
-.badge-warn{background:rgba(196,122,26,0.3);color:#FFD68A;}
-.badge-safe{background:rgba(46,125,79,0.3);color:#7FE6AA;}
-.diag-name{font-family:'Fraunces',serif;font-size:1.45rem;font-weight:700;line-height:1.2;margin-bottom:3px;}
-.diag-plant{font-size:0.78rem;color:rgba(255,255,255,0.65);font-style:italic;}
-
-.diag-body{padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:1.1rem;}
-.conf-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.conf-label-txt{font-size:0.78rem;color:var(--sage);}
-.conf-pct{font-size:1rem;font-weight:600;color:var(--moss);}
-.conf-bar{height:8px;background:var(--mist);border-radius:100px;overflow:hidden;}
-.conf-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--sage),var(--leaf));width:0%;transition:width 1.3s cubic-bezier(0.16,1,0.3,1);}
-.desc-text{font-size:0.84rem;color:var(--soil);line-height:1.7;font-weight:300;}
-.pred-section-title{font-size:0.72rem;font-weight:600;color:var(--sage);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:0.6rem;}
-.pred-list{display:flex;flex-direction:column;gap:7px;}
-.pred-item{display:flex;align-items:center;gap:10px;font-size:0.8rem;}
-.pred-rank{width:18px;height:18px;border-radius:50%;background:var(--mist);font-size:0.65rem;font-weight:600;color:var(--sage);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.pred-name{flex:1;color:var(--soil);}
-.pred-pct{min-width:38px;text-align:right;color:var(--sage);font-size:0.75rem;}
-.pred-bar-bg{flex:1.2;height:5px;background:var(--mist);border-radius:5px;overflow:hidden;}
-.pred-bar-fill{height:100%;background:var(--mist2);border-radius:5px;width:0%;transition:width 0.9s cubic-bezier(0.16,1,0.3,1);}
-.pred-bar-fill.top{background:var(--leaf);}
-.rec-box{background:var(--mist);padding:1rem 1.1rem;border-left:3px solid var(--leaf);border-radius:0 var(--radius-sm) var(--radius-sm) 0;}
-.rec-title{font-size:0.72rem;font-weight:600;color:var(--moss);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:0.5rem;display:flex;align-items:center;gap:6px;}
-.rec-title svg{width:13px;height:13px;color:var(--leaf);}
-.rec-text{font-size:0.83rem;color:var(--soil);line-height:1.7;}
-.action-row{display:flex;gap:8px;}
-.action-row .btn-primary{flex:1;justify-content:center;}
-.share-btn{width:42px;height:42px;flex-shrink:0;background:white;border:1.5px solid rgba(110,158,94,0.35);border-radius:100px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
-.share-btn:hover{background:var(--mist);}
-.share-btn svg{width:16px;height:16px;color:var(--sage);}
-
-/* FEATURE + HOWTO */
-.section-title{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:600;color:var(--moss);text-align:center;margin:3rem 0 0.4rem;}
-.section-sub{text-align:center;font-size:0.88rem;color:var(--sage);margin-bottom:1.5rem;font-weight:300;}
-.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
-@media(max-width:620px){.feature-grid{grid-template-columns:1fr;}}
-@media(min-width:621px) and (max-width:760px){.feature-grid{grid-template-columns:repeat(2,1fr);}}
-.feat-card{background:white;border-radius:var(--radius);padding:1.3rem;border:1px solid rgba(110,158,94,0.15);box-shadow:var(--shadow-sm);transition:transform 0.2s,box-shadow 0.2s;}
-.feat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
-.feat-icon{width:44px;height:44px;background:var(--mist);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;margin-bottom:0.9rem;}
-.feat-icon svg{width:22px;height:22px;color:var(--leaf);}
-.feat-card h4{font-family:'Fraunces',serif;font-size:0.98rem;font-weight:500;color:var(--moss);margin-bottom:0.4rem;}
-.feat-card p{font-size:0.8rem;color:var(--sage);line-height:1.6;}
-.howto-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1.5rem;}
-@media(max-width:620px){.howto-grid{grid-template-columns:repeat(2,1fr);}}
-.howto-card{background:white;border-radius:var(--radius);padding:1.2rem 1rem;text-align:center;border:1px solid rgba(110,158,94,0.15);box-shadow:var(--shadow-sm);}
-.howto-num{width:32px;height:32px;border-radius:50%;background:var(--moss);color:white;font-size:0.82rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;}
-.howto-card h4{font-size:0.85rem;font-weight:600;color:var(--moss);margin-bottom:0.35rem;}
-.howto-card p{font-size:0.75rem;color:var(--sage);line-height:1.55;}
-
-/* MODAL KAMERA */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(30,45,14,0.65);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;padding:1rem;}
-.modal-bg.open{display:flex;}
-.modal{background:white;border-radius:var(--radius);padding:1.5rem;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.25);animation:modalIn 0.25s cubic-bezier(0.16,1,0.3,1);}
-@keyframes modalIn{from{transform:scale(0.92);opacity:0;}to{transform:scale(1);opacity:1;}}
-.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;}
-.modal-header h3{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:500;color:var(--moss);}
-.modal-close{width:30px;height:30px;border-radius:50%;background:var(--mist);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;}
-.modal-close:hover{background:var(--mist2);}
-.modal-close svg{width:14px;height:14px;color:var(--sage);}
-#camera-video{width:100%;border-radius:var(--radius-sm);background:#000;display:block;aspect-ratio:4/3;object-fit:cover;}
-.modal-actions{display:flex;gap:8px;margin-top:1rem;}
-.modal-actions button{flex:1;justify-content:center;}
-
-footer{text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(110,158,94,0.15);}
-.footer-logo{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--moss);margin-bottom:0.5rem;}
-.footer-note{font-size:0.75rem;color:var(--sage);line-height:1.7;max-width:400px;margin:0 auto;}
-
-.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--moss);color:white;padding:10px 20px;border-radius:100px;font-size:0.82rem;font-weight:500;transition:transform 0.35s cubic-bezier(0.16,1,0.3,1);z-index:300;white-space:nowrap;box-shadow:0 8px 24px rgba(45,80,22,0.3);}
-.toast.show{transform:translateX(-50%) translateY(0);}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantScan - Kenali Penyakit Tanamanmu</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Link ke File CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="bg-deco"><span></span><span></span><span></span></div>
+    <div class="bg-deco"><span></span><span></span><span></span></div>
 
-<nav>
-  <div class="nav-inner">
-    <a class="nav-logo" href="#">
-      <div class="mark">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3C8 3 5 7 5 12c0 3 1.5 5.5 3.5 7" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 3C16 3 19 7 19 12c0 3-1.5 5.5-3.5 7" stroke="white" stroke-width="1.8" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="11" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 16L9 13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M12 19L15 16" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
-      </div>
-      PlantScan
-    </a>
-    <div class="nav-links" id="nav-links">
-      <a href="#deteksi" class="active">Deteksi</a>
-      <a href="#fitur">Fitur</a>
-      <a href="#cara-pakai">Cara Pakai</a>
-      <a href="#deteksi" class="cta">Mulai Scan</a>
-    </div>
-    <button class="nav-hamburger" onclick="toggleNav()" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
-
-<div class="wrap">
-  <section class="hero">
-    <div class="hero-badge"><div class="pulse"></div>Project By - Fharsdev</div>
-    <h1>Kenali <em>Penyakit</em><br>Tanamanmu</h1>
-    <p class="hero-sub">Foto daun tanamanmu, dan biarkan AI menganalisis kondisinya dalam hitungan detik. Gratis, akurat, dan mudah digunakan.</p>
-    <div class="hero-stats">
-      <div class="stat"><strong>87.000+</strong><span>Gambar latih</span></div>
-      <div class="stat"><strong>38</strong><span>Kelas penyakit</span></div>
-      <div class="stat"><strong>14</strong><span>Jenis tanaman</span></div>
-    </div>
-  </section>
-
-  <section id="deteksi">
-    <div class="upload-zone" id="upload-zone">
-      <!-- Ikon & judul -->
-      <div class="upload-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      </div>
-      <h3>Seret foto ke sini</h3>
-      <p>Format JPG, PNG, WEBP — ukuran maksimal 10 MB</p>
-
-      <!-- Tombol upload & kamera -->
-      <div class="btn-row">
-        <button class="btn-primary" id="btn-upload" onclick="tryUpload()" disabled>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          Pilih Foto
-        </button>
-        <button class="btn-secondary" id="btn-camera" onclick="tryCamera()" disabled>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          Buka Kamera
-        </button>
-      </div>
-      <input type="file" id="file-input" accept="image/*">
-
-      <!-- Peringatan jika belum pilih tanaman -->
-      <div class="upload-hint" id="upload-hint">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Pilih jenis tanaman terlebih dahulu sebelum unggah foto
-      </div>
-
-      <!-- ═══════ PLANT PICKER ═══════ -->
-      <div class="picker-wrap">
-        <div class="picker-header">
-          <div class="picker-label">
-            <div class="required-dot"></div>
-            <span>Pilih Jenis Tanaman</span>
-            <span class="step-badge">WAJIB</span>
-          </div>
-          <div class="picker-search-wrap">
-            <svg class="picker-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input class="picker-search" type="text" placeholder="Cari tanaman..." id="plant-search" oninput="filterPlants(this.value)">
-          </div>
-        </div>
-
-        <!-- Banner tanaman terpilih -->
-        <div class="selected-banner" id="selected-banner">
-          <span class="s-emoji" id="s-emoji">🍅</span>
-          <div class="s-info">
-            <div class="s-name" id="s-name">Tomat</div>
-            <div class="s-latin" id="s-latin">Solanum lycopersicum</div>
-          </div>
-          <div class="s-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <button class="s-clear" onclick="clearPlant()">Ganti</button>
-        </div>
-
-        <!-- Grid tanaman -->
-        <div class="plant-grid" id="plant-grid">
-          <!-- diisi JS -->
-        </div>
-        <div class="no-result" id="no-result">Tanaman tidak ditemukan 🌿</div>
-      </div>
-      <!-- ══════════════════════════ -->
-    </div>
-
-    <!-- RESULT -->
-    <div id="result-section">
-      <div class="result-grid">
-        <div>
-          <div class="preview-card">
-            <div class="preview-img-wrap">
-              <img id="preview-img" src="" alt="Foto tanaman">
-              <div class="plant-tag-overlay" id="plant-tag-overlay">
-                <span id="plant-tag-emoji" style="font-size:0.85rem;line-height:1;">🍅</span>
-                <span id="plant-tag-name" style="font-size:0.72rem;font-weight:600;color:white;">Tomat</span>
-              </div>
-              <div class="img-overlay">
-                <span class="img-label">Foto yang dianalisis</span>
-                <span class="img-badge" id="img-badge">Memproses...</span>
-              </div>
+    <nav>
+        <div class="nav-inner">
+            <a class="nav-logo" href="#">
+                <div class="mark">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 3C8 3 5 7 5 12c0 3 1.5 5.5 3.5 7" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 3C16 3 19 7 19 12c0 3-1.5 5.5-3.5 7" stroke="white" stroke-width="1.8" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="11" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 16L9 13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M12 19L15 16" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </div>
+                PlantScan
+            </a>
+            <div class="nav-links" id="nav-links">
+                <a href="#deteksi" class="active">Deteksi</a>
+                <a href="#fitur">Fitur</a>
+                <a href="#cara-pakai">Cara Pakai</a>
+                <a href="#deteksi" class="cta">Mulai Scan</a>
             </div>
-            <div class="preview-meta">
-              <div class="meta-info">
-                <div class="fname" id="file-name">—</div>
-                <div class="fsize" id="file-size">—</div>
-              </div>
-              <button class="change-btn" onclick="resetApp()">Ganti foto</button>
+            <button class="nav-hamburger" onclick="toggleNav()" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="wrap">
+        <section class="hero">
+            <div class="hero-badge"><div class="pulse"></div>Project By - Fharsdev</div>
+            <h1>Kenali <em>Penyakit</em><br>Tanamanmu</h1>
+            <p class="hero-sub">Foto daun tanamanmu, dan biarkan AI menganalisis kondisinya dalam hitungan detik. Gratis, akurat, dan mudah digunakan.</p>
+            <div class="hero-stats">
+                <div class="stat"><strong>87.000+</strong><span>Gambar latih</span></div>
+                <div class="stat"><strong>38</strong><span>Kelas penyakit</span></div>
+                <div class="stat"><strong>14</strong><span>Jenis tanaman</span></div>
             </div>
-          </div>
-          <div class="tips-card" id="tips-card" style="display:none">
-            <div class="tips-title">Tips Foto yang Baik</div>
-            <div class="tip-item"><div class="tip-dot"></div>Fokus pada satu daun yang jelas</div>
-            <div class="tip-item"><div class="tip-dot"></div>Pencahayaan cukup, hindari bayangan</div>
-            <div class="tip-item"><div class="tip-dot"></div>Ambil dari jarak 20–30 cm</div>
-            <div class="tip-item"><div class="tip-dot"></div>Pastikan keseluruhan daun terlihat</div>
-          </div>
+        </section>
+
+        <section id="deteksi">
+            <div class="upload-zone" id="upload-zone">
+                <div class="upload-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <h3>Seret foto ke sini</h3>
+                <p>Format JPG, PNG, WEBP — ukuran maksimal 10 MB</p>
+
+                <div class="btn-row">
+                    <button class="btn-primary" id="btn-upload" onclick="tryUpload()" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        Pilih Foto
+                    </button>
+                    <button class="btn-secondary" id="btn-camera" onclick="tryCamera()" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                        Buka Kamera
+                    </button>
+                </div>
+                <input type="file" id="file-input" accept="image/*">
+
+                <div class="upload-hint" id="upload-hint">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Pilih jenis tanaman terlebih dahulu sebelum unggah foto
+                </div>
+
+                <div class="picker-wrap">
+                    <div class="picker-header">
+                        <div class="picker-label">
+                            <div class="required-dot"></div>
+                            <span>Pilih Jenis Tanaman</span>
+                            <span class="step-badge">WAJIB</span>
+                        </div>
+                        <div class="picker-search-wrap">
+                            <svg class="picker-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input class="picker-search" type="text" placeholder="Cari tanaman..." id="plant-search" oninput="filterPlants(this.value)">
+                        </div>
+                    </div>
+
+                    <div class="selected-banner" id="selected-banner">
+                        <span class="s-emoji" id="s-emoji">🍅</span>
+                        <div class="s-info">
+                            <div class="s-name" id="s-name">Tomat</div>
+                            <div class="s-latin" id="s-latin">Solanum lycopersicum</div>
+                        </div>
+                        <div class="s-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                        <button class="s-clear" onclick="clearPlant()">Ganti</button>
+                    </div>
+
+                    <div class="plant-grid" id="plant-grid"></div>
+                    <div class="no-result" id="no-result">Tanaman tidak ditemukan 🌿</div>
+                </div>
+            </div>
+
+            <div id="result-section">
+                <div class="result-grid">
+                    <div>
+                        <div class="preview-card">
+                            <div class="preview-img-wrap">
+                                <img id="preview-img" src="" alt="Foto tanaman">
+                                <div class="plant-tag-overlay" id="plant-tag-overlay">
+                                    <span id="plant-tag-emoji" style="font-size:0.85rem;line-height:1;">🍅</span>
+                                    <span id="plant-tag-name" style="font-size:0.72rem;font-weight:600;color:white;">Tomat</span>
+                                </div>
+                                <div class="img-overlay">
+                                    <span class="img-label">Foto yang dianalisis</span>
+                                    <span class="img-badge" id="img-badge">Memproses...</span>
+                                </div>
+                            </div>
+                            <div class="preview-meta">
+                                <div class="meta-info">
+                                    <div class="fname" id="file-name">—</div>
+                                    <div class="fsize" id="file-size">—</div>
+                                </div>
+                                <button class="change-btn" onclick="resetApp()">Ganti foto</button>
+                            </div>
+                        </div>
+                        <div class="tips-card" id="tips-card" style="display:none">
+                            <div class="tips-title">Tips Foto yang Baik</div>
+                            <div class="tip-item"><div class="tip-dot"></div>Fokus pada satu daun yang jelas</div>
+                            <div class="tip-item"><div class="tip-dot"></div>Pencahayaan cukup, hindari bayangan</div>
+                            <div class="tip-item"><div class="tip-dot"></div>Ambil dari jarak 20–30 cm</div>
+                            <div class="tip-item"><div class="tip-dot"></div>Pastikan keseluruhan daun terlihat</div>
+                        </div>
+                    </div>
+                    <div class="result-card" id="result-card">
+                        <div class="loading-state" id="loading-state">
+                            <div class="spinner-wrap"><div class="spinner-track"></div><div class="spinner-fill"></div><div class="spinner-leaf">🌿</div></div>
+                            <div class="loading-text">Menganalisis gambar...</div>
+                            <div class="loading-step" id="loading-step">Mempersiapkan model</div>
+                            <div class="loading-bar-bg"><div class="loading-bar-fill" id="loading-bar"></div></div>
+                        </div>
+                        <div id="diagnosis-content"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="fitur">
+            <h2 class="section-title">Fitur Unggulan</h2>
+            <p class="section-sub">Semua yang kamu butuhkan dalam satu aplikasi</p>
+            <div class="feature-grid">
+                <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><h4>Deteksi Otomatis</h4><p>Model CNN mengenali pola penyakit pada daun secara akurat tanpa keahlian khusus.</p></div>
+                <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div><h4>Pilihan Tanaman</h4><p>Wajib memilih jenis tanaman dahulu agar model CNN lebih fokus dan akurasi meningkat.</p></div>
+                <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><h4>Laporan Lengkap</h4><p>Diagnosis disertai tingkat kepercayaan, deskripsi penyakit, dan rekomendasi penanganan.</p></div>
+                <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><h4>Tingkat Akurasi</h4><p>Dilatih dengan 87.000+ gambar, model mencapai akurasi hingga 95% pada dataset uji.</p></div>
+                <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><h4>Ramah HP</h4><p>Antarmuka responsif, bekerja sempurna di smartphone, tablet, maupun laptop.</p></div>
+                <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h4>Privasi Terjaga</h4><p>Foto tidak disimpan di server. Analisis dilakukan langsung dan hasilnya hanya untukmu.</p></div>
+            </div>
+        </section>
+
+        <section id="cara-pakai">
+            <h2 class="section-title">Cara Menggunakan</h2>
+            <p class="section-sub">Lima langkah mudah untuk mendiagnosis tanamanmu</p>
+            <div class="howto-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
+                <div class="howto-card"><div class="howto-num">1</div><h4>Pilih Tanaman</h4><p>Pilih jenis tanaman yang ingin diperiksa dari daftar yang tersedia</p></div>
+                <div class="howto-card"><div class="howto-num">2</div><h4>Ambil Foto</h4><p>Foto daun menggunakan kamera HP atau ambil dari galeri</p></div>
+                <div class="howto-card"><div class="howto-num">3</div><h4>Unggah Gambar</h4><p>Seret foto ke area unggah atau klik tombol Pilih Foto</p></div>
+                <div class="howto-card"><div class="howto-num">4</div><h4>Tunggu Analisis</h4><p>AI memproses gambar dan mengidentifikasi kondisi daun dalam beberapa detik</p></div>
+                <div class="howto-card"><div class="howto-num">5</div><h4>Baca Hasil</h4><p>Lihat diagnosis, tingkat kepercayaan, dan rekomendasi penanganan</p></div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-logo">🌿 PlantScan</div>
+            <p class="footer-note">Dibuat untuk proyek machine learning — Teknik Informatika.<br>Demo UI — integrasi penuh memerlukan backend Flask + model TensorFlow yang telah dilatih.</p>
+        </footer>
+    </div>
+
+    <!-- MODAL KAMERA -->
+    <div class="modal-bg" id="camera-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Ambil Foto Daun</h3>
+                <button class="modal-close" onclick="closeCamera()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <video id="camera-video" autoplay playsinline></video>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="capturePhoto()" style="justify-content:center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/></svg>Ambil Foto</button>
+                <button class="btn-secondary" onclick="closeCamera()" style="justify-content:center;">Batal</button>
+            </div>
+            <canvas id="snap-canvas" style="display:none;"></canvas>
         </div>
-        <div class="result-card" id="result-card">
-          <div class="loading-state" id="loading-state">
-            <div class="spinner-wrap"><div class="spinner-track"></div><div class="spinner-fill"></div><div class="spinner-leaf">🌿</div></div>
-            <div class="loading-text">Menganalisis gambar...</div>
-            <div class="loading-step" id="loading-step">Mempersiapkan model</div>
-            <div class="loading-bar-bg"><div class="loading-bar-fill" id="loading-bar"></div></div>
-          </div>
-          <div id="diagnosis-content"></div>
-        </div>
-      </div>
     </div>
-  </section>
 
-  <section id="fitur">
-    <h2 class="section-title">Fitur Unggulan</h2>
-    <p class="section-sub">Semua yang kamu butuhkan dalam satu aplikasi</p>
-    <div class="feature-grid">
-      <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><h4>Deteksi Otomatis</h4><p>Model CNN mengenali pola penyakit pada daun secara akurat tanpa keahlian khusus.</p></div>
-      <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div><h4>Pilihan Tanaman</h4><p>Wajib memilih jenis tanaman dahulu agar model CNN lebih fokus dan akurasi meningkat.</p></div>
-      <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><h4>Laporan Lengkap</h4><p>Diagnosis disertai tingkat kepercayaan, deskripsi penyakit, dan rekomendasi penanganan.</p></div>
-      <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><h4>Tingkat Akurasi</h4><p>Dilatih dengan 87.000+ gambar, model mencapai akurasi hingga 95% pada dataset uji.</p></div>
-      <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><h4>Ramah HP</h4><p>Antarmuka responsif, bekerja sempurna di smartphone, tablet, maupun laptop.</p></div>
-      <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h4>Privasi Terjaga</h4><p>Foto tidak disimpan di server. Analisis dilakukan langsung dan hasilnya hanya untukmu.</p></div>
-    </div>
-  </section>
+    <div class="toast" id="toast"></div>
 
-  <section id="cara-pakai">
-    <h2 class="section-title">Cara Menggunakan</h2>
-    <p class="section-sub">Lima langkah mudah untuk mendiagnosis tanamanmu</p>
-    <div class="howto-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
-      <div class="howto-card"><div class="howto-num">1</div><h4>Pilih Tanaman</h4><p>Pilih jenis tanaman yang ingin diperiksa dari daftar yang tersedia</p></div>
-      <div class="howto-card"><div class="howto-num">2</div><h4>Ambil Foto</h4><p>Foto daun menggunakan kamera HP atau ambil dari galeri</p></div>
-      <div class="howto-card"><div class="howto-num">3</div><h4>Unggah Gambar</h4><p>Seret foto ke area unggah atau klik tombol Pilih Foto</p></div>
-      <div class="howto-card"><div class="howto-num">4</div><h4>Tunggu Analisis</h4><p>AI memproses gambar dan mengidentifikasi kondisi daun dalam beberapa detik</p></div>
-      <div class="howto-card"><div class="howto-num">5</div><h4>Baca Hasil</h4><p>Lihat diagnosis, tingkat kepercayaan, dan rekomendasi penanganan</p></div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="footer-logo">🌿 PlantScan</div>
-    <p class="footer-note">Dibuat untuk proyek machine learning — Teknik Informatika.<br>Demo UI — integrasi penuh memerlukan backend Flask + model TensorFlow yang telah dilatih.</p>
-  </footer>
-</div>
-
-<!-- MODAL KAMERA -->
-<div class="modal-bg" id="camera-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>Ambil Foto Daun</h3>
-      <button class="modal-close" onclick="closeCamera()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    </div>
-    <video id="camera-video" autoplay playsinline></video>
-    <div class="modal-actions">
-      <button class="btn-primary" onclick="capturePhoto()" style="justify-content:center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/></svg>Ambil Foto</button>
-      <button class="btn-secondary" onclick="closeCamera()" style="justify-content:center;">Batal</button>
-    </div>
-    <canvas id="snap-canvas" style="display:none;"></canvas>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-// ── DATA TANAMAN ──────────────────────────────────────────
-const plants = [
-  {id:'tomato',   emoji:'🍅', name:'Tomat',      latin:'Solanum lycopersicum',  diseases:9},
-  {id:'potato',   emoji:'🥔', name:'Kentang',    latin:'Solanum tuberosum',     diseases:3},
-  {id:'corn',     emoji:'🌽', name:'Jagung',     latin:'Zea mays',              diseases:4},
-  {id:'apple',    emoji:'🍎', name:'Apel',       latin:'Malus domestica',       diseases:4},
-  {id:'grape',    emoji:'🍇', name:'Anggur',     latin:'Vitis vinifera',        diseases:4},
-  {id:'pepper',   emoji:'🫑', name:'Cabai',      latin:'Capsicum annuum',       diseases:2},
-  {id:'strawb',   emoji:'🍓', name:'Stroberi',   latin:'Fragaria × ananassa',  diseases:2},
-  {id:'cherry',   emoji:'🍒', name:'Ceri',       latin:'Prunus avium',          diseases:2},
-  {id:'orange',   emoji:'🍊', name:'Jeruk',      latin:'Citrus sinensis',       diseases:1},
-  {id:'peach',    emoji:'🍑', name:'Persik',     latin:'Prunus persica',        diseases:2},
-  {id:'squash',   emoji:'🎃', name:'Labu',       latin:'Cucurbita pepo',        diseases:1},
-  {id:'soybean',  emoji:'🫘', name:'Kedelai',    latin:'Glycine max',           diseases:1},
-  {id:'rice',     emoji:'🌾', name:'Padi',       latin:'Oryza sativa',          diseases:3},
-  {id:'banana',   emoji:'🍌', name:'Pisang',     latin:'Musa acuminata',        diseases:2},
-];
-
-// ── DATA PENYAKIT PER TANAMAN ────────────────────────────
-const diseaseDB = {
-  tomato:[
-    {name:'Hawar Awal (Early Blight)',severity:'warn',confidence:91.4,desc:'Bercak cokelat dengan cincin konsentris pada daun tua. Disebabkan jamur Alternaria solani.',rec:'Semprot fungisida mankozeb atau klorotalonil. Buang daun terinfeksi. Rotasi tanaman setiap musim.'},
-    {name:'Daun Sehat',severity:'safe',confidence:97.8,desc:'Tidak ditemukan tanda infeksi. Warna dan tekstur daun normal.',rec:'Pertahankan dengan penyiraman teratur dan pemupukan berimbang N-P-K.'},
-    {name:'Bercak Daun Septoria',severity:'warn',confidence:84.2,desc:'Bercak kecil 3–5 mm berwarna cokelat gelap dengan pusat abu-abu. Jamur Septoria lycopersici.',rec:'Singkirkan daun terinfeksi. Fungisida kontak seminggu sekali. Hindari percikan air ke daun.'},
-  ],
-  potato:[
-    {name:'Hawar Akhir (Late Blight)',severity:'danger',confidence:93.1,desc:'Bercak cokelat gelap dengan tepi berair. Disebabkan Phytophthora infestans, sangat menular.',rec:'Gunakan fungisida berbasis tembaga. Pastikan sirkulasi udara baik. Panen segera bila infeksi meluas.'},
-    {name:'Hawar Awal (Early Blight)',severity:'warn',confidence:87.5,desc:'Bercak kecil cokelat dengan lingkaran konsentris. Disebabkan Alternaria solani.',rec:'Semprot fungisida mankozeb. Buang daun terinfeksi. Jaga jarak tanam agar udara mengalir baik.'},
-    {name:'Daun Sehat',severity:'safe',confidence:96.2,desc:'Tidak ditemukan tanda infeksi. Daun tampak hijau segar dan normal.',rec:'Lanjutkan perawatan rutin. Periksa berkala agar infeksi terdeteksi lebih awal.'},
-  ],
-  corn:[
-    {name:'Karat Umum (Common Rust)',severity:'danger',confidence:88.6,desc:'Pustul cokelat kemerahan di kedua sisi daun. Disebabkan jamur Puccinia sorghi.',rec:'Gunakan varietas tahan karat. Aplikasikan fungisida sistemik triazol. Pantau rutin saat musim hujan.'},
-    {name:'Hawar Daun Utara',severity:'warn',confidence:82.3,desc:'Bercak panjang elips berwarna abu-abu kehijauan. Disebabkan Exserohilum turcicum.',rec:'Tanam varietas resisten. Rotasi tanaman. Fungisida propikonazol bila infeksi parah.'},
-    {name:'Daun Sehat',severity:'safe',confidence:95.4,desc:'Daun jagung normal, tidak ada tanda infeksi jamur maupun bakteri.',rec:'Pastikan pemupukan nitrogen cukup dan irigasi teratur untuk mempertahankan kondisi sehat.'},
-  ],
-  apple:[
-    {name:'Kudis Apel (Apple Scab)',severity:'warn',confidence:89.7,desc:'Bercak cokelat-abu berminyak pada daun dan buah. Disebabkan jamur Venturia inaequalis.',rec:'Semprot fungisida kaptan atau mancozeb saat musim semi. Buang daun gugur yang terinfeksi.'},
-    {name:'Daun Sehat',severity:'safe',confidence:96.8,desc:'Tidak ditemukan tanda infeksi. Daun apel tampak hijau cerah dan segar.',rec:'Lanjutkan program pemupukan dan pengendalian hama terpadu secara rutin.'},
-  ],
-  grape:[
-    {name:'Hawar Daun Anggur',severity:'danger',confidence:86.4,desc:'Bercak kekuningan di sisi atas daun dan lapisan putih di bawah. Plasmopara viticola.',rec:'Fungisida berbasis tembaga. Pangkas kanopi agar udara mengalir. Hindari irigasi overhead.'},
-    {name:'Daun Sehat',severity:'safe',confidence:94.1,desc:'Daun anggur normal, warna hijau merata, tidak ada gejala penyakit.',rec:'Jaga kelembaban tanah stabil dan lakukan pemangkasan rutin setiap musim.'},
-  ],
-  pepper:[
-    {name:'Bercak Bakteri',severity:'warn',confidence:85.9,desc:'Bercak kecil berair berwarna cokelat dengan tepi kuning. Bakteri Xanthomonas campestris.',rec:'Gunakan benih bersertifikat bebas penyakit. Hindari penyiraman dari atas. Bakterisida tembaga bila parah.'},
-    {name:'Daun Sehat',severity:'safe',confidence:96.5,desc:'Tidak ada tanda infeksi pada daun. Tanaman cabai dalam kondisi prima.',rec:'Pastikan nutrisi seimbang dan hindari stres air untuk menjaga ketahanan tanaman.'},
-  ],
-  strawb:[
-    {name:'Hawar Daun',severity:'warn',confidence:83.7,desc:'Bercak ungu-merah pada daun dengan pusat abu-abu. Disebabkan Mycosphaerella fragariae.',rec:'Buang daun terinfeksi. Fungisida berbasis belerang. Pastikan drainase baik di sekitar bedengan.'},
-    {name:'Daun Sehat',severity:'safe',confidence:95.2,desc:'Daun stroberi segar dan hijau. Tidak ada tanda infeksi yang terdeteksi.',rec:'Ganti mulsa secara rutin dan pastikan bedengan tidak terlalu lembab.'},
-  ],
-  cherry:[
-    {name:'Bercak Daun Ceri',severity:'warn',confidence:87.1,desc:'Bercak bulat cokelat-ungu dengan tepi jelas. Disebabkan Blumeriella jaapii.',rec:'Semprot fungisida setelah panen. Buang daun gugur. Hindari pemangkasan saat musim hujan.'},
-    {name:'Daun Sehat',severity:'safe',confidence:95.9,desc:'Tidak ditemukan infeksi. Daun ceri tampak normal dan segar.',rec:'Pangkas cabang yang saling bersilang agar sirkulasi udara tetap baik.'},
-  ],
-  orange:[{name:'Daun Sehat',severity:'safe',confidence:96.0,desc:'Tidak ada tanda penyakit. Daun jeruk hijau mengkilap dan normal.',rec:'Lanjutkan pemupukan rutin dan periksa hama kutu daun secara berkala.'}],
-  peach:[
-    {name:'Keriting Daun',severity:'danger',confidence:90.3,desc:'Daun mengkerut, tebal, merah muda/merah. Disebabkan jamur Taphrina deformans.',rec:'Semprot fungisida tembaga sebelum kuncup membuka di musim semi. Buang bagian terinfeksi segera.'},
-    {name:'Daun Sehat',severity:'safe',confidence:95.6,desc:'Tidak ada tanda infeksi. Daun persik normal.',rec:'Perhatikan kondisi musim semi karena infeksi biasanya dimulai saat kuncup membuka.'},
-  ],
-  squash:[
-    {name:'Embun Tepung',severity:'warn',confidence:88.2,desc:'Lapisan putih seperti bedak pada daun. Disebabkan jamur Podosphaera xanthii.',rec:'Semprot larutan baking soda + sabun cuci piring. Fungisida belerang. Pangkas bagian terparah.'},
-    {name:'Daun Sehat',severity:'safe',confidence:94.3,desc:'Daun labu normal, tidak ada tanda infeksi embun tepung atau penyakit lain.',rec:'Pastikan jarak tanam cukup dan sirkulasi udara baik untuk mencegah embun tepung.'},
-  ],
-  soybean:[{name:'Daun Sehat',severity:'safe',confidence:93.8,desc:'Tidak ada tanda infeksi. Daun kedelai tampak normal dan hijau.',rec:'Pantau populasi ulat dan hama pengisap daun secara berkala.'}],
-  rice:[
-    {name:'Blas Padi',severity:'danger',confidence:91.7,desc:'Bercak belah ketupat abu-abu dengan tepi cokelat. Disebabkan jamur Pyricularia oryzae.',rec:'Gunakan varietas tahan blas. Fungisida trikiklazol. Kurangi dosis nitrogen yang berlebihan.'},
-    {name:'Hawar Daun Bakteri',severity:'danger',confidence:86.5,desc:'Tepian daun mengering dan berwarna kuning. Disebabkan bakteri Xanthomonas oryzae.',rec:'Gunakan benih bersertifikat. Kurangi genangan air. Tanam varietas resisten hawar daun.'},
-    {name:'Daun Sehat',severity:'safe',confidence:94.5,desc:'Tidak ada tanda infeksi. Padi dalam kondisi normal dan sehat.',rec:'Pertahankan manajemen air yang baik dan pemupukan N-P-K yang berimbang.'},
-  ],
-  banana:[
-    {name:'Sigatoka Hitam',severity:'danger',confidence:89.4,desc:'Bercak hitam memanjang pada daun yang menyatu dan menyebabkan daun mati prematur.',rec:'Fungisida sistemik triazol. Buang daun terinfeksi. Hindari kelebihan nitrogen.'},
-    {name:'Daun Sehat',severity:'safe',confidence:95.1,desc:'Daun pisang segar dan hijau cerah. Tidak ada tanda infeksi.',rec:'Pastikan drainase baik dan hindari luka mekanis pada daun yang dapat menjadi pintu infeksi.'},
-  ],
-};
-
-// ── STATE ─────────────────────────────────────────────────
-let selectedPlant = null;
-let cameraStream = null;
-
-// ── BUILD GRID ────────────────────────────────────────────
-function buildGrid() {
-  const grid = document.getElementById('plant-grid');
-  grid.innerHTML = plants.map(p => `
-    <div class="plant-card" id="pc-${p.id}" onclick="selectPlant('${p.id}')">
-      <div class="check-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-      <span class="p-emoji">${p.emoji}</span>
-      <span class="p-name">${p.name}</span>
-      <span class="p-latin">${p.latin}</span>
-      <span class="disease-count">${p.diseases} penyakit</span>
-    </div>`).join('');
-}
-buildGrid();
-
-function selectPlant(id) {
-  const p = plants.find(x => x.id === id);
-  if (!p) return;
-  selectedPlant = p;
-
-  // highlight
-  document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById('pc-' + id).classList.add('selected');
-
-  // banner
-  document.getElementById('s-emoji').textContent = p.emoji;
-  document.getElementById('s-name').textContent = p.name;
-  document.getElementById('s-latin').textContent = p.latin;
-  document.getElementById('selected-banner').classList.add('show');
-
-  // aktifkan tombol
-  document.getElementById('btn-upload').disabled = false;
-  document.getElementById('btn-camera').disabled = false;
-  document.getElementById('upload-hint').classList.add('hidden');
-
-  showToast(p.emoji + ' ' + p.name + ' dipilih — silakan unggah foto daun');
-}
-
-function clearPlant() {
-  selectedPlant = null;
-  document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById('selected-banner').classList.remove('show');
-  document.getElementById('btn-upload').disabled = true;
-  document.getElementById('btn-camera').disabled = true;
-  document.getElementById('upload-hint').classList.remove('hidden');
-}
-
-function filterPlants(val) {
-  const q = val.toLowerCase().trim();
-  let found = 0;
-  plants.forEach(p => {
-    const el = document.getElementById('pc-' + p.id);
-    const match = !q || p.name.toLowerCase().includes(q) || p.latin.toLowerCase().includes(q);
-    el.classList.toggle('hidden', !match);
-    if (match) found++;
-  });
-  document.getElementById('no-result').style.display = found ? 'none' : 'block';
-}
-
-// ── UPLOAD ────────────────────────────────────────────────
-function tryUpload() {
-  if (!selectedPlant) { shakeHint(); return; }
-  document.getElementById('file-input').click();
-}
-function tryCamera() {
-  if (!selectedPlant) { shakeHint(); return; }
-  openCamera();
-}
-function shakeHint() {
-  const h = document.getElementById('upload-hint');
-  h.classList.remove('hidden');
-  h.style.animation = 'none';
-  h.offsetHeight;
-  h.style.animation = 'fadeIn 0.3s';
-  showToast('Pilih jenis tanaman dahulu ya!');
-}
-
-const zone = document.getElementById('upload-zone');
-const fileInput = document.getElementById('file-input');
-zone.addEventListener('dragover', e => { e.preventDefault(); if (selectedPlant) zone.classList.add('drag-over'); });
-zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-zone.addEventListener('drop', e => {
-  e.preventDefault(); zone.classList.remove('drag-over');
-  if (!selectedPlant) { shakeHint(); return; }
-  const f = e.dataTransfer.files[0];
-  if (f && f.type.startsWith('image/')) processFile(f);
-});
-fileInput.addEventListener('change', e => {
-  if (e.target.files[0]) processFile(e.target.files[0]);
-});
-
-function processFile(file) {
-  if (file.size > 10 * 1024 * 1024) { showToast('Ukuran file maksimal 10 MB'); return; }
-  const reader = new FileReader();
-  reader.onload = e => {
-    document.getElementById('preview-img').src = e.target.result;
-    document.getElementById('file-name').textContent = file.name;
-    document.getElementById('file-size').textContent = (file.size / 1024).toFixed(0) + ' KB';
-    document.getElementById('img-badge').textContent = 'Memproses...';
-    document.getElementById('plant-tag-emoji').textContent = selectedPlant.emoji;
-    document.getElementById('plant-tag-name').textContent = selectedPlant.name;
-    zone.style.display = 'none';
-    const rs = document.getElementById('result-section');
-    rs.style.display = 'block';
-    document.getElementById('tips-card').style.display = 'none';
-    document.getElementById('loading-state').style.display = 'flex';
-    document.getElementById('diagnosis-content').style.display = 'none';
-    document.getElementById('diagnosis-content').innerHTML = '';
-    setTimeout(() => rs.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-    simulateAnalysis();
-  };
-  reader.readAsDataURL(file);
-}
-
-function simulateAnalysis() {
-  const steps = ['Mempersiapkan model...', 'Preprocessing gambar...', 'Menjalankan CNN...', 'Membaca pola penyakit...', 'Menyusun diagnosis...'];
-  const pcts = [15, 35, 60, 80, 95];
-  let i = 0;
-  const bar = document.getElementById('loading-bar');
-  const stepEl = document.getElementById('loading-step');
-  const iv = setInterval(() => {
-    if (i < steps.length) { stepEl.textContent = steps[i]; bar.style.width = pcts[i] + '%'; i++; }
-  }, 450);
-  setTimeout(() => {
-    clearInterval(iv); bar.style.width = '100%';
-    const pool = diseaseDB[selectedPlant.id] || diseaseDB.tomato;
-    const d = pool[Math.floor(Math.random() * pool.length)];
-    const others = pool.filter(x => x !== d).slice(0, 3).map(x => ({ name: x.name, pct: +(Math.random() * 8 + 1).toFixed(1) }));
-    setTimeout(() => showResult(d, others), 300);
-  }, 2600);
-}
-
-function showResult(d, others) {
-  document.getElementById('loading-state').style.display = 'none';
-  document.getElementById('tips-card').style.display = 'block';
-  document.getElementById('img-badge').textContent = d.severity === 'safe' ? 'Sehat' : d.severity === 'warn' ? 'Perhatian' : 'Terinfeksi';
-  const svLabel = d.severity === 'safe' ? 'Daun Sehat' : d.severity === 'warn' ? 'Perlu Perhatian' : 'Terinfeksi';
-  const svDot = d.severity === 'safe' ? '🟢' : d.severity === 'warn' ? '🟡' : '🔴';
-  const otherBars = others.map((o, i) => `
-    <div class="pred-item">
-      <div class="pred-rank">${i + 2}</div>
-      <span class="pred-name">${o.name}</span>
-      <div class="pred-bar-bg"><div class="pred-bar-fill" data-w="${o.pct}"></div></div>
-      <span class="pred-pct">${o.pct.toFixed(1)}%</span>
-    </div>`).join('');
-  const c = document.getElementById('diagnosis-content');
-  c.innerHTML = `
-    <div class="diag-header">
-      <div class="diag-badge badge-${d.severity}">${svDot} ${svLabel}</div>
-      <div class="diag-name">${d.name}</div>
-      <div class="diag-plant">${selectedPlant.emoji} ${selectedPlant.name} · ${selectedPlant.latin}</div>
-    </div>
-    <div class="diag-body">
-      <div>
-        <div class="conf-row"><span class="conf-label-txt">Tingkat kepercayaan model</span><span class="conf-pct">${d.confidence.toFixed(1)}%</span></div>
-        <div class="conf-bar"><div class="conf-fill" id="cf"></div></div>
-      </div>
-      <p class="desc-text">${d.desc}</p>
-      <div>
-        <div class="pred-section-title">Prediksi lainnya</div>
-        <div class="pred-list">
-          <div class="pred-item">
-            <div class="pred-rank" style="background:var(--mist2);color:var(--moss);">1</div>
-            <span class="pred-name" style="font-weight:600;">${d.name}</span>
-            <div class="pred-bar-bg"><div class="pred-bar-fill top" data-w="${d.confidence}"></div></div>
-            <span class="pred-pct" style="color:var(--moss);font-weight:600;">${d.confidence.toFixed(1)}%</span>
-          </div>
-          ${otherBars}
-        </div>
-      </div>
-      <div class="rec-box">
-        <div class="rec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Rekomendasi Penanganan</div>
-        <p class="rec-text">${d.rec}</p>
-      </div>
-      <div class="action-row">
-        <button class="btn-primary" onclick="resetApp()" style="justify-content:center;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
-          Scan Lagi
-        </button>
-        <button class="share-btn" onclick="shareResult('${d.name}','${d.confidence.toFixed(1)}')" title="Bagikan hasil">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        </button>
-      </div>
-    </div>`;
-  c.style.display = 'block';
-  setTimeout(() => {
-    document.getElementById('cf').style.width = d.confidence + '%';
-    document.querySelectorAll('.pred-bar-fill').forEach(el => { if (el.dataset.w) el.style.width = el.dataset.w + '%'; });
-  }, 100);
-}
-
-function resetApp() {
-  selectedPlant = null;
-  zone.style.display = 'block';
-  document.getElementById('result-section').style.display = 'none';
-  document.getElementById('diagnosis-content').innerHTML = '';
-  document.getElementById('loading-bar').style.width = '0%';
-  document.getElementById('btn-upload').disabled = true;
-  document.getElementById('btn-camera').disabled = true;
-  document.getElementById('selected-banner').classList.remove('show');
-  document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById('upload-hint').classList.remove('hidden');
-  fileInput.value = '';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function shareResult(name, conf) {
-  const txt = `Hasil scan PlantScan: ${name} (Kepercayaan: ${conf}%) — cek tanamanmu di PlantScan!`;
-  if (navigator.share) { navigator.share({ title: 'Hasil PlantScan', text: txt }).catch(() => {}); }
-  else { navigator.clipboard.writeText(txt).then(() => showToast('Hasil disalin ke clipboard!')); }
-}
-
-async function openCamera() {
-  try {
-    cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
-    document.getElementById('camera-video').srcObject = cameraStream;
-    document.getElementById('camera-modal').classList.add('open');
-  } catch { showToast('Tidak dapat mengakses kamera. Coba unggah foto.'); }
-}
-function closeCamera() {
-  if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
-  document.getElementById('camera-modal').classList.remove('open');
-}
-function capturePhoto() {
-  const v = document.getElementById('camera-video');
-  const cv = document.getElementById('snap-canvas');
-  cv.width = v.videoWidth; cv.height = v.videoHeight;
-  cv.getContext('2d').drawImage(v, 0, 0);
-  cv.toBlob(blob => {
-    closeCamera();
-    processFile(new File([blob], 'kamera.jpg', { type: 'image/jpeg' }));
-  }, 'image/jpeg', 0.92);
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
-}
-
-function toggleNav() { document.getElementById('nav-links').classList.toggle('open'); }
-document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => document.getElementById('nav-links').classList.remove('open')));
-
-const sections = document.querySelectorAll('section[id]');
-window.addEventListener('scroll', () => {
-  let cur = '';
-  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
-  document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
-}, { passive: true });
-</script>
+    <!-- Link ke File JS -->
+    <script src="script.js"></script>
 </body>
 </html>
