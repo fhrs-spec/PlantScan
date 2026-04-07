@@ -313,61 +313,176 @@ function processFile(file) {
   reader.readAsDataURL(file);
 }
 
-// ── AI ANALYSIS (Claude API) ──────────────────────────────
+// ── GEMINI API KEY MANAGEMENT ─────────────────────────────
+// Menggunakan Google Gemini — GRATIS 1500 request/hari
+// Daftar di: https://aistudio.google.com/app/apikey
+
+function getApiKey() {
+  return localStorage.getItem('plantscan_gemini_key') || '';
+}
+function saveApiKey(key) {
+  localStorage.setItem('plantscan_gemini_key', key.trim());
+}
+
+function promptApiKey(callback) {
+  const existing = document.getElementById('apikey-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'apikey-modal';
+  modal.style.cssText = `
+    position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(6px);
+    z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;
+  `;
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:20px;padding:2rem;max-width:440px;width:100%;
+                box-shadow:0 24px 64px rgba(0,0,0,0.25);font-family:'DM Sans',sans-serif;">
+      <div style="text-align:center;margin-bottom:0.75rem;">
+        <span style="font-size:2.25rem;">🤖</span>
+      </div>
+      <h3 style="text-align:center;margin:0 0 0.4rem;color:#1A3D0C;font-family:'Lora',serif;font-size:1.25rem;">
+        Masukkan Gemini API Key
+      </h3>
+      <p style="text-align:center;color:#666;font-size:0.85rem;margin:0 0 0.5rem;line-height:1.55;">
+        PlantScan menggunakan <strong style="color:#1A3D0C;">Google Gemini</strong> — <strong style="color:#27864F;">GRATIS</strong> 1.500 scan/hari.<br>
+        Key disimpan di browser kamu saja.
+      </p>
+
+      <div style="background:#E8F5DC;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.8rem;color:#1A3D0C;line-height:1.5;">
+        <strong>Cara dapat API Key gratis:</strong><br>
+        1. Buka <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#2D6017;font-weight:600;">aistudio.google.com/app/apikey</a><br>
+        2. Login dengan akun Google<br>
+        3. Klik <em>"Create API Key"</em><br>
+        4. Copy & paste di bawah ini
+      </div>
+
+      <input id="apikey-input" type="password" placeholder="AIza..." autocomplete="off"
+        style="width:100%;box-sizing:border-box;padding:0.75rem 1rem;border:1.5px solid #d0e8c5;
+               border-radius:10px;font-size:0.9rem;outline:none;margin-bottom:0.5rem;
+               font-family:'DM Sans',sans-serif;color:#1A3D0C;">
+      <p style="font-size:0.75rem;color:#aaa;margin:0 0 1.25rem;">
+        Key tidak dikirim ke server manapun — tersimpan hanya di browser kamu.
+      </p>
+      <div style="display:flex;gap:0.75rem;">
+        <button id="apikey-cancel"
+          style="flex:1;padding:0.7rem;border:1.5px solid #d0e8c5;border-radius:10px;
+                 background:transparent;color:#5FA34E;font-size:0.875rem;cursor:pointer;
+                 font-family:'DM Sans',sans-serif;">
+          Batal
+        </button>
+        <button id="apikey-save"
+          style="flex:2;padding:0.7rem;border:none;border-radius:10px;
+                 background:linear-gradient(135deg,#3D7A1E,#5FA34E);color:white;
+                 font-size:0.875rem;font-weight:600;cursor:pointer;
+                 font-family:'DM Sans',sans-serif;">
+          ✅ Simpan & Mulai Scan
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  const input = modal.querySelector('#apikey-input');
+  const savedKey = getApiKey();
+  if (savedKey) input.value = savedKey;
+  input.focus();
+
+  modal.querySelector('#apikey-cancel').onclick = () => {
+    modal.remove();
+    resetApp();
+  };
+
+  const doSave = () => {
+    const key = input.value.trim();
+    if (key.length < 10) {
+      input.style.borderColor = '#C0392B';
+      input.style.background = '#FDEEEC';
+      setTimeout(() => {
+        input.style.borderColor = '#d0e8c5';
+        input.style.background = '';
+      }, 2000);
+      showToast('⚠️ API Key tidak valid, coba lagi');
+      return;
+    }
+    saveApiKey(key);
+    modal.remove();
+    callback(key);
+  };
+
+  modal.querySelector('#apikey-save').onclick = doSave;
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') doSave(); });
+}
+
+// ── AI ANALYSIS (Google Gemini — GRATIS) ─────────────────
 async function runAIAnalysis() {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    promptApiKey((key) => runAIAnalysisWithKey(key));
+    return;
+  }
+  runAIAnalysisWithKey(apiKey);
+}
+
+async function runAIAnalysisWithKey(apiKey) {
   const steps = [
     'Memuat gambar...',
     'Mendeteksi objek tanaman...',
-    'Menganalisis gejala...',
+    'Menganalisis gejala visual...',
     'Membandingkan dengan database penyakit...',
-    'Menyusun diagnosis...',
+    'Menyusun diagnosis lengkap...',
   ];
-  const pcts  = [15, 35, 58, 80, 95];
+  const pcts = [15, 35, 55, 80, 95];
   let stepIdx = 0;
   const stepEl = document.getElementById('loader-step');
   const fillEl = document.getElementById('progress-fill');
 
   const iv = setInterval(() => {
     if (stepIdx < steps.length) {
-      stepEl.textContent      = steps[stepIdx];
-      fillEl.style.width      = pcts[stepIdx] + '%';
+      stepEl.textContent = steps[stepIdx];
+      fillEl.style.width = pcts[stepIdx] + '%';
       stepIdx++;
     }
   }, 700);
 
   try {
-    // Determine image media type
-    const imgEl    = document.getElementById('preview-img');
-    const src      = imgEl.src;
-    let mediaType  = 'image/jpeg';
-    if (src.includes('data:image/png'))  mediaType = 'image/png';
-    if (src.includes('data:image/webp')) mediaType = 'image/webp';
-    if (src.includes('data:image/gif'))  mediaType = 'image/gif';
+    // Gemini 2.0 Flash — model terbaik yang gratis dengan vision support
+    const GEMINI_MODEL = 'gemini-2.0-flash';
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    // Determine media type
+    const imgEl   = document.getElementById('preview-img');
+    const src     = imgEl.src;
+    let mimeType  = 'image/jpeg';
+    if (src.includes('data:image/png'))  mimeType = 'image/png';
+    if (src.includes('data:image/webp')) mimeType = 'image/webp';
+    if (src.includes('data:image/gif'))  mimeType = 'image/gif';
+
+    const systemPrompt = buildSystemPrompt(selectedPlant);
+    const userText = `Tolong analisis foto ini. Ini adalah foto dari tanaman ${selectedPlant.name} (${selectedPlant.latin}). Periksa apakah ada tanda-tanda penyakit pada daun atau buahnya dan berikan diagnosis lengkap dalam format JSON yang telah ditentukan.`;
+
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: buildSystemPrompt(selectedPlant),
-        messages: [{
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents: [{
           role: 'user',
-          content: [
+          parts: [
             {
-              type: 'image',
-              source: {
-                type: 'base64',
-                media_type: mediaType,
+              inline_data: {
+                mime_type: mimeType,
                 data: currentImageB64
               }
             },
-            {
-              type: 'text',
-              text: `Tolong analisis foto ini. Ini adalah foto dari tanaman ${selectedPlant.name} (${selectedPlant.latin}). Periksa apakah ada tanda-tanda penyakit pada daun atau buahnya dan berikan diagnosis lengkap dalam format JSON yang telah ditentukan.`
-            }
+            { text: userText }
           ]
-        }]
+        }],
+        generationConfig: {
+          temperature: 0.2,
+          maxOutputTokens: 1024,
+          responseMimeType: 'application/json'
+        }
       })
     });
 
@@ -376,27 +491,47 @@ async function runAIAnalysis() {
 
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
-      throw new Error(errData?.error?.message || `HTTP ${response.status}`);
+      if (response.status === 400) {
+        const errMsg = errData?.error?.message || '';
+        if (errMsg.toLowerCase().includes('api key')) {
+          localStorage.removeItem('plantscan_gemini_key');
+          throw new Error('API Key Gemini tidak valid. Klik "Coba Lagi" dan masukkan key yang benar.');
+        }
+        throw new Error('Format permintaan tidak valid: ' + errMsg);
+      }
+      if (response.status === 403) {
+        localStorage.removeItem('plantscan_gemini_key');
+        throw new Error('API Key ditolak. Pastikan Gemini API sudah diaktifkan di akun kamu. Klik "Coba Lagi".');
+      }
+      if (response.status === 429) {
+        throw new Error('Terlalu banyak permintaan. Tunggu sebentar lalu coba lagi (limit harian Gemini gratis: 1500/hari).');
+      }
+      throw new Error(errData?.error?.message || `Error HTTP ${response.status}`);
     }
 
-    const data    = await response.json();
-    const rawText = data.content
-      .filter(b => b.type === 'text')
-      .map(b => b.text)
-      .join('');
+    const data = await response.json();
 
-    // Parse JSON — strip any markdown fences if present
+    // Gemini response structure
+    const rawText = data?.candidates?.[0]?.content?.parts
+      ?.filter(p => p.text)
+      ?.map(p => p.text)
+      ?.join('') || '';
+
+    if (!rawText) {
+      throw new Error('Respons AI kosong. Pastikan foto jelas dan coba lagi.');
+    }
+
+    // Parse JSON — Gemini dengan responseMimeType json langsung clean
     const cleaned = rawText.replace(/```json|```/gi, '').trim();
     let result;
     try {
       result = JSON.parse(cleaned);
     } catch {
-      // Try to extract JSON from anywhere in the string
       const match = cleaned.match(/\{[\s\S]*\}/);
       if (match) {
         result = JSON.parse(match[0]);
       } else {
-        throw new Error('Format respons AI tidak valid');
+        throw new Error('Format respons AI tidak valid. Coba lagi.');
       }
     }
 
@@ -404,8 +539,13 @@ async function runAIAnalysis() {
 
   } catch (err) {
     clearInterval(iv);
-    console.error('AI Analysis error:', err);
-    showError(err.message);
+    console.error('Gemini Analysis error:', err);
+    // Jika fetch gagal total (network error)
+    if (err.name === 'TypeError' && err.message.includes('fetch')) {
+      showError('Tidak dapat terhubung ke server AI. Periksa koneksi internet kamu.');
+    } else {
+      showError(err.message);
+    }
   }
 }
 
