@@ -1,196 +1,313 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PlantScan - Kenali Penyakit Tanamanmu</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- Link ke File CSS -->
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlantScan — Deteksi Penyakit Tanaman AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="bg-deco"><span></span><span></span><span></span></div>
+  <!-- Background blobs -->
+  <div class="bg-blobs">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+    <div class="blob b4"></div>
+  </div>
 
-    <nav>
-        <div class="nav-inner">
-            <a class="nav-logo" href="#">
-                <div class="mark">
-                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 3C8 3 5 7 5 12c0 3 1.5 5.5 3.5 7" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 3C16 3 19 7 19 12c0 3-1.5 5.5-3.5 7" stroke="white" stroke-width="1.8" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="11" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M12 16L9 13" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M12 19L15 16" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
-                </div>
-                PlantScan
-            </a>
-            <div class="nav-links" id="nav-links">
-                <a href="#deteksi" class="active">Deteksi</a>
-                <a href="#fitur">Fitur</a>
-                <a href="#cara-pakai">Cara Pakai</a>
-                <a href="#deteksi" class="cta">Mulai Scan</a>
+  <!-- NAV -->
+  <nav id="main-nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#">
+        <div class="logo-mark">
+          <svg viewBox="0 0 28 28" fill="none">
+            <path d="M14 4C10 4 7 8 7 13c0 3.5 1.8 6.5 4.5 8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M14 4C18 4 21 8 21 13c0 3.5-1.8 6.5-4.5 8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="14" y1="24" x2="14" y2="13" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M14 18L11 15" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M14 21.5L17 18.5" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span>PlantScan</span>
+      </a>
+      <div class="nav-links" id="nav-links">
+        <a href="#deteksi" class="nl">Deteksi</a>
+        <a href="#fitur" class="nl">Fitur</a>
+        <a href="#cara-pakai" class="nl">Panduan</a>
+        <a href="#deteksi" class="nl cta-nav">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Mulai Scan
+        </a>
+      </div>
+      <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="wrap">
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Didukung Claude AI · Project By Fharsdev
+      </div>
+      <h1>Deteksi <em>Penyakit</em><br>Tanamanmu</h1>
+      <p class="hero-desc">Upload foto daun atau buah tanamanmu — AI menganalisis kondisinya secara mendalam, memberikan diagnosis akurat dan rekomendasi penanganan.</p>
+      <div class="hero-pills">
+        <div class="pill"><span>🌿</span>Daun & Buah</div>
+        <div class="pill"><span>🧠</span>Claude AI</div>
+        <div class="pill"><span>🌱</span>20+ Tanaman</div>
+        <div class="pill"><span>⚡</span>Instan</div>
+      </div>
+    </section>
+
+    <!-- DETEKSI -->
+    <section id="deteksi">
+
+      <!-- UPLOAD ZONE -->
+      <div class="upload-zone" id="upload-zone">
+        <div class="uz-glow"></div>
+
+        <!-- Plant Picker -->
+        <div class="picker-section">
+          <div class="picker-header">
+            <div class="picker-title">
+              <span class="required-badge">WAJIB</span>
+              Pilih Jenis Tanaman
             </div>
-            <button class="nav-hamburger" onclick="toggleNav()" aria-label="Menu">
-                <span></span><span></span><span></span>
+            <div class="search-wrap">
+              <svg viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <input type="text" class="search-input" placeholder="Cari tanaman..." id="plant-search" oninput="filterPlants(this.value)">
+            </div>
+          </div>
+
+          <!-- Selected plant banner -->
+          <div class="selected-banner" id="selected-banner">
+            <span class="sb-emoji" id="sb-emoji">🍅</span>
+            <div class="sb-info">
+              <div class="sb-name" id="sb-name">Tomat</div>
+              <div class="sb-latin" id="sb-latin">Solanum lycopersicum</div>
+            </div>
+            <svg class="sb-check" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="rgba(255,255,255,0.15)"/><polyline points="7 12 10 15 17 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <button class="sb-change" onclick="clearPlant()">Ganti</button>
+          </div>
+
+          <div class="plant-grid" id="plant-grid"></div>
+          <div class="no-result" id="no-result">🌿 Tanaman tidak ditemukan</div>
+        </div>
+
+        <!-- Drop area -->
+        <div class="drop-area" id="drop-area">
+          <div class="drop-icon">
+            <svg viewBox="0 0 48 48" fill="none">
+              <rect x="4" y="4" width="40" height="40" rx="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4"/>
+              <path d="M24 32V16M24 16L18 22M24 16L30 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="drop-text">Seret foto ke sini</div>
+          <div class="drop-sub">JPG · PNG · WEBP · maks 10 MB</div>
+          <div class="drop-sub scan-types">Bisa foto <strong>daun</strong> maupun <strong>buah</strong> tanaman</div>
+
+          <div class="btn-row">
+            <button class="btn-upload" id="btn-upload" onclick="tryUpload()" disabled>
+              <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.8"/><circle cx="7" cy="7" r="1.8" fill="currentColor"/><path d="M2 13L6 9L10 13L14 9L18 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Pilih Foto
             </button>
+            <button class="btn-camera" id="btn-camera" onclick="tryCamera()" disabled>
+              <svg viewBox="0 0 20 20" fill="none"><path d="M18 15a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2h2l2-2h4l2 2h2a2 2 0 012 2v8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="11" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
+              Kamera
+            </button>
+          </div>
+
+          <div class="upload-hint" id="upload-hint">
+            <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.8"/><line x1="10" y1="7" x2="10" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.8" fill="currentColor"/></svg>
+            Pilih jenis tanaman terlebih dahulu
+          </div>
+
+          <input type="file" id="file-input" accept="image/*">
         </div>
-    </nav>
+      </div>
 
-    <div class="wrap">
-        <section class="hero">
-            <div class="hero-badge"><div class="pulse"></div>Project By - Fharsdev</div>
-            <h1>Kenali <em>Penyakit</em><br>Tanamanmu</h1>
-            <p class="hero-sub">Foto daun tanamanmu, dan biarkan AI menganalisis kondisinya dalam hitungan detik. Gratis, akurat, dan mudah digunakan.</p>
-            <div class="hero-stats">
-                <div class="stat"><strong>87.000+</strong><span>Gambar latih</span></div>
-                <div class="stat"><strong>38</strong><span>Kelas penyakit</span></div>
-                <div class="stat"><strong>14</strong><span>Jenis tanaman</span></div>
-            </div>
-        </section>
+      <!-- RESULT SECTION -->
+      <div id="result-section" style="display:none">
+        <div class="result-layout">
 
-        <section id="deteksi">
-            <div class="upload-zone" id="upload-zone">
-                <div class="upload-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <!-- Left: image + tips -->
+          <div class="result-left">
+            <div class="preview-card">
+              <div class="preview-img-wrap">
+                <img id="preview-img" src="" alt="Foto tanaman">
+                <div class="img-tag" id="img-tag">
+                  <span id="img-tag-emoji">🍅</span>
+                  <span id="img-tag-name">Tomat</span>
                 </div>
-                <h3>Seret foto ke sini</h3>
-                <p>Format JPG, PNG, WEBP — ukuran maksimal 10 MB</p>
-
-                <div class="btn-row">
-                    <button class="btn-primary" id="btn-upload" onclick="tryUpload()" disabled>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                        Pilih Foto
-                    </button>
-                    <button class="btn-secondary" id="btn-camera" onclick="tryCamera()" disabled>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                        Buka Kamera
-                    </button>
+                <div class="scan-overlay" id="scan-overlay">
+                  <div class="scan-line"></div>
                 </div>
-                <input type="file" id="file-input" accept="image/*">
-
-                <div class="upload-hint" id="upload-hint">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    Pilih jenis tanaman terlebih dahulu sebelum unggah foto
+                <div class="img-status-badge" id="img-status-badge">Memproses...</div>
+              </div>
+              <div class="preview-meta">
+                <div class="meta-text">
+                  <div class="meta-fname" id="meta-fname">—</div>
+                  <div class="meta-fsize" id="meta-fsize">—</div>
                 </div>
-
-                <div class="picker-wrap">
-                    <div class="picker-header">
-                        <div class="picker-label">
-                            <div class="required-dot"></div>
-                            <span>Pilih Jenis Tanaman</span>
-                            <span class="step-badge">WAJIB</span>
-                        </div>
-                        <div class="picker-search-wrap">
-                            <svg class="picker-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                            <input class="picker-search" type="text" placeholder="Cari tanaman..." id="plant-search" oninput="filterPlants(this.value)">
-                        </div>
-                    </div>
-
-                    <div class="selected-banner" id="selected-banner">
-                        <span class="s-emoji" id="s-emoji">🍅</span>
-                        <div class="s-info">
-                            <div class="s-name" id="s-name">Tomat</div>
-                            <div class="s-latin" id="s-latin">Solanum lycopersicum</div>
-                        </div>
-                        <div class="s-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-                        <button class="s-clear" onclick="clearPlant()">Ganti</button>
-                    </div>
-
-                    <div class="plant-grid" id="plant-grid"></div>
-                    <div class="no-result" id="no-result">Tanaman tidak ditemukan 🌿</div>
-                </div>
+                <button class="change-photo-btn" onclick="resetApp()">
+                  <svg viewBox="0 0 20 20" fill="none"><path d="M4 10a6 6 0 0112 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 10l-2-2 2-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Ganti Foto
+                </button>
+              </div>
             </div>
 
-            <div id="result-section">
-                <div class="result-grid">
-                    <div>
-                        <div class="preview-card">
-                            <div class="preview-img-wrap">
-                                <img id="preview-img" src="" alt="Foto tanaman">
-                                <div class="plant-tag-overlay" id="plant-tag-overlay">
-                                    <span id="plant-tag-emoji" style="font-size:0.85rem;line-height:1;">🍅</span>
-                                    <span id="plant-tag-name" style="font-size:0.72rem;font-weight:600;color:white;">Tomat</span>
-                                </div>
-                                <div class="img-overlay">
-                                    <span class="img-label">Foto yang dianalisis</span>
-                                    <span class="img-badge" id="img-badge">Memproses...</span>
-                                </div>
-                            </div>
-                            <div class="preview-meta">
-                                <div class="meta-info">
-                                    <div class="fname" id="file-name">—</div>
-                                    <div class="fsize" id="file-size">—</div>
-                                </div>
-                                <button class="change-btn" onclick="resetApp()">Ganti foto</button>
-                            </div>
-                        </div>
-                        <div class="tips-card" id="tips-card" style="display:none">
-                            <div class="tips-title">Tips Foto yang Baik</div>
-                            <div class="tip-item"><div class="tip-dot"></div>Fokus pada satu daun yang jelas</div>
-                            <div class="tip-item"><div class="tip-dot"></div>Pencahayaan cukup, hindari bayangan</div>
-                            <div class="tip-item"><div class="tip-dot"></div>Ambil dari jarak 20–30 cm</div>
-                            <div class="tip-item"><div class="tip-dot"></div>Pastikan keseluruhan daun terlihat</div>
-                        </div>
-                    </div>
-                    <div class="result-card" id="result-card">
-                        <div class="loading-state" id="loading-state">
-                            <div class="spinner-wrap"><div class="spinner-track"></div><div class="spinner-fill"></div><div class="spinner-leaf">🌿</div></div>
-                            <div class="loading-text">Menganalisis gambar...</div>
-                            <div class="loading-step" id="loading-step">Mempersiapkan model</div>
-                            <div class="loading-bar-bg"><div class="loading-bar-fill" id="loading-bar"></div></div>
-                        </div>
-                        <div id="diagnosis-content"></div>
-                    </div>
-                </div>
+            <div class="tips-box" id="tips-box" style="display:none">
+              <div class="tips-header">💡 Tips Foto Terbaik</div>
+              <div class="tip-row"><div class="tip-num">1</div>Fokus pada satu daun atau buah yang jelas terlihat</div>
+              <div class="tip-row"><div class="tip-num">2</div>Pastikan pencahayaan cukup, hindari bayangan gelap</div>
+              <div class="tip-row"><div class="tip-num">3</div>Jarak ideal 20–30 cm dari objek foto</div>
+              <div class="tip-row"><div class="tip-num">4</div>Seluruh objek (daun/buah) harus masuk dalam frame</div>
             </div>
-        </section>
+          </div>
 
-        <section id="fitur">
-            <h2 class="section-title">Fitur Unggulan</h2>
-            <p class="section-sub">Semua yang kamu butuhkan dalam satu aplikasi</p>
-            <div class="feature-grid">
-                <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><h4>Deteksi Otomatis</h4><p>Model CNN mengenali pola penyakit pada daun secara akurat tanpa keahlian khusus.</p></div>
-                <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div><h4>Pilihan Tanaman</h4><p>Wajib memilih jenis tanaman dahulu agar model CNN lebih fokus dan akurasi meningkat.</p></div>
-                <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><h4>Laporan Lengkap</h4><p>Diagnosis disertai tingkat kepercayaan, deskripsi penyakit, dan rekomendasi penanganan.</p></div>
-                <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><h4>Tingkat Akurasi</h4><p>Dilatih dengan 87.000+ gambar, model mencapai akurasi hingga 95% pada dataset uji.</p></div>
-                <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><h4>Ramah HP</h4><p>Antarmuka responsif, bekerja sempurna di smartphone, tablet, maupun laptop.</p></div>
-                <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h4>Privasi Terjaga</h4><p>Foto tidak disimpan di server. Analisis dilakukan langsung dan hasilnya hanya untukmu.</p></div>
-            </div>
-        </section>
+          <!-- Right: diagnosis -->
+          <div class="result-card" id="result-card">
 
-        <section id="cara-pakai">
-            <h2 class="section-title">Cara Menggunakan</h2>
-            <p class="section-sub">Lima langkah mudah untuk mendiagnosis tanamanmu</p>
-            <div class="howto-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
-                <div class="howto-card"><div class="howto-num">1</div><h4>Pilih Tanaman</h4><p>Pilih jenis tanaman yang ingin diperiksa dari daftar yang tersedia</p></div>
-                <div class="howto-card"><div class="howto-num">2</div><h4>Ambil Foto</h4><p>Foto daun menggunakan kamera HP atau ambil dari galeri</p></div>
-                <div class="howto-card"><div class="howto-num">3</div><h4>Unggah Gambar</h4><p>Seret foto ke area unggah atau klik tombol Pilih Foto</p></div>
-                <div class="howto-card"><div class="howto-num">4</div><h4>Tunggu Analisis</h4><p>AI memproses gambar dan mengidentifikasi kondisi daun dalam beberapa detik</p></div>
-                <div class="howto-card"><div class="howto-num">5</div><h4>Baca Hasil</h4><p>Lihat diagnosis, tingkat kepercayaan, dan rekomendasi penanganan</p></div>
+            <!-- Loading -->
+            <div class="loading-panel" id="loading-panel">
+              <div class="loader-anim">
+                <div class="loader-ring"></div>
+                <div class="loader-ring r2"></div>
+                <div class="loader-leaf">🔬</div>
+              </div>
+              <div class="loader-title">AI Menganalisis Foto...</div>
+              <div class="loader-step" id="loader-step">Mempersiapkan analisis</div>
+              <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+              </div>
+              <div class="loader-note">Menggunakan Claude AI Vision untuk deteksi akurat</div>
             </div>
-        </section>
 
-        <footer>
-            <div class="footer-logo">🌿 PlantScan</div>
-            <p class="footer-note">Dibuat untuk proyek machine learning — Teknik Informatika.<br>Demo UI — integrasi penuh memerlukan backend Flask + model TensorFlow yang telah dilatih.</p>
-        </footer>
-    </div>
+            <!-- Result -->
+            <div id="diag-content" style="display:none"></div>
 
-    <!-- MODAL KAMERA -->
-    <div class="modal-bg" id="camera-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3>Ambil Foto Daun</h3>
-                <button class="modal-close" onclick="closeCamera()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-            </div>
-            <video id="camera-video" autoplay playsinline></video>
-            <div class="modal-actions">
-                <button class="btn-primary" onclick="capturePhoto()" style="justify-content:center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/></svg>Ambil Foto</button>
-                <button class="btn-secondary" onclick="closeCamera()" style="justify-content:center;">Batal</button>
-            </div>
-            <canvas id="snap-canvas" style="display:none;"></canvas>
+          </div>
         </div>
+      </div>
+    </section>
+
+    <!-- FITUR -->
+    <section id="fitur">
+      <h2 class="sec-title">Fitur Unggulan</h2>
+      <p class="sec-sub">Semua yang kamu butuhkan untuk menjaga kesehatan tanaman</p>
+      <div class="feat-grid">
+        <div class="feat-card fc-highlight">
+          <div class="feat-icon">🧠</div>
+          <h3>AI Vision Nyata</h3>
+          <p>Menggunakan Claude AI yang sesungguhnya untuk menganalisis foto — bukan database statis, melainkan pemahaman visual mendalam.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🍃</div>
+          <h3>Daun & Buah</h3>
+          <p>Bukan hanya daun — PlantScan bisa mendeteksi penyakit pada buah tanaman juga, dengan analisis menyeluruh.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🌿</div>
+          <h3>20+ Jenis Tanaman</h3>
+          <p>Database tanaman terus berkembang, mencakup sayuran, buah-buahan, dan tanaman pangan populer Indonesia.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">📋</div>
+          <h3>Diagnosis Mendalam</h3>
+          <p>Hasil analisis lengkap: nama penyakit, penyebab, gejala, tingkat keparahan, dan rekomendasi penanganan spesifik.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">📱</div>
+          <h3>Ramah Semua Perangkat</h3>
+          <p>Antarmuka responsif yang nyaman digunakan di HP, tablet, maupun komputer dengan performa optimal.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🔒</div>
+          <h3>Privasi Terjaga</h3>
+          <p>Foto hanya diproses saat analisis berlangsung dan tidak disimpan di server manapun setelah selesai.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARA PAKAI -->
+    <section id="cara-pakai">
+      <h2 class="sec-title">Cara Menggunakan</h2>
+      <p class="sec-sub">Lima langkah mudah menuju diagnosis akurat</p>
+      <div class="howto-list">
+        <div class="howto-item">
+          <div class="howto-num">1</div>
+          <div class="howto-body">
+            <h4>Pilih Jenis Tanaman</h4>
+            <p>Pilih jenis tanaman dari daftar yang tersedia. Langkah ini wajib agar AI dapat memberikan analisis yang lebih terfokus dan akurat.</p>
+          </div>
+        </div>
+        <div class="howto-item">
+          <div class="howto-num">2</div>
+          <div class="howto-body">
+            <h4>Siapkan Foto yang Baik</h4>
+            <p>Ambil foto daun atau buah yang menunjukkan gejala dengan pencahayaan cukup. Jarak ideal 20–30 cm agar detail terlihat jelas.</p>
+          </div>
+        </div>
+        <div class="howto-item">
+          <div class="howto-num">3</div>
+          <div class="howto-body">
+            <h4>Unggah atau Ambil Foto</h4>
+            <p>Seret foto ke area drop zone, klik "Pilih Foto" untuk memilih dari galeri, atau gunakan kamera langsung dari aplikasi.</p>
+          </div>
+        </div>
+        <div class="howto-item">
+          <div class="howto-num">4</div>
+          <div class="howto-body">
+            <h4>Tunggu Analisis AI</h4>
+            <p>Claude AI menganalisis gambar secara mendalam — biasanya selesai dalam 5–15 detik tergantung koneksi internet.</p>
+          </div>
+        </div>
+        <div class="howto-item">
+          <div class="howto-num">5</div>
+          <div class="howto-body">
+            <h4>Baca & Tindak Lanjuti</h4>
+            <p>Baca diagnosis lengkap, pahami penyebab penyakit, dan ikuti rekomendasi penanganan yang diberikan AI.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-brand">🌿 PlantScan</div>
+      <p class="footer-desc">Proyek Machine Learning · Teknik Informatika · Dibuat oleh Fharsdev<br>Analisis visual menggunakan Claude AI (Anthropic) untuk akurasi deteksi penyakit tanaman.</p>
+    </footer>
+
+  </main>
+
+  <!-- CAMERA MODAL -->
+  <div class="modal-overlay" id="camera-modal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>📷 Ambil Foto Tanaman</h3>
+        <button class="modal-close-btn" onclick="closeCamera()">
+          <svg viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <video id="cam-video" autoplay playsinline></video>
+      <div class="modal-actions">
+        <button class="btn-upload" onclick="capturePhoto()" style="justify-content:center;flex:1;">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3" fill="currentColor"/><path d="M18 14a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2h2l1.5-2h5L16 5h2a2 2 0 012 2v7z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Ambil Foto
+        </button>
+        <button class="btn-camera" onclick="closeCamera()" style="justify-content:center;flex:0.6;">Batal</button>
+      </div>
+      <canvas id="snap-canvas" style="display:none;"></canvas>
     </div>
+  </div>
 
-    <div class="toast" id="toast"></div>
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
 
-    <!-- Link ke File JS -->
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
