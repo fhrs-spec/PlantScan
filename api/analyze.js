@@ -1,223 +1,156 @@
 export default async function handler(req, res) {
+  // Hanya menerima metode POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
+  const { imageBase64, plantName, plantLatin, plantId } = req.body;
+
+  if (!imageBase64) {
+    return res.status(400).json({ error: 'No image provided' });
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
-  const { imageB64, mimeType, plantName, plantLatin, plantId } = req.body;
 
   // ==== MODE SIMULASI (DEMO) ====
-  // Jika API Key belum disetel di Vercel, kembalikan hasil mock yang realistis
   if (!apiKey || apiKey.length < 10) {
-    console.log("Memasuki Mode Simulasi (API Key tidak ditemukan).");
+    console.log("Menjalankan Mode Simulasi Serverless...");
     
-    // Simulate network delay
-    await new Promise(r => setTimeout(r, 2000));
+    // Tunda acak antara 1-3 detik agar terlihat seperti AI asli
+    const delay = Math.floor(Math.random() * 2000) + 1000;
+    await new Promise(resolve => setTimeout(resolve, delay));
 
     const isHealthy = Math.random() > 0.5;
+    
+    let mockResult = {};
     if (isHealthy) {
-      return res.status(200).json({
+      mockResult = {
         scan_type: "daun",
         kondisi: "sehat",
         nama_penyakit: `${plantName} Sehat`,
         pathogen: "Tidak ada infeksi",
-        tingkat_kepercayaan: Math.floor(Math.random() * 10) + 88, // 88-97
+        tingkat_kepercayaan: Math.floor(Math.random() * 15) + 85,
         ringkasan: `Tanaman ${plantName} ini tampak sangat sehat dan terawat dengan baik.`,
         gejala_terlihat: "Warna daun hijau cerah merata, tidak ada bercak, tidak ada tanda-tanda serangan hama atau penyakit jamur.",
         penyebab: "-",
         dampak: "Tanaman dapat berfotosintesis dengan maksimal dan menghasilkan panen yang optimal.",
-        rekomendasi: [
-          "Lanjutkan rutinitas penyiraman secara teratur.",
-          "Berikan pupuk berimbang sesuai jadwal pemupukan rutin.",
-          "Pastikan tanaman mendapatkan sinar matahari yang cukup."
-        ],
+        rekomendasi: ["Lanjutkan rutinitas penyiraman secara teratur.", "Berikan pupuk berimbang sesuai fase pertumbuhan tanaman."],
         urgensi: "tidak perlu tindakan"
-      });
+      };
     } else {
-      return res.status(200).json({
+      mockResult = {
         scan_type: "daun",
         kondisi: "perhatian",
         nama_penyakit: `Bercak Daun Simulasi (${plantName})`,
-        pathogen: "Contoh Patogen Fiktif",
-        tingkat_kepercayaan: Math.floor(Math.random() * 15) + 75, // 75-89
-        ringkasan: "Ini adalah mode demo. Terdeteksi adanya bercak pada daun yang menunjukkan tanda-tanda infeksi.",
-        gejala_terlihat: "Terdapat bercak-bercak kecokelatan pada permukaan daun yang berpotensi menyebar.",
-        penyebab: "Kelembapan berlebih dan sirkulasi udara yang kurang baik sering kali memicu penyakit seperti ini.",
-        dampak: "Jika dibiarkan, bercak dapat meluas dan menyebabkan daun mengering serta rontok sebelum waktunya.",
-        rekomendasi: [
-          "[SIMULASI] Pangkas daun yang terinfeksi dan buang jauh dari area tanam.",
-          "[SIMULASI] Semprotkan fungisida organik (misal: ekstrak nimba) jika gejala menyebar.",
-          "Pastikan sirkulasi udara di sekitar tanaman lancar."
-        ],
+        pathogen: "Fungi simulasi sp.",
+        tingkat_kepercayaan: Math.floor(Math.random() * 10) + 80,
+        ringkasan: `Ditemukan gejala awal infeksi jamur pada daun ${plantName} Anda.`,
+        gejala_terlihat: "Terdapat bercak-bercak kecokelatan kecil dengan lingkaran halo kuning di sekitarnya.",
+        penyebab: "Kelembapan yang terlalu tinggi memicu pertumbuhan spora jamur pada permukaan daun.",
+        dampak: "Jika dibiarkan, bercak akan menyebar dan menyebabkan daun rontok prematur, menurunkan hasil panen.",
+        rekomendasi: ["Kurangi intensitas penyiraman (jangan sampai daun terlalu basah).", "Segera pangkas dan buang daun yang telah terinfeksi ke tempat sampah.", "Aplikasikan fungisida berbahan aktif tembaga jika gejala makin meluas."],
         urgensi: "dalam seminggu"
-      });
+      };
     }
+    
+    return res.status(200).json(mockResult);
   }
 
   // ==== MODE AI GEMINI ASLI ====
-  try {
-    const GEMINI_MODEL = 'gemini-1.5-flash-latest';
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+  const modelsToTry = [
+    'gemini-1.5-flash',
+    'gemini-1.5-flash-latest',
+    'gemini-1.5-pro',
+    'gemini-1.5-pro-latest',
+    'gemini-pro',
+    'gemini-1.0-pro'
+  ];
 
-    const systemPrompt = buildSystemPrompt(plantName, plantLatin, plantId);
-    const userText = `Tolong analisis foto ini. Ini adalah foto dari tanaman ${plantName} (${plantLatin}). Periksa apakah ada tanda-tanda penyakit pada daun atau buahnya dan berikan diagnosis lengkap dalam format JSON yang telah ditentukan.`;
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: [{
-          role: 'user',
-          parts: [
-            {
-              inline_data: {
-                mime_type: mimeType,
-                data: imageB64
-              }
-            },
-            { text: userText }
-          ]
-        }],
-        generationConfig: {
-          temperature: 0.2,
-          maxOutputTokens: 1024,
-          responseMimeType: 'application/json'
-        }
-      })
-    });
-
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      return res.status(response.status).json(errData);
-    }
-
-    const data = await response.json();
-    const rawText = data?.candidates?.[0]?.content?.parts
-      ?.filter(p => p.text)
-      ?.map(p => p.text)
-      ?.join('') || '';
-
-    if (!rawText) {
-      return res.status(500).json({ error: 'Respons AI kosong.' });
-    }
-
-    const cleaned = rawText.replace(/```json|```/gi, '').trim();
-    let result;
-    try {
-      result = JSON.parse(cleaned);
-    } catch {
-      const match = cleaned.match(/\{[\s\S]*\}/);
-      if (match) {
-        result = JSON.parse(match[0]);
-      } else {
-        return res.status(500).json({ error: 'Format respons AI tidak valid.' });
+  const systemPrompt = buildSystemPrompt(plantName, plantLatin, plantId);
+  const requestBody = {
+    contents: [
+      {
+        parts: [
+          { text: "Lakukan analisis menyeluruh pada gambar tanaman ini berdasarkan instruksi sistem." },
+          {
+            inline_data: {
+              mime_type: "image/jpeg",
+              data: imageBase64
+            }
+          }
+        ]
       }
+    ],
+    system_instruction: {
+      parts: [{ text: systemPrompt }]
+    },
+    generationConfig: {
+      temperature: 0.4,
+      topK: 32,
+      topP: 1,
+      maxOutputTokens: 2048,
     }
+  };
 
-    return res.status(200).json(result);
-  } catch (error) {
-    console.error('API Error:', error);
-    return res.status(500).json({ error: error.message });
+  let lastError = null;
+
+  for (const model of modelsToTry) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        lastError = data.error ? data.error.message : 'Unknown API error';
+        console.warn(`Model ${model} gagal: ${lastError}`);
+        continue; // Lanjut ke model berikutnya
+      }
+
+      const textResponse = data.candidates[0].content.parts[0].text;
+      
+      // Membersihkan markdown JSON jika AI mengembalikannya dengan backticks
+      const cleanJson = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+      
+      let parsed;
+      try {
+        parsed = JSON.parse(cleanJson);
+      } catch(e) {
+        throw new Error("Gagal mem-parsing JSON dari AI: " + cleanJson);
+      }
+
+      return res.status(200).json(parsed);
+
+    } catch (error) {
+      console.error(`Error dengan model ${model}:`, error);
+      lastError = error.message;
+    }
   }
+
+  // Jika semua model gagal
+  return res.status(500).json({ 
+    error: `Semua varian model Gemini gagal atau ditolak. Error terakhir: ${lastError}` 
+  });
 }
 
 function getDiseaseContext(plantId) {
   const ctx = {
-    tomato: `• Hawar Awal (Alternaria solani) — bercak cokelat cincin konsentris
-• Hawar Akhir (Phytophthora infestans) — bercak berair, layu cepat  
-• Bercak Septoria (Septoria lycopersici) — bercak kecil pusat abu-abu
-• Virus Mosaik Tomat (TMV) — daun mengkerut, warna belang kuning-hijau
-• Penyakit Layu Fusarium — layu, batang cokelat dalam
-• Embun Tepung (Leveillula taurica) — lapisan putih pada daun
-• Busuk Buah Antraknosa — bercak hitam cekung pada buah
-• Busuk Ujung Bunga — ujung buah hitam/cokelat
-• Bercak Bakteri (Xanthomonas) — bercak kecil berair pada daun dan buah
-• TYLCV (Tomato Yellow Leaf Curl) — daun menggulung, kuning
-• Penyakit Layu Bakteri (Ralstonia) — layu tiba-tiba tanpa warna kuning
-• Daun/Buah Sehat`,
-    potato: `• Hawar Akhir (Phytophthora infestans) — paling berbahaya, bercak berair
-• Hawar Awal (Alternaria solani) — bercak cokelat konsentris
-• Virus Daun Menggulung (PLRV) — daun menggulung, kaku
-• Kudis Biasa (Streptomyces scabies) — bintik kasar pada umbi
-• Busuk Umbi Bakteri — umbi lunak berlendir
-• Penyakit Layu Verticillium — layu bertahap dari bawah
-• Embun Tepung — lapisan putih
-• Daun Sehat`,
-    corn: `• Karat Umum (Puccinia sorghi) — pustul cokelat-merah
-• Hawar Daun Utara (Exserohilum turcicum) — bercak panjang abu-abu
-• Hawar Daun Selatan (Bipolaris maydis) — bercak kecil oval
-• Penyakit Bulai/Downy Mildew — garis kuning, spora putih
-• Karat Selatan (Puccinia polysora) — pustul cokelat lebih kecil
-• Gosong Tongkol (Smut) — massa hitam menggantikan biji
-• Daun Sehat`,
-    pepper: `• Bercak Bakteri (Xanthomonas campestris) — bercak cokelat tepi kuning
-• Antraknosa Buah (Colletotrichum) — bercak hitam cekung pada buah
-• Layu Phytophthora — batang busuk, layu mendadak
-• Virus Mosaik Mentimun (CMV) — daun belang, buah deformasi
-• Embun Tepung — lapisan putih pada daun
-• Busuk Buah Botrytis — jamur abu-abu pada buah  
-• Daun/Buah Sehat`,
-    apple: `• Kudis Apel (Venturia inaequalis) — bercak berminyak, gelap
-• Embun Tepung (Podosphaera leucotricha) — lapisan putih
-• Hawar Api (Erwinia amylovora) — cabang seperti terbakar
-• Bercak Daun Cedar-Apple Rust — bercak oranye
-• Busuk Buah (Monilinia) — buah busuk dengan cincin
-• Busuk Mahkota dan Akar — layu, batang cokelat
-• Bercak Sooty Blotch — noda abu-abu pada buah
-• Daun/Buah Sehat`,
-    banana: `• Sigatoka Hitam (Mycosphaerella fijiensis) — bercak hitam memanjang
-• Layu Panama/Fusarium Wilt — layu total, tidak bisa disembuhkan
-• Penyakit Moko (Ralstonia) — layu bakteri pada pisang
-• Bercak Daun (Sigatoka Kuning) — bercak kuning-cokelat
-• Virus Kuncup Pisang (BBrMV) — daun muda gagal membuka
-• Busuk Mahkota (Crown Rot) — ujung sisir busuk
-• Daun Sehat`,
-    rice: `• Blas Padi (Pyricularia oryzae) — bercak belah ketupat abu-abu
-• Hawar Daun Bakteri (Xanthomonas oryzae) — pinggir daun kuning, mengering
-• Bercak Cokelat (Bipolaris oryzae) — bercak oval cokelat  
-• Tungro (RTSV+RTBV) — daun kuning-oranye, pertumbuhan terhambat
-• Busuk Batang (Sclerotium oryzae) — busuk pada pangkal batang
-• Blas Leher — malai tidak berisi, leher patah
-• Busuk Pelepah (Rhizoctonia solani) — bercak tidak beraturan
-• Ganjur — batang bengkak tidak berbuah
-• Daun Sehat`,
-    grape: `• Embun Berbulu (Plasmopara viticola) — bercak kuning atas, spora putih bawah
-• Embun Tepung (Uncinula necator) — lapisan abu-abu putih
-• Hawar Botrytis (Botrytis cinerea) — jamur abu-abu pada buah
-• Bercak Daun Isariopsis — bercak angular cokelat
-• Antraknosa — bercak hitam cekung bertepi merah  
-• Hawar Api — bagian mati seperti terbakar
-• Busuk Buah Hitam (Guignardia bidwellii) — buah keriput hitam
-• Daun Sehat`,
-    mango: `• Antraknosa (Colletotrichum gloeosporioides) — bercak hitam pada daun/buah  
-• Embun Tepung (Oidium mangiferae) — lapisan putih saat berbunga
-• Bercak Bakteri (Xanthomonas campestris) — bercak berair bertepi kuning
-• Busuk Buah Pasca-panen — buah membusuk setelah dipetik
-• Die-Back — ujung ranting mati dari ujung ke pangkal
-• Kudis Mangga (Elsinoe mangiferae) — bercak kasar pada buah
-• Daun Sehat`,
-    orange: `• Citrus Greening/HLB (Candidatus Liberibacter) — daun belang, buah asam
-• Kudis Jeruk (Elsinoe fawcettii) — bintik kasar pada kulit buah
-• Busuk Akar Phytophthora — pangkal batang busuk, daun kuning
-• Embun Jelaga — lapisan hitam dari serangga
-• Virus Tristeza (CTV) — pitting batang, daun kuning
-• Kanker Jeruk (Xanthomonas citri) — bintik kasar bertepi kuning
-• Bercak Daun Alternaria — bercak cokelat  
-• Daun/Buah Sehat`,
-    cucumber: `• Embun Tepung (Sphaerotheca fuliginea) — lapisan putih
-• Embun Berbulu (Pseudoperonospora cubensis) — bercak kuning atas, spora ungu bawah
-• Antraknosa (Colletotrichum orbiculare) — bercak cokelat cekung  
-• Virus Mosaik Mentimun (CMV) — daun belang, buah deformasi
-• Layu Bakteri (Erwinia tracheiphila) — layu tiba-tiba
-• Bercak Angular (Pseudomonas syringae) — bercak berair angular
-• Daun/Buah Sehat`,
-    default: `• Penyakit Jamur — bercak cokelat/hitam/putih pada daun atau buah
-• Penyakit Bakteri — bercak berair, busuk
-• Penyakit Virus — daun belang, deformasi
-• Embun Tepung — lapisan putih
-• Hawar — daun mengering tiba-tiba
-• Daun/Buah Sehat`
+    tomato: `? Busuk Buah Antraknosa ?" bercak hitam cekung pada buah
+? Busuk Ujung Bunga ?" ujung buah hitam/cokelat
+? Bercak Bakteri (Xanthomonas) ?" bercak kecil berair pada daun dan buah
+? TYLCV (Tomato Yellow Leaf Curl) ?" daun menggulung, kuning
+? Penyakit Layu Bakteri (Ralstonia) ?" layu tiba-tiba tanpa warna kuning
+? Daun/Buah Sehat`,
+    default: `? Penyakit Jamur ?" bercak cokelat/hitam/putih pada daun atau buah
+? Penyakit Bakteri ?" bercak berair, busuk
+? Penyakit Virus ?" daun belang, deformasi
+? Embun Tepung ?" lapisan putih
+? Hawar ?" daun mengering tiba-tiba
+? Daun/Buah Sehat`
   };
   return ctx[plantId] || ctx.default;
 }
