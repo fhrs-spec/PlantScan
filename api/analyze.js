@@ -60,12 +60,11 @@ export default async function handler(req, res) {
 
   // ==== MODE AI GEMINI ASLI ====
   const modelsToTry = [
-    'gemini-1.5-flash',
-    'gemini-1.5-flash-latest',
-    'gemini-1.5-pro',
-    'gemini-1.5-pro-latest',
-    'gemini-pro',
-    'gemini-1.0-pro'
+    'gemini-2.5-flash',
+    'gemini-2.0-flash',
+    'gemini-2.0-flash-lite',
+    'gemini-2.5-pro',
+    'gemini-2.0-pro',
   ];
 
   const systemPrompt = buildSystemPrompt(plantName, plantLatin, plantId);
