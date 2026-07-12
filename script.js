@@ -49,7 +49,6 @@ function buildGrid() {
       <span class="pc-emoji">${p.emoji}</span>
       <span class="pc-name">${p.name}</span>
       <span class="pc-latin">${p.latin}</span>
-      <span class="pc-count">${p.diseases} penyakit</span>
     </div>`).join('');
 }
 buildGrid();
