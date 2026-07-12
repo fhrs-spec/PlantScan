@@ -31,152 +31,7 @@ const plants = [
 ];
 
 // ── SYSTEM PROMPT UNTUK AI ────────────────────────────────
-function buildSystemPrompt(plant) {
-  return `Kamu adalah ahli patologi tanaman (plant pathologist) terkemuka yang berspesialisasi dalam mendiagnosis penyakit tanaman berdasarkan foto.
-
-Kamu akan menganalisis foto DAUN atau BUAH dari tanaman ${plant.name} (${plant.latin}).
-
-## TUGAS VALIDASI KRITIS (ANTI-HALUSINASI):
-1. Periksa foto dengan saksama. Apakah foto ini benar-benar menampilkan DAUN atau BUAH dari tanaman (terutama ${plant.name})?
-2. JIKA FOTO TERSEBUT JELAS BUKAN TANAMAN (misalnya foto manusia, hewan, ruangan, perabotan, atau objek acak lainnya):
-   - Kamu WAJIB menghentikan analisis.
-   - Isi field "nama_penyakit" dengan: "Objek Tidak Dikenali"
-   - Isi field "kondisi" dengan: "error"
-   - Isi field "gejala_terlihat" dengan: "Sistem mendeteksi bahwa foto yang diunggah bukan foto tanaman atau tidak relevan."
-   - Abaikan field lain atau isi dengan N/A.
-3. Jika foto BUKAN tanaman ${plant.name} tapi tanaman lain, kamu boleh memperingatkan di "ringkasan" bahwa itu tampak seperti tanaman lain.
-
-## Penyakit Umum pada ${plant.name}:
-${getDiseaseContext(plant.id)}
-
-## Tugas Analisis (JIKA VALID):
-1. Identifikasi apakah foto menunjukkan daun atau buah tanaman.
-2. Periksa gejala visual: perubahan warna, bercak, tekstur, deformasi, layu, dll.
-3. Tentukan kondisi: Sehat, Perlu Perhatian (penyakit ringan), atau Terinfeksi Parah.
-4. Berikan diagnosis spesifik berdasarkan gejala yang terlihat.
-5. Berikan rekomendasi penanganan yang praktis.
-
-## Format Respons (WAJIB JSON murni, tanpa markdown, tanpa komentar):
-{
-  "scan_type": "daun" atau "buah" atau "bukan tanaman",
-  "kondisi": "sehat" atau "perhatian" atau "parah" atau "error",
-  "nama_penyakit": "Nama penyakit spesifik, 'Daun Sehat', atau 'Objek Tidak Dikenali'",
-  "pathogen": "Nama ilmiah patogen atau 'Tidak ada infeksi'",
-  "tingkat_kepercayaan": angka 70-98,
-  "ringkasan": "1-2 kalimat ringkas tentang kondisi",
-  "gejala_terlihat": "Deskripsi gejala visual yang terlihat pada foto (2-3 kalimat)",
-  "penyebab": "Penjelasan penyebab penyakit dan bagaimana menyebar (2-3 kalimat)",
-  "dampak": "Dampak pada tanaman dan potensi kerugian jika tidak ditangani",
-  "rekomendasi": [
-    "Langkah penanganan 1 yang spesifik",
-    "Langkah penanganan 2"
-  ],
-  "urgensi": "segera" atau "dalam seminggu" atau "pantau saja" atau "tidak perlu tindakan"
-}
-
-Jika foto tidak jelas / blur, tetap berikan analisis terbaik berdasarkan yang bisa terlihat.
-Selalu respons dalam Bahasa Indonesia.`;
-}
-
-function getDiseaseContext(plantId) {
-  const ctx = {
-    tomato: `• Hawar Awal (Alternaria solani) — bercak cokelat cincin konsentris
-• Hawar Akhir (Phytophthora infestans) — bercak berair, layu cepat  
-• Bercak Septoria (Septoria lycopersici) — bercak kecil pusat abu-abu
-• Virus Mosaik Tomat (TMV) — daun mengkerut, warna belang kuning-hijau
-• Penyakit Layu Fusarium — layu, batang cokelat dalam
-• Embun Tepung (Leveillula taurica) — lapisan putih pada daun
-• Busuk Buah Antraknosa — bercak hitam cekung pada buah
-• Busuk Ujung Bunga — ujung buah hitam/cokelat
-• Bercak Bakteri (Xanthomonas) — bercak kecil berair pada daun dan buah
-• TYLCV (Tomato Yellow Leaf Curl) — daun menggulung, kuning
-• Penyakit Layu Bakteri (Ralstonia) — layu tiba-tiba tanpa warna kuning
-• Daun/Buah Sehat`,
-    potato: `• Hawar Akhir (Phytophthora infestans) — paling berbahaya, bercak berair
-• Hawar Awal (Alternaria solani) — bercak cokelat konsentris
-• Virus Daun Menggulung (PLRV) — daun menggulung, kaku
-• Kudis Biasa (Streptomyces scabies) — bintik kasar pada umbi
-• Busuk Umbi Bakteri — umbi lunak berlendir
-• Penyakit Layu Verticillium — layu bertahap dari bawah
-• Embun Tepung — lapisan putih
-• Daun Sehat`,
-    corn: `• Karat Umum (Puccinia sorghi) — pustul cokelat-merah
-• Hawar Daun Utara (Exserohilum turcicum) — bercak panjang abu-abu
-• Hawar Daun Selatan (Bipolaris maydis) — bercak kecil oval
-• Penyakit Bulai/Downy Mildew — garis kuning, spora putih
-• Karat Selatan (Puccinia polysora) — pustul cokelat lebih kecil
-• Gosong Tongkol (Smut) — massa hitam menggantikan biji
-• Daun Sehat`,
-    pepper: `• Bercak Bakteri (Xanthomonas campestris) — bercak cokelat tepi kuning
-• Antraknosa Buah (Colletotrichum) — bercak hitam cekung pada buah
-• Layu Phytophthora — batang busuk, layu mendadak
-• Virus Mosaik Mentimun (CMV) — daun belang, buah deformasi
-• Embun Tepung — lapisan putih pada daun
-• Busuk Buah Botrytis — jamur abu-abu pada buah  
-• Daun/Buah Sehat`,
-    apple: `• Kudis Apel (Venturia inaequalis) — bercak berminyak, gelap
-• Embun Tepung (Podosphaera leucotricha) — lapisan putih
-• Hawar Api (Erwinia amylovora) — cabang seperti terbakar
-• Bercak Daun Cedar-Apple Rust — bercak oranye
-• Busuk Buah (Monilinia) — buah busuk dengan cincin
-• Busuk Mahkota dan Akar — layu, batang cokelat
-• Bercak Sooty Blotch — noda abu-abu pada buah
-• Daun/Buah Sehat`,
-    banana: `• Sigatoka Hitam (Mycosphaerella fijiensis) — bercak hitam memanjang
-• Layu Panama/Fusarium Wilt — layu total, tidak bisa disembuhkan
-• Penyakit Moko (Ralstonia) — layu bakteri pada pisang
-• Bercak Daun (Sigatoka Kuning) — bercak kuning-cokelat
-• Virus Kuncup Pisang (BBrMV) — daun muda gagal membuka
-• Busuk Mahkota (Crown Rot) — ujung sisir busuk
-• Daun Sehat`,
-    rice: `• Blas Padi (Pyricularia oryzae) — bercak belah ketupat abu-abu
-• Hawar Daun Bakteri (Xanthomonas oryzae) — pinggir daun kuning, mengering
-• Bercak Cokelat (Bipolaris oryzae) — bercak oval cokelat  
-• Tungro (RTSV+RTBV) — daun kuning-oranye, pertumbuhan terhambat
-• Busuk Batang (Sclerotium oryzae) — busuk pada pangkal batang
-• Blas Leher — malai tidak berisi, leher patah
-• Busuk Pelepah (Rhizoctonia solani) — bercak tidak beraturan
-• Ganjur — batang bengkak tidak berbuah
-• Daun Sehat`,
-    grape: `• Embun Berbulu (Plasmopara viticola) — bercak kuning atas, spora putih bawah
-• Embun Tepung (Uncinula necator) — lapisan abu-abu putih
-• Hawar Botrytis (Botrytis cinerea) — jamur abu-abu pada buah
-• Bercak Daun Isariopsis — bercak angular cokelat
-• Antraknosa — bercak hitam cekung bertepi merah  
-• Hawar Api — bagian mati seperti terbakar
-• Busuk Buah Hitam (Guignardia bidwellii) — buah keriput hitam
-• Daun Sehat`,
-    mango: `• Antraknosa (Colletotrichum gloeosporioides) — bercak hitam pada daun/buah  
-• Embun Tepung (Oidium mangiferae) — lapisan putih saat berbunga
-• Bercak Bakteri (Xanthomonas campestris) — bercak berair bertepi kuning
-• Busuk Buah Pasca-panen — buah membusuk setelah dipetik
-• Die-Back — ujung ranting mati dari ujung ke pangkal
-• Kudis Mangga (Elsinoe mangiferae) — bercak kasar pada buah
-• Daun Sehat`,
-    orange: `• Citrus Greening/HLB (Candidatus Liberibacter) — daun belang, buah asam
-• Kudis Jeruk (Elsinoe fawcettii) — bintik kasar pada kulit buah
-• Busuk Akar Phytophthora — pangkal batang busuk, daun kuning
-• Embun Jelaga — lapisan hitam dari serangga
-• Virus Tristeza (CTV) — pitting batang, daun kuning
-• Kanker Jeruk (Xanthomonas citri) — bintik kasar bertepi kuning
-• Bercak Daun Alternaria — bercak cokelat  
-• Daun/Buah Sehat`,
-    cucumber: `• Embun Tepung (Sphaerotheca fuliginea) — lapisan putih
-• Embun Berbulu (Pseudoperonospora cubensis) — bercak kuning atas, spora ungu bawah
-• Antraknosa (Colletotrichum orbiculare) — bercak cokelat cekung  
-• Virus Mosaik Mentimun (CMV) — daun belang, buah deformasi
-• Layu Bakteri (Erwinia tracheiphila) — layu tiba-tiba
-• Bercak Angular (Pseudomonas syringae) — bercak berair angular
-• Daun/Buah Sehat`,
-    default: `• Penyakit Jamur — bercak cokelat/hitam/putih pada daun atau buah
-• Penyakit Bakteri — bercak berair, busuk
-• Penyakit Virus — daun belang, deformasi
-• Embun Tepung — lapisan putih
-• Hawar — daun mengering tiba-tiba
-• Daun/Buah Sehat`
-  };
-  return ctx[plantId] || ctx.default;
-}
+// Dihapus karena kita sekarang menggunakan TensorFlow.js murni (Lokal)
 
 // ── STATE ─────────────────────────────────────────────────
 let selectedPlant = null;
@@ -347,130 +202,37 @@ function processFile(file) {
   reader.readAsDataURL(file);
 }
 
-// ── GEMINI API KEY MANAGEMENT ─────────────────────────────
-// Menggunakan Google Gemini — GRATIS 1500 request/hari
-// Daftar di: https://aistudio.google.com/app/apikey
+// ── TENSORFLOW.JS (TEACHABLE MACHINE) ─────────────────────
+// Ganti URL ini dengan URL model dari Teachable Machine Anda
+const URL_MODEL_TEACHABLE_MACHINE = "https://teachablemachine.withgoogle.com/models/PLACEHOLDER_ID/";
+let tmModel, tmMaxPredictions;
 
-function getApiKey() {
-  return localStorage.getItem('plantscan_gemini_key') || '';
-}
-function saveApiKey(key) {
-  localStorage.setItem('plantscan_gemini_key', key.trim());
-}
-
-function promptApiKey(callback) {
-  const existing = document.getElementById('apikey-modal');
-  if (existing) existing.remove();
-
-  const modal = document.createElement('div');
-  modal.id = 'apikey-modal';
-  modal.style.cssText = `
-    position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(6px);
-    z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;
-  `;
-  modal.innerHTML = `
-    <div style="background:#fff;border-radius:20px;padding:2rem;max-width:440px;width:100%;
-                box-shadow:0 24px 64px rgba(0,0,0,0.25);font-family:'DM Sans',sans-serif;">
-      <div style="text-align:center;margin-bottom:0.75rem;">
-        <span style="font-size:2.25rem;">🤖</span>
-      </div>
-      <h3 style="text-align:center;margin:0 0 0.4rem;color:#1A3D0C;font-family:'Lora',serif;font-size:1.25rem;">
-        Masukkan Gemini API Key
-      </h3>
-      <p style="text-align:center;color:#666;font-size:0.85rem;margin:0 0 0.5rem;line-height:1.55;">
-        PlantScan menggunakan <strong style="color:#1A3D0C;">Google Gemini</strong> — <strong style="color:#27864F;">GRATIS</strong> 1.500 scan/hari.<br>
-        Key disimpan di browser kamu saja.
-      </p>
-
-      <div style="background:#E8F5DC;border-radius:10px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.8rem;color:#1A3D0C;line-height:1.5;">
-        <strong>Cara dapat API Key gratis:</strong><br>
-        1. Buka <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#2D6017;font-weight:600;">aistudio.google.com/app/apikey</a><br>
-        2. Login dengan akun Google<br>
-        3. Klik <em>"Create API Key"</em><br>
-        4. Copy & paste di bawah ini
-      </div>
-
-      <input id="apikey-input" type="password" placeholder="AIza..." autocomplete="off"
-        style="width:100%;box-sizing:border-box;padding:0.75rem 1rem;border:1.5px solid #d0e8c5;
-               border-radius:10px;font-size:0.9rem;outline:none;margin-bottom:0.5rem;
-               font-family:'DM Sans',sans-serif;color:#1A3D0C;">
-      <p style="font-size:0.75rem;color:#aaa;margin:0 0 1.25rem;">
-        Key tidak dikirim ke server manapun — tersimpan hanya di browser kamu.
-      </p>
-      <div style="display:flex;gap:0.75rem;">
-        <button id="apikey-cancel"
-          style="flex:1;padding:0.7rem;border:1.5px solid #d0e8c5;border-radius:10px;
-                 background:transparent;color:#5FA34E;font-size:0.875rem;cursor:pointer;
-                 font-family:'DM Sans',sans-serif;">
-          Batal
-        </button>
-        <button id="apikey-save"
-          style="flex:2;padding:0.7rem;border:none;border-radius:10px;
-                 background:linear-gradient(135deg,#3D7A1E,#5FA34E);color:white;
-                 font-size:0.875rem;font-weight:600;cursor:pointer;
-                 font-family:'DM Sans',sans-serif;">
-          ✅ Simpan & Mulai Scan
-        </button>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(modal);
-
-  const input = modal.querySelector('#apikey-input');
-  const savedKey = getApiKey();
-  if (savedKey) input.value = savedKey;
-  input.focus();
-
-  modal.querySelector('#apikey-cancel').onclick = () => {
-    modal.remove();
-    resetApp();
-  };
-
-  const doSave = () => {
-    const key = input.value.trim();
-    if (key.length < 10) {
-      input.style.borderColor = '#C0392B';
-      input.style.background = '#FDEEEC';
-      setTimeout(() => {
-        input.style.borderColor = '#d0e8c5';
-        input.style.background = '';
-      }, 2000);
-      showToast('⚠️ API Key tidak valid, coba lagi');
-      return;
-    }
-    saveApiKey(key);
-    modal.remove();
-    callback(key);
-  };
-
-  modal.querySelector('#apikey-save').onclick = doSave;
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') doSave(); });
-}
-
-// ── AI ANALYSIS (Google Gemini — GRATIS) ─────────────────
-async function runAIAnalysis() {
-  if (!navigator.onLine) {
-    showError('Anda sedang offline. Koneksi internet dibutuhkan untuk melakukan pemindaian AI.');
-    return;
+async function initModel() {
+  if (tmModel) return;
+  try {
+    const modelURL = URL_MODEL_TEACHABLE_MACHINE + "model.json";
+    const metadataURL = URL_MODEL_TEACHABLE_MACHINE + "metadata.json";
+    tmModel = await tmImage.load(modelURL, metadataURL);
+    tmMaxPredictions = tmModel.getTotalClasses();
+    console.log("Model Teachable Machine berhasil dimuat!");
+  } catch (error) {
+    console.error("Gagal memuat model:", error);
+    // Kita tidak langsung showError agar tidak mengganggu UI jika belum di-scan
   }
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    promptApiKey((key) => runAIAnalysisWithKey(key));
-    return;
-  }
-  runAIAnalysisWithKey(apiKey);
 }
 
-async function runAIAnalysisWithKey(apiKey) {
+// Panggil init saat halaman dimuat
+document.addEventListener('DOMContentLoaded', initModel);
+
+async function runTFJSAnalysis() {
   const steps = [
-    'Memuat gambar...',
-    'Mendeteksi objek tanaman...',
-    'Menganalisis gejala visual...',
-    'Membandingkan dengan database penyakit...',
-    'Menyusun diagnosis lengkap...',
+    'Menyiapkan model lokal...',
+    'Mengekstrak ciri visual daun...',
+    'Mengklasifikasikan pola...',
+    'Menghitung tingkat keyakinan...',
+    'Menyusun diagnosis akhir...',
   ];
-  const pcts = [15, 35, 55, 80, 95];
+  const pcts = [20, 40, 60, 85, 100];
   let stepIdx = 0;
   const stepEl = document.getElementById('loader-step');
   const fillEl = document.getElementById('progress-fill');
@@ -481,112 +243,72 @@ async function runAIAnalysisWithKey(apiKey) {
       fillEl.style.width = pcts[stepIdx] + '%';
       stepIdx++;
     }
-  }, 700);
+  }, 500);
 
   try {
-    // Menggunakan gemini-1.5-flash karena lebih stabil untuk free tier
-    const GEMINI_MODEL = 'gemini-1.5-flash';
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
+    if (!tmModel) {
+      await initModel();
+    }
+    
+    if (!tmModel) {
+      throw new Error("Tautan model Teachable Machine masih kosong atau tidak valid. Silakan latih model Anda dan perbarui variabel URL di script.js.");
+    }
 
-    // Determine media type
-    const imgEl   = document.getElementById('preview-img');
-    const src     = imgEl.src;
-    let mimeType  = 'image/jpeg';
-    if (src.includes('data:image/png'))  mimeType = 'image/png';
-    if (src.includes('data:image/webp')) mimeType = 'image/webp';
-    if (src.includes('data:image/gif'))  mimeType = 'image/gif';
-
-    const systemPrompt = buildSystemPrompt(selectedPlant);
-    const userText = `Tolong analisis foto ini. Ini adalah foto dari tanaman ${selectedPlant.name} (${selectedPlant.latin}). Periksa apakah ada tanda-tanda penyakit pada daun atau buahnya dan berikan diagnosis lengkap dalam format JSON yang telah ditentukan.`;
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: [{
-          role: 'user',
-          parts: [
-            {
-              inline_data: {
-                mime_type: mimeType,
-                data: currentImageB64
-              }
-            },
-            { text: userText }
-          ]
-        }],
-        generationConfig: {
-          temperature: 0.2,
-          maxOutputTokens: 1024,
-          responseMimeType: 'application/json'
-        }
-      })
-    });
-
+    const imgEl = document.getElementById('preview-img');
+    const predictions = await tmModel.predict(imgEl);
+    
     clearInterval(iv);
     fillEl.style.width = '100%';
 
-    if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
-      if (response.status === 400) {
-        const errMsg = errData?.error?.message || '';
-        if (errMsg.toLowerCase().includes('api key')) {
-          localStorage.removeItem('plantscan_gemini_key');
-          throw new Error('API Key Gemini tidak valid. Klik "Coba Lagi" dan masukkan key yang benar.');
-        }
-        throw new Error('Format permintaan tidak valid: ' + errMsg);
+    // Cari prediksi dengan probabilitas tertinggi
+    let highestProb = 0;
+    let bestClass = "";
+    
+    predictions.forEach(p => {
+      if (p.probability > highestProb) {
+        highestProb = p.probability;
+        bestClass = p.className;
       }
-      if (response.status === 401 || response.status === 403) {
-        localStorage.removeItem('plantscan_gemini_key');
-        throw new Error('API Key tidak valid atau ditolak. Pastikan Anda memasukkan teks key yang benar (tidak ada spasi yang tertinggal). Klik "Coba Lagi" untuk memasukkan ulang.');
-      }
-      if (response.status === 429) {
-        const rawMsg = errData?.error?.message || '';
-        throw new Error(`Error 429 (Too Many Requests): ${rawMsg}. Tunggu sebentar lalu coba lagi.`);
-      }
-      throw new Error(errData?.error?.message || `Error HTTP ${response.status}`);
+    });
+
+    if (highestProb < 0.3) {
+      throw new Error("AI ragu (akurasi < 30%). Objek mungkin bukan tanaman atau sangat buram.");
     }
 
-    const data = await response.json();
-
-    // Gemini response structure
-    const rawText = data?.candidates?.[0]?.content?.parts
-      ?.filter(p => p.text)
-      ?.map(p => p.text)
-      ?.join('') || '';
-
-    if (!rawText) {
-      throw new Error('Respons AI kosong. Pastikan foto jelas dan coba lagi.');
+    // Tentukan kondisi berdasarkan teks klasifikasi
+    const classNameLower = bestClass.toLowerCase();
+    let kondisi = 'perhatian';
+    if (classNameLower.includes('sehat') || classNameLower.includes('healthy')) {
+      kondisi = 'sehat';
+    } else if (highestProb > 0.8 && !classNameLower.includes('sehat')) {
+      // Jika yakin bukan sehat, anggap parah
+      kondisi = 'parah';
     }
 
-    // Parse JSON — Gemini dengan responseMimeType json langsung clean
-    const cleaned = rawText.replace(/```json|```/gi, '').trim();
-    let result;
-    try {
-      result = JSON.parse(cleaned);
-    } catch {
-      const match = cleaned.match(/\{[\s\S]*\}/);
-      if (match) {
-        result = JSON.parse(match[0]);
-      } else {
-        throw new Error('Format respons AI tidak valid. Coba lagi.');
-      }
-    }
+    const result = {
+      nama_penyakit: bestClass,
+      tingkat_kepercayaan: highestProb * 100,
+      kondisi: kondisi,
+      scan_type: 'Tanaman',
+      gejala_terlihat: `Terdeteksi kemiripan visual dengan kelas: ${bestClass}.`,
+      rekomendasi: [
+        "Pisahkan tanaman dari yang sehat (jika sakit).",
+        "Pangkas bagian yang terinfeksi parah.",
+        "Pantau perkembangan dalam beberapa hari ke depan."
+      ]
+    };
 
     setTimeout(() => showDiagnosis(result), 400);
 
   } catch (err) {
     clearInterval(iv);
-    console.error('Gemini Analysis error:', err);
-    // Jika fetch gagal total (network error)
-    if (err.name === 'TypeError' && err.message.includes('fetch')) {
-      showError('Tidak dapat terhubung ke server AI. Periksa koneksi internet kamu.');
-    } else {
-      showError(err.message);
-    }
+    console.error('TFJS Analysis error:', err);
+    showError(err.message);
   }
 }
+
+// Ganti nama fungsi trigger dari runAIAnalysis ke runTFJSAnalysis (karena di-call oleh input onChange)
+const runAIAnalysis = runTFJSAnalysis;
 
 // ── RENDER DIAGNOSIS ──────────────────────────────────────
 function showDiagnosis(r) {
@@ -596,77 +318,44 @@ function showDiagnosis(r) {
 
   const cond = (r.kondisi || 'perhatian').toLowerCase();
   
-  if (cond === 'error') {
-    showError(r.gejala_terlihat || 'Objek dalam foto tidak dikenali sebagai tanaman. Harap unggah foto daun atau buah yang jelas.');
-    return;
-  }
-
   const sevClass  = cond === 'sehat' ? 'sev-safe' : cond === 'parah' ? 'sev-danger' : 'sev-warn';
   const sevLabel  = cond === 'sehat' ? '🟢 Sehat' : cond === 'parah' ? '🔴 Terinfeksi Parah' : '🟡 Perlu Perhatian';
   const badgeText = cond === 'sehat' ? 'Sehat' : cond === 'parah' ? 'Terinfeksi' : 'Perhatian';
 
   document.getElementById('img-status-badge').textContent = badgeText;
 
-  // Urgency display
-  const urgMap = {
-    'segera'            : { icon:'⚠️', text:'Tangani Segera', cls:'sev-danger' },
-    'dalam seminggu'    : { icon:'🕐', text:'Tangani Dalam Seminggu', cls:'sev-warn' },
-    'pantau saja'       : { icon:'👁', text:'Pantau Berkala', cls:'sev-warn' },
-    'tidak perlu tindakan':{ icon:'✅', text:'Tidak Perlu Tindakan Khusus', cls:'sev-safe' },
-  };
-  const urg = urgMap[(r.urgensi||'').toLowerCase()] || { icon:'ℹ️', text: r.urgensi||'', cls:'sev-warn' };
-
   // Rekomendasi steps
   const recSteps = Array.isArray(r.rekomendasi)
     ? r.rekomendasi.map(s => `<div class="rec-step"><div class="rec-dot"></div><span>${s}</span></div>`).join('')
     : `<div class="rec-step"><div class="rec-dot"></div><span>${r.rekomendasi || 'Lihat petunjuk umum perawatan tanaman.'}</span></div>`;
-
-  const scanTypeLabel = r.scan_type === 'buah' ? '🍎 Analisis Buah' : '🌿 Analisis Daun';
 
   const html = `
     <div class="diag-head">
       <div class="diag-sev-badge ${sevClass}">${sevLabel}</div>
       <div class="diag-disease-name">${r.nama_penyakit || 'Tidak Teridentifikasi'}</div>
       <div class="diag-plant-label">${selectedPlant.emoji} ${selectedPlant.name} · <em>${selectedPlant.latin}</em></div>
-      <div class="diag-scan-type">${scanTypeLabel}</div>
+      <div class="diag-scan-type">⚡ Analisis AI Lokal (TFJS)</div>
     </div>
     <div class="diag-body">
       <div class="conf-section">
         <div class="conf-row">
-          <span class="conf-label">Tingkat kepercayaan AI</span>
+          <span class="conf-label">Tingkat Kepercayaan Model</span>
           <span class="conf-val">${(r.tingkat_kepercayaan || 85).toFixed(0)}%</span>
         </div>
         <div class="conf-track"><div class="conf-bar" id="conf-bar"></div></div>
       </div>
 
       <div class="info-block">
-        <div class="info-block-title">🔍 Gejala yang Terdeteksi</div>
-        <div class="info-block-body">${r.gejala_terlihat || r.ringkasan || '—'}</div>
+        <div class="info-block-title">🔍 Klasifikasi Terbaca</div>
+        <div class="info-block-body">${r.gejala_terlihat || '—'}</div>
       </div>
-
-      ${r.pathogen && r.pathogen !== 'Tidak ada infeksi' ? `
-      <div class="info-block">
-        <div class="info-block-title">🦠 Patogen Penyebab</div>
-        <div class="info-block-body"><em>${r.pathogen}</em><br>${r.penyebab || ''}</div>
-      </div>` : ''}
-
-      ${r.dampak ? `
-      <div class="info-block">
-        <div class="info-block-title">📊 Dampak & Risiko</div>
-        <div class="info-block-body">${r.dampak}</div>
-      </div>` : ''}
 
       <div class="rec-block">
         <div class="rec-title">
           <svg viewBox="0 0 20 20" fill="none"><path d="M10 18s7-3.5 7-8.75V4.5l-7-2.5-7 2.5v4.75C3 14.5 10 18 10 18z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Rekomendasi Penanganan
+          Saran Tindakan Umum
         </div>
         <div class="rec-steps">${recSteps}</div>
-      </div>
-
-      <div class="info-block" style="background:transparent;border:1.5px solid rgba(95,163,78,0.2);padding:0.7rem 1rem;">
-        <div class="info-block-title">${urg.icon} Urgensi Tindakan</div>
-        <div class="info-block-body" style="font-weight:500;">${urg.text}</div>
       </div>
 
       <div class="act-row">
