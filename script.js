@@ -473,8 +473,8 @@ async function runAIAnalysisWithKey(apiKey) {
   }, 700);
 
   try {
-    // Gemini 2.0 Flash — model terbaik yang gratis dengan vision support
-    const GEMINI_MODEL = 'gemini-2.0-flash';
+    // Menggunakan gemini-1.5-flash karena lebih stabil untuk free tier
+    const GEMINI_MODEL = 'gemini-1.5-flash';
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
 
     // Determine media type
