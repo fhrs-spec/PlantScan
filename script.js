@@ -36,21 +36,31 @@ function buildSystemPrompt(plant) {
 
 Kamu akan menganalisis foto DAUN atau BUAH dari tanaman ${plant.name} (${plant.latin}).
 
+## TUGAS VALIDASI KRITIS (ANTI-HALUSINASI):
+1. Periksa foto dengan saksama. Apakah foto ini benar-benar menampilkan DAUN atau BUAH dari tanaman (terutama ${plant.name})?
+2. JIKA FOTO TERSEBUT JELAS BUKAN TANAMAN (misalnya foto manusia, hewan, ruangan, perabotan, atau objek acak lainnya):
+   - Kamu WAJIB menghentikan analisis.
+   - Isi field "nama_penyakit" dengan: "Objek Tidak Dikenali"
+   - Isi field "kondisi" dengan: "error"
+   - Isi field "gejala_terlihat" dengan: "Sistem mendeteksi bahwa foto yang diunggah bukan foto tanaman atau tidak relevan."
+   - Abaikan field lain atau isi dengan N/A.
+3. Jika foto BUKAN tanaman ${plant.name} tapi tanaman lain, kamu boleh memperingatkan di "ringkasan" bahwa itu tampak seperti tanaman lain.
+
 ## Penyakit Umum pada ${plant.name}:
 ${getDiseaseContext(plant.id)}
 
-## Tugas Analisis:
-1. Identifikasi apakah foto menunjukkan daun atau buah tanaman
-2. Periksa gejala visual: perubahan warna, bercak, tekstur, deformasi, layu, bercak berair, dll.
-3. Tentukan kondisi: Sehat, Perlu Perhatian (penyakit ringan-sedang), atau Terinfeksi Parah
-4. Berikan diagnosis spesifik berdasarkan gejala yang terlihat
-5. Berikan rekomendasi penanganan yang praktis
+## Tugas Analisis (JIKA VALID):
+1. Identifikasi apakah foto menunjukkan daun atau buah tanaman.
+2. Periksa gejala visual: perubahan warna, bercak, tekstur, deformasi, layu, dll.
+3. Tentukan kondisi: Sehat, Perlu Perhatian (penyakit ringan), atau Terinfeksi Parah.
+4. Berikan diagnosis spesifik berdasarkan gejala yang terlihat.
+5. Berikan rekomendasi penanganan yang praktis.
 
 ## Format Respons (WAJIB JSON murni, tanpa markdown, tanpa komentar):
 {
-  "scan_type": "daun" atau "buah",
-  "kondisi": "sehat" atau "perhatian" atau "parah",
-  "nama_penyakit": "Nama penyakit spesifik atau 'Daun/Buah Sehat'",
+  "scan_type": "daun" atau "buah" atau "bukan tanaman",
+  "kondisi": "sehat" atau "perhatian" atau "parah" atau "error",
+  "nama_penyakit": "Nama penyakit spesifik, 'Daun Sehat', atau 'Objek Tidak Dikenali'",
   "pathogen": "Nama ilmiah patogen atau 'Tidak ada infeksi'",
   "tingkat_kepercayaan": angka 70-98,
   "ringkasan": "1-2 kalimat ringkas tentang kondisi",
@@ -59,14 +69,11 @@ ${getDiseaseContext(plant.id)}
   "dampak": "Dampak pada tanaman dan potensi kerugian jika tidak ditangani",
   "rekomendasi": [
     "Langkah penanganan 1 yang spesifik",
-    "Langkah penanganan 2",
-    "Langkah pencegahan 1",
-    "Langkah pencegahan 2"
+    "Langkah penanganan 2"
   ],
   "urgensi": "segera" atau "dalam seminggu" atau "pantau saja" atau "tidak perlu tindakan"
 }
 
-Jika foto BUKAN foto tanaman sama sekali, isi nama_penyakit dengan "Bukan Foto Tanaman" dan kondisi "perhatian".
 Jika foto tidak jelas / blur, tetap berikan analisis terbaik berdasarkan yang bisa terlihat.
 Selalu respons dalam Bahasa Indonesia.`;
 }
@@ -443,6 +450,10 @@ function promptApiKey(callback) {
 
 // ── AI ANALYSIS (Google Gemini — GRATIS) ─────────────────
 async function runAIAnalysis() {
+  if (!navigator.onLine) {
+    showError('Anda sedang offline. Koneksi internet dibutuhkan untuk melakukan pemindaian AI.');
+    return;
+  }
   const apiKey = getApiKey();
   if (!apiKey) {
     promptApiKey((key) => runAIAnalysisWithKey(key));
@@ -531,7 +542,8 @@ async function runAIAnalysisWithKey(apiKey) {
         throw new Error('API Key ditolak. Pastikan Gemini API sudah diaktifkan di akun kamu. Klik "Coba Lagi".');
       }
       if (response.status === 429) {
-        throw new Error('Terlalu banyak permintaan. Tunggu sebentar lalu coba lagi (limit harian Gemini gratis: 1500/hari).');
+        const rawMsg = errData?.error?.message || '';
+        throw new Error(`Error 429 (Too Many Requests): ${rawMsg}. Tunggu sebentar lalu coba lagi.`);
       }
       throw new Error(errData?.error?.message || `Error HTTP ${response.status}`);
     }
@@ -583,6 +595,12 @@ function showDiagnosis(r) {
   document.getElementById('tips-box').style.display = 'block';
 
   const cond = (r.kondisi || 'perhatian').toLowerCase();
+  
+  if (cond === 'error') {
+    showError(r.gejala_terlihat || 'Objek dalam foto tidak dikenali sebagai tanaman. Harap unggah foto daun atau buah yang jelas.');
+    return;
+  }
+
   const sevClass  = cond === 'sehat' ? 'sev-safe' : cond === 'parah' ? 'sev-danger' : 'sev-warn';
   const sevLabel  = cond === 'sehat' ? '🟢 Sehat' : cond === 'parah' ? '🔴 Terinfeksi Parah' : '🟡 Perlu Perhatian';
   const badgeText = cond === 'sehat' ? 'Sehat' : cond === 'parah' ? 'Terinfeksi' : 'Perhatian';
@@ -866,4 +884,12 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.error('Service Worker registration failed', err));
   });
 }
+
+// ── OFFLINE HANDLING ──────────────────────────────────────
+window.addEventListener('offline', () => {
+  showToast('⚠️ Anda sedang offline. Fitur scan AI tidak tersedia.');
+});
+window.addEventListener('online', () => {
+  showToast('✅ Kembali terhubung ke internet.');
+});
 
