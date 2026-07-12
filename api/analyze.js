@@ -4,9 +4,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { imageBase64, plantName, plantLatin, plantId } = req.body;
+  const { imageB64, imageBase64, plantName, plantLatin, plantId } = req.body;
+  
+  const finalImage = imageB64 || imageBase64;
 
-  if (!imageBase64) {
+  if (!finalImage) {
     return res.status(400).json({ error: 'No image provided' });
   }
 
@@ -75,7 +77,7 @@ export default async function handler(req, res) {
           {
             inline_data: {
               mime_type: "image/jpeg",
-              data: imageBase64
+              data: finalImage
             }
           }
         ]
