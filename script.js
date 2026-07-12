@@ -537,9 +537,9 @@ async function runAIAnalysisWithKey(apiKey) {
         }
         throw new Error('Format permintaan tidak valid: ' + errMsg);
       }
-      if (response.status === 403) {
+      if (response.status === 401 || response.status === 403) {
         localStorage.removeItem('plantscan_gemini_key');
-        throw new Error('API Key ditolak. Pastikan Gemini API sudah diaktifkan di akun kamu. Klik "Coba Lagi".');
+        throw new Error('API Key tidak valid atau ditolak. Pastikan Anda memasukkan teks key yang benar (tidak ada spasi yang tertinggal). Klik "Coba Lagi" untuk memasukkan ulang.');
       }
       if (response.status === 429) {
         const rawMsg = errData?.error?.message || '';
