@@ -56,7 +56,7 @@ export default async function handler(req, res) {
 
   // ==== MODE AI GEMINI ASLI ====
   try {
-    const GEMINI_MODEL = 'gemini-1.5-flash';
+    const GEMINI_MODEL = 'gemini-1.5-flash-latest';
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
 
     const systemPrompt = buildSystemPrompt(plantName, plantLatin, plantId);
