@@ -1,0 +1,16 @@
+{
+  "name": "PlantScan AI",
+  "short_name": "PlantScan",
+  "description": "Deteksi Penyakit Tanaman dengan AI secara akurat",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F5F2EB",
+  "theme_color": "#1A3D0C",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

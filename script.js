@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════
-//  PlantScan — script.js  (Claude AI Vision Edition)
+//  PlantScan — script.js  (Gemini AI Edition)
 // ══════════════════════════════════════════════════════════
 
 // ── DATA TANAMAN (expanded) ───────────────────────────────
@@ -281,14 +281,39 @@ function processFile(file) {
   }
   const reader = new FileReader();
   reader.onload = e => {
-    const dataUrl = e.target.result;
-    // Extract base64 (remove "data:image/...;base64,")
-    currentImageB64 = dataUrl.split(',')[1];
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 1024;
+      const MAX_HEIGHT = 1024;
+      let width = img.width;
+      let height = img.height;
 
-    // Setup preview
-    document.getElementById('preview-img').src = dataUrl;
-    document.getElementById('meta-fname').textContent = file.name;
-    document.getElementById('meta-fsize').textContent = (file.size / 1024).toFixed(0) + ' KB';
+      if (width > height) {
+        if (width > MAX_WIDTH) {
+          height = Math.round(height *= MAX_WIDTH / width);
+          width = MAX_WIDTH;
+        }
+      } else {
+        if (height > MAX_HEIGHT) {
+          width = Math.round(width *= MAX_HEIGHT / height);
+          height = MAX_HEIGHT;
+        }
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85); // Compress to 85% quality JPEG
+      currentImageB64 = dataUrl.split(',')[1];
+
+      // Setup preview
+      document.getElementById('preview-img').src = dataUrl;
+      document.getElementById('meta-fname').textContent = file.name;
+      // Calculate approximate size of compressed base64
+      const compressedSize = Math.round((currentImageB64.length * 3 / 4) / 1024);
+      document.getElementById('meta-fsize').textContent = compressedSize + ' KB (Compressed)';
     document.getElementById('img-tag-emoji').textContent = selectedPlant.emoji;
     document.getElementById('img-tag-name').textContent  = selectedPlant.name;
     document.getElementById('img-status-badge').textContent = 'Menganalisis...';
@@ -309,6 +334,8 @@ function processFile(file) {
 
     // Start AI analysis
     runAIAnalysis();
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -639,6 +666,16 @@ function showDiagnosis(r) {
   content.innerHTML = html;
   content.style.display = 'block';
 
+  // Save to history
+  saveToHistory({
+    date: new Date().toISOString(),
+    plantName: selectedPlant.name,
+    plantEmoji: selectedPlant.emoji,
+    diseaseName: r.nama_penyakit || 'Tidak Teridentifikasi',
+    severity: cond,
+    image: document.getElementById('preview-img').src
+  });
+
   setTimeout(() => {
     const cb = document.getElementById('conf-bar');
     if (cb) cb.style.width = (r.tingkat_kepercayaan || 85) + '%';
@@ -769,3 +806,64 @@ revealEls.forEach((el, i) => {
   el.style.transitionDelay = (i % 6) * 0.07 + 's';
   observer.observe(el);
 });
+
+// ── HISTORY ───────────────────────────────────────────────
+function saveToHistory(record) {
+  let history = JSON.parse(localStorage.getItem('plantscan_history') || '[]');
+  history.unshift(record);
+  if (history.length > 20) history = history.slice(0, 20); // Simpan maks 20 riwayat
+  localStorage.setItem('plantscan_history', JSON.stringify(history));
+  loadHistory();
+}
+
+function loadHistory() {
+  const container = document.getElementById('history-list');
+  if (!container) return; // Jika elemen belum ada di HTML
+  const history = JSON.parse(localStorage.getItem('plantscan_history') || '[]');
+  
+  if (history.length === 0) {
+    container.innerHTML = '<div class="no-history">Belum ada riwayat pemindaian.</div>';
+    document.getElementById('history-section').style.display = 'none';
+    return;
+  }
+  
+  document.getElementById('history-section').style.display = 'block';
+  container.innerHTML = history.map((item, idx) => {
+    const date = new Date(item.date).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const sevLabel = item.severity === 'sehat' ? 'Sehat' : item.severity === 'parah' ? 'Parah' : 'Perhatian';
+    const sevColor = item.severity === 'sehat' ? '#27864F' : item.severity === 'parah' ? '#C0392B' : '#C97A12';
+    
+    return `
+      <div class="hist-card">
+        <img src="${item.image}" alt="Scan" class="hist-img">
+        <div class="hist-info">
+          <div class="hist-title">${item.plantEmoji} ${item.plantName}</div>
+          <div class="hist-disease" style="color: ${sevColor}">${item.diseaseName}</div>
+          <div class="hist-date">${date}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function clearHistory() {
+  if(confirm('Hapus semua riwayat pemindaian?')) {
+    localStorage.removeItem('plantscan_history');
+    loadHistory();
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadHistory();
+});
+
+// ── SERVICE WORKER REGISTRATION ───────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('Service Worker registered', reg))
+      .catch(err => console.error('Service Worker registration failed', err));
+  });
+}
+

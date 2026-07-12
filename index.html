@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1A3D0C">
+  <meta name="description" content="PlantScan - Deteksi penyakit tanamanmu dengan AI secara akurat.">
+  <meta property="og:title" content="PlantScan - Deteksi Penyakit Tanaman AI">
+  <meta property="og:description" content="Upload foto daun atau buah tanamanmu — AI menganalisis kondisinya secara mendalam, memberikan diagnosis akurat dan rekomendasi.">
+  <meta property="og:type" content="website">
   <title>PlantScan — Deteksi Penyakit Tanaman AI</title>
+  <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -185,7 +191,7 @@
               <div class="progress-track">
                 <div class="progress-fill" id="progress-fill"></div>
               </div>
-              <div class="loader-note">Menggunakan Claude AI Vision untuk deteksi akurat</div>
+              <div class="loader-note">Menggunakan Google Gemini AI untuk deteksi akurat</div>
             </div>
 
             <!-- Result -->
@@ -193,6 +199,21 @@
 
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- RIWAYAT SCAN -->
+    <section id="history-section" style="display:none; padding-top: 2rem;">
+      <div class="hist-header">
+        <h2 class="sec-title" style="margin-top:0; margin-bottom:0.2rem; font-size:1.4rem;">Riwayat Pemindaian</h2>
+        <button class="btn-clear-hist" onclick="clearHistory()">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 5h12M9 9v4M11 9v4M5 5l1 10a2 2 0 002 2h4a2 2 0 002-2l1-10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Hapus
+        </button>
+      </div>
+      <p class="sec-sub" style="margin-bottom:1rem; text-align:left;">Catatan diagnosis tanaman Anda sebelumnya</p>
+      <div class="history-list" id="history-list">
+        <!-- History items will be injected here -->
       </div>
     </section>
 
@@ -204,7 +225,7 @@
         <div class="feat-card fc-highlight">
           <div class="feat-icon">🧠</div>
           <h3>AI Vision Nyata</h3>
-          <p>Menggunakan Claude AI yang sesungguhnya untuk menganalisis foto — bukan database statis, melainkan pemahaman visual mendalam.</p>
+          <p>Menggunakan Gemini AI yang sesungguhnya untuk menganalisis foto — bukan database statis, melainkan pemahaman visual mendalam.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">🍃</div>
@@ -264,7 +285,7 @@
           <div class="howto-num">4</div>
           <div class="howto-body">
             <h4>Tunggu Analisis AI</h4>
-            <p>Claude AI menganalisis gambar secara mendalam — biasanya selesai dalam 5–15 detik tergantung koneksi internet.</p>
+            <p>Gemini AI menganalisis gambar secara mendalam — biasanya selesai dalam 5–15 detik tergantung koneksi internet.</p>
           </div>
         </div>
         <div class="howto-item">
@@ -279,7 +300,7 @@
 
     <footer>
       <div class="footer-brand">🌿 PlantScan</div>
-      <p class="footer-desc">Proyek Machine Learning · Teknik Informatika · Dibuat oleh Fharsdev<br>Analisis visual menggunakan Claude AI (Anthropic) untuk akurasi deteksi penyakit tanaman.</p>
+      <p class="footer-desc">Proyek Machine Learning · Teknik Informatika · Dibuat oleh Fharsdev<br>Analisis visual menggunakan Gemini AI (Google) untuk akurasi deteksi penyakit tanaman.</p>
     </footer>
 
   </main>
