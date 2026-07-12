@@ -201,37 +201,21 @@ function processFile(file) {
   reader.readAsDataURL(file);
 }
 
-// ── TENSORFLOW.JS (TEACHABLE MACHINE) ─────────────────────
-// Ganti URL ini dengan URL model dari Teachable Machine Anda
-const URL_MODEL_TEACHABLE_MACHINE = "https://teachablemachine.withgoogle.com/models/PLACEHOLDER_ID/";
-let tmModel, tmMaxPredictions;
-
-async function initModel() {
-  if (tmModel) return;
-  try {
-    const modelURL = URL_MODEL_TEACHABLE_MACHINE + "model.json";
-    const metadataURL = URL_MODEL_TEACHABLE_MACHINE + "metadata.json";
-    tmModel = await tmImage.load(modelURL, metadataURL);
-    tmMaxPredictions = tmModel.getTotalClasses();
-    console.log("Model Teachable Machine berhasil dimuat!");
-  } catch (error) {
-    console.error("Gagal memuat model:", error);
-    // Kita tidak langsung showError agar tidak mengganggu UI jika belum di-scan
+// ── AI ANALYSIS (SERVERLESS) ──────────────────────────────
+async function runAIAnalysis() {
+  if (!navigator.onLine) {
+    showError('Anda sedang offline. Koneksi internet dibutuhkan untuk melakukan pemindaian AI.');
+    return;
   }
-}
 
-// Panggil init saat halaman dimuat
-document.addEventListener('DOMContentLoaded', initModel);
-
-async function runTFJSAnalysis() {
   const steps = [
-    'Menyiapkan model lokal...',
-    'Mengekstrak ciri visual daun...',
-    'Mengklasifikasikan pola...',
-    'Menghitung tingkat keyakinan...',
-    'Menyusun diagnosis akhir...',
+    'Memuat gambar...',
+    'Menghubungkan ke server cerdas...',
+    'Menganalisis gejala visual...',
+    'Membandingkan dengan database penyakit...',
+    'Menyusun diagnosis lengkap...',
   ];
-  const pcts = [20, 40, 60, 85, 100];
+  const pcts = [15, 35, 55, 80, 95];
   let stepIdx = 0;
   const stepEl = document.getElementById('loader-step');
   const fillEl = document.getElementById('progress-fill');
@@ -242,72 +226,62 @@ async function runTFJSAnalysis() {
       fillEl.style.width = pcts[stepIdx] + '%';
       stepIdx++;
     }
-  }, 500);
+  }, 700);
 
   try {
-    if (!tmModel) {
-      await initModel();
-    }
-    
-    if (!tmModel) {
-      throw new Error("Tautan model Teachable Machine masih kosong atau tidak valid. Silakan latih model Anda dan perbarui variabel URL di script.js.");
-    }
+    // Determine media type
+    const imgEl   = document.getElementById('preview-img');
+    const src     = imgEl.src;
+    let mimeType  = 'image/jpeg';
+    if (src.includes('data:image/png'))  mimeType = 'image/png';
+    if (src.includes('data:image/webp')) mimeType = 'image/webp';
+    if (src.includes('data:image/gif'))  mimeType = 'image/gif';
 
-    const imgEl = document.getElementById('preview-img');
-    const predictions = await tmModel.predict(imgEl);
-    
+    // Memanggil Vercel Serverless Function
+    // Jika berjalan lokal tanpa 'vercel dev', ini mungkin gagal (404),
+    // namun sangat aman untuk environment production
+    const response = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        imageB64: currentImageB64,
+        mimeType: mimeType,
+        plantName: selectedPlant.name,
+        plantLatin: selectedPlant.latin,
+        plantId: selectedPlant.id
+      })
+    });
+
     clearInterval(iv);
     fillEl.style.width = '100%';
 
-    // Cari prediksi dengan probabilitas tertinggi
-    let highestProb = 0;
-    let bestClass = "";
-    
-    predictions.forEach(p => {
-      if (p.probability > highestProb) {
-        highestProb = p.probability;
-        bestClass = p.className;
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      if (response.status === 401 || response.status === 403) {
+        throw new Error('API Key di server tidak valid atau ditolak. Pastikan GEMINI_API_KEY sudah disetel di Vercel.');
       }
-    });
-
-    if (highestProb < 0.3) {
-      throw new Error("AI ragu (akurasi < 30%). Objek mungkin bukan tanaman atau sangat buram.");
+      if (response.status === 429) {
+        const rawMsg = errData?.error?.message || errData.error || '';
+        throw new Error(`Terlalu banyak permintaan (Error 429): ${rawMsg}. Tunggu sebentar lalu coba lagi.`);
+      }
+      throw new Error(errData?.error?.message || errData.error || `Error HTTP ${response.status}`);
     }
 
-    // Tentukan kondisi berdasarkan teks klasifikasi
-    const classNameLower = bestClass.toLowerCase();
-    let kondisi = 'perhatian';
-    if (classNameLower.includes('sehat') || classNameLower.includes('healthy')) {
-      kondisi = 'sehat';
-    } else if (highestProb > 0.8 && !classNameLower.includes('sehat')) {
-      // Jika yakin bukan sehat, anggap parah
-      kondisi = 'parah';
-    }
+    const result = await response.json();
 
-    const result = {
-      nama_penyakit: bestClass,
-      tingkat_kepercayaan: highestProb * 100,
-      kondisi: kondisi,
-      scan_type: 'Tanaman',
-      gejala_terlihat: `Terdeteksi kemiripan visual dengan kelas: ${bestClass}.`,
-      rekomendasi: [
-        "Pisahkan tanaman dari yang sehat (jika sakit).",
-        "Pangkas bagian yang terinfeksi parah.",
-        "Pantau perkembangan dalam beberapa hari ke depan."
-      ]
-    };
-
+    // Pastikan UI tidak macet sebelum merender
     setTimeout(() => showDiagnosis(result), 400);
 
   } catch (err) {
     clearInterval(iv);
-    console.error('TFJS Analysis error:', err);
-    showError(err.message);
+    console.error('Serverless Analysis error:', err);
+    if (err.message.includes('Unexpected token') || err.message.includes('NetworkError')) {
+      showError('Tidak dapat terhubung ke server Vercel. Pastikan Anda menjalankan proyek ini menggunakan Vercel CLI (vercel dev) atau sudah di-deploy.');
+    } else {
+      showError(err.message);
+    }
   }
 }
-
-// Ganti nama fungsi trigger dari runAIAnalysis ke runTFJSAnalysis (karena di-call oleh input onChange)
-const runAIAnalysis = runTFJSAnalysis;
 
 // ── RENDER DIAGNOSIS ──────────────────────────────────────
 function showDiagnosis(r) {
@@ -333,26 +307,32 @@ function showDiagnosis(r) {
       <div class="diag-sev-badge ${sevClass}">${sevLabel}</div>
       <div class="diag-disease-name">${r.nama_penyakit || 'Tidak Teridentifikasi'}</div>
       <div class="diag-plant-label">${selectedPlant.emoji} ${selectedPlant.name} · <em>${selectedPlant.latin}</em></div>
-      <div class="diag-scan-type">⚡ Analisis AI Lokal (TFJS)</div>
+      <div class="diag-scan-type">⚡ Analisis AI Serverless Gemini</div>
     </div>
     <div class="diag-body">
       <div class="conf-section">
         <div class="conf-row">
-          <span class="conf-label">Tingkat Kepercayaan Model</span>
+          <span class="conf-label">Tingkat Kepercayaan AI</span>
           <span class="conf-val">${(r.tingkat_kepercayaan || 85).toFixed(0)}%</span>
         </div>
         <div class="conf-track"><div class="conf-bar" id="conf-bar"></div></div>
+        <div class="diag-summary">"${r.ringkasan || 'Diagnosis selesai.'}"</div>
       </div>
 
       <div class="info-block">
-        <div class="info-block-title">🔍 Klasifikasi Terbaca</div>
-        <div class="info-block-body">${r.gejala_terlihat || '—'}</div>
+        <div class="info-block-title">🔍 Hasil Observasi</div>
+        <div class="info-block-body">
+          <p><strong>Gejala Terlihat:</strong> ${r.gejala_terlihat || '—'}</p>
+          <p><strong>Patogen:</strong> ${r.pathogen || '—'}</p>
+          <p><strong>Penyebab:</strong> ${r.penyebab || '—'}</p>
+          <p><strong>Dampak:</strong> ${r.dampak || '—'}</p>
+        </div>
       </div>
 
       <div class="rec-block">
         <div class="rec-title">
           <svg viewBox="0 0 20 20" fill="none"><path d="M10 18s7-3.5 7-8.75V4.5l-7-2.5-7 2.5v4.75C3 14.5 10 18 10 18z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Saran Tindakan Umum
+          Saran Tindakan (${(r.urgensi||'').toUpperCase()})
         </div>
         <div class="rec-steps">${recSteps}</div>
       </div>
