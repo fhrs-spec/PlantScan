@@ -261,8 +261,8 @@ async function runAIAnalysis() {
         throw new Error('API Key di server tidak valid atau ditolak. Pastikan GEMINI_API_KEY sudah disetel di Vercel.');
       }
       if (response.status === 429) {
-        const rawMsg = errData?.error?.message || errData.error || '';
-        throw new Error(`Terlalu banyak permintaan (Error 429): ${rawMsg}. Tunggu sebentar lalu coba lagi.`);
+        const rateLimitMsg = errData?.error || 'Terlalu banyak permintaan. Tunggu beberapa menit lalu coba lagi.';
+        throw new Error(rateLimitMsg);
       }
       throw new Error(errData?.error?.message || errData.error || `Error HTTP ${response.status}`);
     }

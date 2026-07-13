@@ -1,7 +1,109 @@
+// ============================================================
+// 🛡️ SISTEM KEAMANAN — Rate Limiter, CORS, Payload Limit
+// ============================================================
+
+// Konfigurasi keamanan
+const MAX_REQUESTS = 5;           // Maksimal 5 request...
+const WINDOW_MS = 5 * 60 * 1000;  // ...per 5 menit (300.000 ms)
+const MAX_PAYLOAD_BYTES = 5 * 1024 * 1024; // Batas ukuran gambar: 5 MB
+
+// Penyimpanan rate limit di memori (bertahan selama container Vercel "warm")
+const rateLimitMap = new Map();
+
+/**
+ * Mengambil alamat IP pengguna dari header request Vercel.
+ * Vercel meneruskan IP asli pengguna lewat header 'x-forwarded-for'.
+ */
+function getClientIP(req) {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  return req.headers['x-real-ip'] || req.socket?.remoteAddress || 'unknown';
+}
+
+/**
+ * Memeriksa apakah IP sudah melewati batas request.
+ * Mengembalikan objek: { allowed: boolean, remaining: number, resetInSeconds: number }
+ */
+function checkRateLimit(ip) {
+  const now = Date.now();
+  
+  // Bersihkan entri yang sudah kadaluarsa
+  for (const [key, value] of rateLimitMap.entries()) {
+    if (now - value.windowStart > WINDOW_MS) {
+      rateLimitMap.delete(key);
+    }
+  }
+
+  const record = rateLimitMap.get(ip);
+
+  if (!record) {
+    // IP baru, buat catatan pertama
+    rateLimitMap.set(ip, { count: 1, windowStart: now });
+    return { allowed: true, remaining: MAX_REQUESTS - 1, resetInSeconds: 0 };
+  }
+
+  // Jika jendela waktu sudah lewat, reset
+  if (now - record.windowStart > WINDOW_MS) {
+    rateLimitMap.set(ip, { count: 1, windowStart: now });
+    return { allowed: true, remaining: MAX_REQUESTS - 1, resetInSeconds: 0 };
+  }
+
+  // Masih dalam jendela waktu
+  if (record.count >= MAX_REQUESTS) {
+    const resetIn = Math.ceil((WINDOW_MS - (now - record.windowStart)) / 1000);
+    return { allowed: false, remaining: 0, resetInSeconds: resetIn };
+  }
+
+  record.count++;
+  return { allowed: true, remaining: MAX_REQUESTS - record.count, resetInSeconds: 0 };
+}
+
+// ============================================================
+// 🚀 HANDLER UTAMA
+// ============================================================
+
 export default async function handler(req, res) {
-  // Hanya menerima metode POST
+  // --- Keamanan 1: Hanya izinkan metode POST ---
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
+  }
+
+  // --- Keamanan 2: CORS — Blokir request dari domain asing ---
+  const allowedOrigins = [
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null,
+  ].filter(Boolean);
+
+  const origin = req.headers['origin'] || req.headers['referer'] || '';
+
+  // Jika ada daftar origin yang diizinkan, periksa
+  if (allowedOrigins.length > 0) {
+    const isAllowed = allowedOrigins.some(allowed => origin.startsWith(allowed));
+    // Izinkan juga request tanpa origin (misal: dari Postman/testing lokal)
+    if (origin && !isAllowed) {
+      console.warn(`CORS blocked: ${origin}`);
+      return res.status(403).json({ error: 'Akses ditolak. Domain Anda tidak diizinkan.' });
+    }
+  }
+
+  // --- Keamanan 3: Rate Limiting (5 scan per 5 menit per IP) ---
+  const clientIP = getClientIP(req);
+  const rateCheck = checkRateLimit(clientIP);
+
+  // Sisipkan header informasi sisa kuota ke response
+  res.setHeader('X-RateLimit-Limit', MAX_REQUESTS);
+  res.setHeader('X-RateLimit-Remaining', rateCheck.remaining);
+
+  if (!rateCheck.allowed) {
+    const minutes = Math.floor(rateCheck.resetInSeconds / 60);
+    const seconds = rateCheck.resetInSeconds % 60;
+    const waitText = minutes > 0 ? `${minutes} menit ${seconds} detik` : `${seconds} detik`;
+    return res.status(429).json({
+      error: `Anda sudah melakukan ${MAX_REQUESTS}x scan. Silakan tunggu ${waitText} lagi sebelum mencoba kembali.`,
+      retryAfterSeconds: rateCheck.resetInSeconds
+    });
   }
 
   const { imageB64, imageBase64, plantName, plantLatin, plantId } = req.body;
@@ -10,6 +112,15 @@ export default async function handler(req, res) {
 
   if (!finalImage) {
     return res.status(400).json({ error: 'No image provided' });
+  }
+
+  // --- Keamanan 4: Payload Size Limit (maks 5 MB) ---
+  const imageSizeBytes = Buffer.byteLength(finalImage, 'base64');
+  if (imageSizeBytes > MAX_PAYLOAD_BYTES) {
+    const sizeMB = (imageSizeBytes / (1024 * 1024)).toFixed(1);
+    return res.status(413).json({ 
+      error: `Ukuran gambar terlalu besar (${sizeMB} MB). Maksimal ${MAX_PAYLOAD_BYTES / (1024 * 1024)} MB.` 
+    });
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
