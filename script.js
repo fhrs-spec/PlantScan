@@ -31,7 +31,7 @@ const plants = [
 ];
 
 // ── SYSTEM PROMPT UNTUK AI ────────────────────────────────
-// Dihapus karena kita sekarang menggunakan TensorFlow.js murni (Lokal)
+// System prompt telah dipindahkan ke backend (api/analyze.js) agar aman dari inspeksi browser.
 
 // ── STATE ─────────────────────────────────────────────────
 let selectedPlant = null;
