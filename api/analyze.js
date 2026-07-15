@@ -1,3 +1,5 @@
+import { diseaseContexts } from './diseaseData.js';
+
 // ============================================================
 // 🛡️ SISTEM KEAMANAN — Rate Limiter, CORS, Payload Limit
 // ============================================================
@@ -250,22 +252,9 @@ export default async function handler(req, res) {
   });
 }
 
+
 function getDiseaseContext(plantId) {
-  const ctx = {
-    tomato: `? Busuk Buah Antraknosa ?" bercak hitam cekung pada buah
-? Busuk Ujung Bunga ?" ujung buah hitam/cokelat
-? Bercak Bakteri (Xanthomonas) ?" bercak kecil berair pada daun dan buah
-? TYLCV (Tomato Yellow Leaf Curl) ?" daun menggulung, kuning
-? Penyakit Layu Bakteri (Ralstonia) ?" layu tiba-tiba tanpa warna kuning
-? Daun/Buah Sehat`,
-    default: `? Penyakit Jamur ?" bercak cokelat/hitam/putih pada daun atau buah
-? Penyakit Bakteri ?" bercak berair, busuk
-? Penyakit Virus ?" daun belang, deformasi
-? Embun Tepung ?" lapisan putih
-? Hawar ?" daun mengering tiba-tiba
-? Daun/Buah Sehat`
-  };
-  return ctx[plantId] || ctx.default;
+  return diseaseContexts[plantId] || diseaseContexts.default;
 }
 
 function buildSystemPrompt(name, latin, id) {
