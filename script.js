@@ -316,7 +316,7 @@ async function runAIAnalysis() {
 }
 
 // ── RENDER DIAGNOSIS ──────────────────────────────────────
-function showDiagnosis(r) {
+function showDiagnosis(r, isHistory = false) {
   document.getElementById('loading-panel').style.display = 'none';
   document.getElementById('scan-overlay').classList.add('done');
   document.getElementById('tips-box').style.display = 'block';
@@ -385,14 +385,18 @@ function showDiagnosis(r) {
   content.style.display = 'block';
 
   // Save to history
-  saveToHistory({
-    date: new Date().toISOString(),
-    plantName: selectedPlant.name,
-    plantEmoji: selectedPlant.emoji,
-    diseaseName: r.nama_penyakit || 'Tidak Teridentifikasi',
-    severity: cond,
-    image: document.getElementById('preview-img').src
-  });
+  if (!isHistory) {
+    saveToHistory({
+      date: new Date().toISOString(),
+      plantName: selectedPlant.name,
+      plantEmoji: selectedPlant.emoji,
+      plantLatin: selectedPlant.latin,
+      diseaseName: r.nama_penyakit || 'Tidak Teridentifikasi',
+      severity: cond,
+      image: document.getElementById('preview-img').src,
+      fullResult: r
+    });
+  }
 
   setTimeout(() => {
     const cb = document.getElementById('conf-bar');
@@ -552,7 +556,7 @@ function loadHistory() {
     const sevColor = item.severity === 'sehat' ? '#27864F' : item.severity === 'parah' ? '#C0392B' : '#C97A12';
     
     return `
-      <div class="hist-card">
+      <div class="hist-card" onclick="viewHistory(${idx})" style="cursor:pointer;" title="Klik untuk melihat detail diagnosis">
         <img src="${item.image}" alt="Scan" class="hist-img">
         <div class="hist-info">
           <div class="hist-title">${item.plantEmoji} ${item.plantName}</div>
@@ -569,6 +573,41 @@ function clearHistory() {
     localStorage.removeItem('plantscan_history');
     loadHistory();
   }
+}
+
+function viewHistory(idx) {
+  const history = JSON.parse(localStorage.getItem('plantscan_history') || '[]');
+  const item = history[idx];
+  if (!item || !item.fullResult) {
+    showToast('❌ Detail riwayat lama tidak tersedia (karena tidak menyimpan log AI penuh). Silakan scan ulang.');
+    return;
+  }
+  
+  // Set the "selectedPlant" artificially for the view
+  selectedPlant = {
+    name: item.plantName,
+    emoji: item.plantEmoji,
+    latin: item.plantLatin || 'Spesies tidak diketahui'
+  };
+
+  // Switch UI to result view
+  const zone = document.getElementById('upload-zone');
+  if (zone) zone.style.display = 'none';
+  const rs = document.getElementById('result-section');
+  rs.style.display = 'block';
+  
+  document.getElementById('preview-img').src = item.image;
+  document.getElementById('meta-fname').textContent = 'Riwayat Scan';
+  const dateStr = new Date(item.date).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  document.getElementById('meta-fsize').textContent = dateStr;
+  document.getElementById('img-tag-emoji').textContent = item.plantEmoji;
+  document.getElementById('img-tag-name').textContent = item.plantName;
+  
+  // Render the diagnosis without saving to history again
+  showDiagnosis(item.fullResult, true);
+  
+  // Scroll to results
+  setTimeout(() => rs.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
 }
 
 // ── INIT ──────────────────────────────────────────────────
