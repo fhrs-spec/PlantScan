@@ -4,7 +4,7 @@
 
 // ── DATA TANAMAN (expanded) ───────────────────────────────
 const plants = [
-  // Sayuran
+  // Sayuran & Umbi
   { id:'tomato',   emoji:'🍅', name:'Tomat',      latin:'Solanum lycopersicum',    diseases:12, category:'Sayuran' },
   { id:'potato',   emoji:'🥔', name:'Kentang',    latin:'Solanum tuberosum',       diseases:8,  category:'Sayuran' },
   { id:'corn',     emoji:'🌽', name:'Jagung',     latin:'Zea mays',               diseases:7,  category:'Sayuran' },
@@ -13,11 +13,21 @@ const plants = [
   { id:'cucumber', emoji:'🥒', name:'Mentimun',   latin:'Cucumis sativus',        diseases:6,  category:'Sayuran' },
   { id:'eggplant', emoji:'🍆', name:'Terong',     latin:'Solanum melongena',      diseases:5,  category:'Sayuran' },
   { id:'spinach',  emoji:'🥬', name:'Bayam',      latin:'Spinacia oleracea',      diseases:4,  category:'Sayuran' },
+  { id:'shallot',  emoji:'🧅', name:'Bawang Merah',latin:'Allium cepa aggregatum', diseases:5,  category:'Sayuran' },
+  { id:'garlic',   emoji:'🧄', name:'Bawang Putih',latin:'Allium sativum',         diseases:5,  category:'Sayuran' },
+  { id:'water_spinach', emoji:'🥬', name:'Kangkung', latin:'Ipomoea aquatica',    diseases:4,  category:'Sayuran' },
+  { id:'mustard_greens', emoji:'🥬', name:'Sawi / Pakcoy', latin:'Brassica rapa', diseases:5,  category:'Sayuran' },
+  { id:'cabbage',  emoji:'🥬', name:'Kubis',      latin:'Brassica oleracea',      diseases:6,  category:'Sayuran' },
+  { id:'carrot',   emoji:'🥕', name:'Wortel',     latin:'Daucus carota',          diseases:4,  category:'Sayuran' },
+  
+  // Kacang & Pangan
   { id:'soybean',  emoji:'🫘', name:'Kedelai',    latin:'Glycine max',            diseases:5,  category:'Kacang' },
   { id:'peanut',   emoji:'🥜', name:'Kacang Tanah',latin:'Arachis hypogaea',     diseases:5,  category:'Kacang' },
   { id:'rice',     emoji:'🌾', name:'Padi',       latin:'Oryza sativa',           diseases:9,  category:'Pangan' },
   { id:'wheat',    emoji:'🌾', name:'Gandum',     latin:'Triticum aestivum',      diseases:6,  category:'Pangan' },
   { id:'cassava',  emoji:'🍠', name:'Singkong',   latin:'Manihot esculenta',      diseases:5,  category:'Pangan' },
+  { id:'sweet_potato', emoji:'🍠', name:'Ubi Jalar', latin:'Ipomoea batatas',     diseases:5,  category:'Pangan' },
+  
   // Buah
   { id:'apple',    emoji:'🍎', name:'Apel',       latin:'Malus domestica',        diseases:8,  category:'Buah' },
   { id:'grape',    emoji:'🍇', name:'Anggur',     latin:'Vitis vinifera',         diseases:8,  category:'Buah' },
@@ -28,6 +38,28 @@ const plants = [
   { id:'mango',    emoji:'🥭', name:'Mangga',     latin:'Mangifera indica',       diseases:6,  category:'Buah' },
   { id:'orange',   emoji:'🍊', name:'Jeruk',      latin:'Citrus sinensis',        diseases:7,  category:'Buah' },
   { id:'papaya',   emoji:'🍈', name:'Pepaya',     latin:'Carica papaya',          diseases:5,  category:'Buah' },
+  { id:'durian',   emoji:'🍈', name:'Durian',     latin:'Durio zibethinus',       diseases:6,  category:'Buah' },
+  { id:'watermelon', emoji:'🍉', name:'Semangka', latin:'Citrullus lanatus',      diseases:5,  category:'Buah' },
+  { id:'melon',    emoji:'🍈', name:'Melon',      latin:'Cucumis melo',           diseases:5,  category:'Buah' },
+  { id:'pineapple',emoji:'🍍', name:'Nanas',      latin:'Ananas comosus',         diseases:4,  category:'Buah' },
+  { id:'rambutan', emoji:'🍒', name:'Rambutan',   latin:'Nephelium lappaceum',    diseases:4,  category:'Buah' },
+
+  // Perkebunan Komersial
+  { id:'palm_oil', emoji:'🌴', name:'Kelapa Sawit', latin:'Elaeis guineensis',    diseases:7,  category:'Perkebunan' },
+  { id:'coffee',   emoji:'☕', name:'Kopi',       latin:'Coffea',                 diseases:6,  category:'Perkebunan' },
+  { id:'cocoa',    emoji:'🍫', name:'Kakao',      latin:'Theobroma cacao',        diseases:6,  category:'Perkebunan' },
+  { id:'rubber',   emoji:'🌳', name:'Karet',      latin:'Hevea brasiliensis',     diseases:5,  category:'Perkebunan' },
+  { id:'tea',      emoji:'🍵', name:'Teh',        latin:'Camellia sinensis',      diseases:5,  category:'Perkebunan' },
+
+  // Tanaman Hias
+  { id:'orchid',   emoji:'🌸', name:'Anggrek',    latin:'Orchidaceae',            diseases:6,  category:'Hias' },
+  { id:'monstera', emoji:'🪴', name:'Monstera',   latin:'Monstera deliciosa',     diseases:4,  category:'Hias' },
+  { id:'aglaonema',emoji:'🪴', name:'Aglaonema',  latin:'Aglaonema',              diseases:4,  category:'Hias' },
+  { id:'rose',     emoji:'🌹', name:'Mawar',      latin:'Rosa',                   diseases:5,  category:'Hias' },
+
+  // Rempah
+  { id:'ginger',   emoji:'🫚', name:'Jahe',       latin:'Zingiber officinale',    diseases:4,  category:'Rempah' },
+  { id:'turmeric', emoji:'🫚', name:'Kunyit',     latin:'Curcuma longa',          diseases:4,  category:'Rempah' },
 ];
 
 // ── SYSTEM PROMPT UNTUK AI ────────────────────────────────
