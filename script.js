@@ -289,14 +289,25 @@ async function runAIAnalysis() {
 
     if (!response.ok) {
       const errData = await response.json().catch(() => ({}));
+      
+      // Jika server mengembalikan pesan error spesifik, prioritaskan itu
+      if (errData?.error?.message) {
+        throw new Error(errData.error.message);
+      } else if (errData?.error) {
+        throw new Error(errData.error);
+      }
+
+      // Fallback pesan berdasarkan status HTTP
       if (response.status === 401 || response.status === 403) {
-        throw new Error('API Key di server tidak valid atau ditolak. Pastikan GEMINI_API_KEY sudah disetel di Vercel.');
+        throw new Error('Akses ditolak (Error 401/403). Pastikan mengakses dari domain yang benar atau cek konfigurasi server.');
       }
       if (response.status === 429) {
-        const rateLimitMsg = errData?.error || 'Terlalu banyak permintaan. Tunggu beberapa menit lalu coba lagi.';
-        throw new Error(rateLimitMsg);
+        throw new Error('Terlalu banyak permintaan. Tunggu beberapa menit lalu coba lagi.');
       }
-      throw new Error(errData?.error?.message || errData.error || `Error HTTP ${response.status}`);
+      if (response.status === 404) {
+        throw new Error('Endpoint API tidak ditemukan (404). Jika berjalan di lokal, pastikan menggunakan vercel dev.');
+      }
+      throw new Error(`Error HTTP ${response.status}`);
     }
 
     const result = await response.json();

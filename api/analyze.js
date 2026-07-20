@@ -73,20 +73,18 @@ export default async function handler(req, res) {
   }
 
   // --- Keamanan 2: CORS — Blokir request dari domain asing ---
-  const allowedOrigins = [
-    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
-    process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null,
-  ].filter(Boolean);
-
+  const host = req.headers.host || '';
   const origin = req.headers['origin'] || req.headers['referer'] || '';
 
-  // Jika ada daftar origin yang diizinkan, periksa
-  if (allowedOrigins.length > 0) {
-    const isAllowed = allowedOrigins.some(allowed => origin.startsWith(allowed));
-    // Izinkan juga request tanpa origin (misal: dari Postman/testing lokal)
-    if (origin && !isAllowed) {
-      console.warn(`CORS blocked: ${origin}`);
-      return res.status(403).json({ error: 'Akses ditolak. Domain Anda tidak diizinkan.' });
+  if (origin && host && !origin.includes(host)) {
+    // Sebagai tambahan, izinkan URL spesifik Vercel dan localhost
+    const isVercelUrl = process.env.VERCEL_URL && origin.includes(process.env.VERCEL_URL);
+    const isProdUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL && origin.includes(process.env.VERCEL_PROJECT_PRODUCTION_URL);
+    const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1');
+
+    if (!isVercelUrl && !isProdUrl && !isLocalhost) {
+      console.warn(`CORS blocked: origin=${origin} host=${host}`);
+      return res.status(403).json({ error: 'Akses ditolak. Domain Anda tidak diizinkan menggunakan API ini.' });
     }
   }
 
