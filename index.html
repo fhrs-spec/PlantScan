@@ -8,7 +8,7 @@
   <meta property="og:title" content="PlantScan - Deteksi Penyakit Tanaman AI">
   <meta property="og:description" content="Upload foto daun atau buah tanamanmu — AI menganalisis kondisinya secara mendalam, memberikan diagnosis akurat dan rekomendasi.">
   <meta property="og:type" content="website">
-  <title>PlantScan — Deteksi Penyakit Tanaman AI</title>
+  <title data-i18n="page_title">PlantScan — Deteksi Penyakit Tanaman AI</title>
   <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -91,7 +91,7 @@
             </div>
             <div class="search-wrap">
               <svg viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-              <input type="text" class="search-input" placeholder="Cari tanaman..." id="plant-search" oninput="filterPlants(this.value)">
+              <input type="text" class="search-input" placeholder="Cari tanaman..." id="plant-search" oninput="filterPlants(this.value)" data-i18n-placeholder="search_placeholder">
             </div>
           </div>
 
@@ -107,7 +107,7 @@
           </div>
 
           <div class="plant-grid" id="plant-grid"></div>
-          <div class="no-result" id="no-result">🌿 Tanaman tidak ditemukan</div>
+          <div class="no-result" id="no-result" data-i18n="no_result">🌿 Tanaman tidak ditemukan</div>
         </div>
 
         <!-- Drop area -->
@@ -118,24 +118,24 @@
               <path d="M24 32V16M24 16L18 22M24 16L30 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <div class="drop-text">Seret foto ke sini</div>
-          <div class="drop-sub">JPG · PNG · WEBP · maks 5 MB</div>
-          <div class="drop-sub scan-types">Bisa foto <strong>daun</strong> maupun <strong>buah</strong> tanaman</div>
+          <div class="drop-text" data-i18n="drop_text">Seret foto ke sini</div>
+          <div class="drop-sub" data-i18n="drop_sub1">JPG · PNG · WEBP · maks 5 MB</div>
+          <div class="drop-sub scan-types" data-i18n-html="drop_sub2">Bisa foto <strong>daun</strong> maupun <strong>buah</strong> tanaman</div>
 
           <div class="btn-row">
             <button class="btn-upload" id="btn-upload" onclick="tryUpload()" disabled>
               <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.8"/><circle cx="7" cy="7" r="1.8" fill="currentColor"/><path d="M2 13L6 9L10 13L14 9L18 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Pilih Foto
+              <span data-i18n="btn_upload">Pilih Foto</span>
             </button>
             <button class="btn-camera" id="btn-camera" onclick="tryCamera()" disabled>
               <svg viewBox="0 0 20 20" fill="none"><path d="M18 15a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2h2l2-2h4l2 2h2a2 2 0 012 2v8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="11" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
-              Kamera
+              <span data-i18n="btn_camera">Kamera</span>
             </button>
           </div>
 
           <div class="upload-hint" id="upload-hint">
             <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.8"/><line x1="10" y1="7" x2="10" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.8" fill="currentColor"/></svg>
-            Pilih jenis tanaman terlebih dahulu
+            <span data-i18n="upload_hint">Pilih jenis tanaman terlebih dahulu</span>
           </div>
 
           <input type="file" id="file-input" accept="image/*">
@@ -158,7 +158,7 @@
                 <div class="scan-overlay" id="scan-overlay">
                   <div class="scan-line"></div>
                 </div>
-                <div class="img-status-badge" id="img-status-badge">Memproses...</div>
+                <div class="img-status-badge" id="img-status-badge" data-i18n="processing">Memproses...</div>
               </div>
               <div class="preview-meta">
                 <div class="meta-text">
@@ -167,17 +167,17 @@
                 </div>
                 <button class="change-photo-btn" onclick="resetApp()">
                   <svg viewBox="0 0 20 20" fill="none"><path d="M4 10a6 6 0 0112 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 10l-2-2 2-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  Ganti Foto
+                  <span data-i18n="change_photo">Ganti Foto</span>
                 </button>
               </div>
             </div>
 
             <div class="tips-box" id="tips-box" style="display:none">
-              <div class="tips-header">💡 Tips Foto Terbaik</div>
-              <div class="tip-row"><div class="tip-num">1</div>Fokus pada satu daun atau buah yang jelas terlihat</div>
-              <div class="tip-row"><div class="tip-num">2</div>Pastikan pencahayaan cukup, hindari bayangan gelap</div>
-              <div class="tip-row"><div class="tip-num">3</div>Jarak ideal 20–30 cm dari objek foto</div>
-              <div class="tip-row"><div class="tip-num">4</div>Seluruh objek (daun/buah) harus masuk dalam frame</div>
+              <div class="tips-header" data-i18n="tips_title">💡 Tips Foto Terbaik</div>
+              <div class="tip-row"><div class="tip-num">1</div><span data-i18n="tip1">Fokus pada satu daun atau buah yang jelas terlihat</span></div>
+              <div class="tip-row"><div class="tip-num">2</div><span data-i18n="tip2">Pastikan pencahayaan cukup, hindari bayangan gelap</span></div>
+              <div class="tip-row"><div class="tip-num">3</div><span data-i18n="tip3">Jarak ideal 20–30 cm dari objek foto</span></div>
+              <div class="tip-row"><div class="tip-num">4</div><span data-i18n="tip4">Seluruh objek (daun/buah) harus masuk dalam frame</span></div>
             </div>
           </div>
 
@@ -191,12 +191,12 @@
                 <div class="loader-ring r2"></div>
                 <div class="loader-leaf">🔬</div>
               </div>
-              <div class="loader-title">AI Menganalisis Foto...</div>
+              <div class="loader-title" data-i18n="ai_analyzing">AI Menganalisis Foto...</div>
               <div class="loader-step" id="loader-step">Mempersiapkan analisis</div>
               <div class="progress-track">
                 <div class="progress-fill" id="progress-fill"></div>
               </div>
-              <div class="loader-note">Menggunakan Google Gemini AI untuk deteksi akurat</div>
+              <div class="loader-note" data-i18n="ai_note">Menggunakan Google Gemini AI untuk deteksi akurat</div>
             </div>
 
             <!-- Result -->
@@ -305,7 +305,7 @@
 
     <footer>
       <div class="footer-brand">🌿 PlantScan</div>
-      <p class="footer-desc">Proyek Machine Learning · Teknik Informatika · Dibuat oleh Fharsdev<br>Analisis visual ditenagai oleh Google Gemini AI melalui Vercel Serverless.</p>
+      <p class="footer-desc" data-i18n-html="footer_desc">Proyek Machine Learning · Teknik Informatika · Dibuat oleh Fharsdev<br>Analisis visual ditenagai oleh Google Gemini AI melalui Vercel Serverless.</p>
     </footer>
 
   </main>
@@ -314,7 +314,7 @@
   <div class="modal-overlay" id="camera-modal">
     <div class="modal-box">
       <div class="modal-head">
-        <h3>📷 Ambil Foto Tanaman</h3>
+        <h3 data-i18n="cam_title">📷 Ambil Foto Tanaman</h3>
         <button class="modal-close-btn" onclick="closeCamera()">
           <svg viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
@@ -323,9 +323,9 @@
       <div class="modal-actions">
         <button class="btn-upload" onclick="capturePhoto()" style="justify-content:center;flex:1;">
           <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3" fill="currentColor"/><path d="M18 14a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2h2l1.5-2h5L16 5h2a2 2 0 012 2v7z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          Ambil Foto
+          <span data-i18n="cam_snap">Ambil Foto</span>
         </button>
-        <button class="btn-camera" onclick="closeCamera()" style="justify-content:center;flex:0.6;">Batal</button>
+        <button class="btn-camera" onclick="closeCamera()" style="justify-content:center;flex:0.6;" data-i18n="cam_cancel">Batal</button>
       </div>
       <canvas id="snap-canvas" style="display:none;"></canvas>
     </div>

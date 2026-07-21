@@ -5,61 +5,61 @@
 // ── DATA TANAMAN (expanded) ───────────────────────────────
 const plants = [
   // Sayuran & Umbi
-  { id:'tomato',   emoji:'🍅', name:'Tomat',      latin:'Solanum lycopersicum',    diseases:12, category:'Sayuran' },
-  { id:'potato',   emoji:'🥔', name:'Kentang',    latin:'Solanum tuberosum',       diseases:8,  category:'Sayuran' },
-  { id:'corn',     emoji:'🌽', name:'Jagung',     latin:'Zea mays',               diseases:7,  category:'Sayuran' },
-  { id:'pepper',   emoji:'🫑', name:'Cabai',      latin:'Capsicum annuum',        diseases:6,  category:'Sayuran' },
-  { id:'squash',   emoji:'🎃', name:'Labu',       latin:'Cucurbita pepo',         diseases:5,  category:'Sayuran' },
-  { id:'cucumber', emoji:'🥒', name:'Mentimun',   latin:'Cucumis sativus',        diseases:6,  category:'Sayuran' },
-  { id:'eggplant', emoji:'🍆', name:'Terong',     latin:'Solanum melongena',      diseases:5,  category:'Sayuran' },
-  { id:'spinach',  emoji:'🥬', name:'Bayam',      latin:'Spinacia oleracea',      diseases:4,  category:'Sayuran' },
-  { id:'shallot',  emoji:'🧅', name:'Bawang Merah',latin:'Allium cepa aggregatum', diseases:5,  category:'Sayuran' },
-  { id:'garlic',   emoji:'🧄', name:'Bawang Putih',latin:'Allium sativum',         diseases:5,  category:'Sayuran' },
-  { id:'water_spinach', emoji:'🥬', name:'Kangkung', latin:'Ipomoea aquatica',    diseases:4,  category:'Sayuran' },
-  { id:'mustard_greens', emoji:'🥬', name:'Sawi / Pakcoy', latin:'Brassica rapa', diseases:5,  category:'Sayuran' },
-  { id:'cabbage',  emoji:'🥬', name:'Kubis',      latin:'Brassica oleracea',      diseases:6,  category:'Sayuran' },
-  { id:'carrot',   emoji:'🥕', name:'Wortel',     latin:'Daucus carota',          diseases:4,  category:'Sayuran' },
+  { id:'tomato',   emoji:'🍅', name:'Tomat', name_en:'Tomato', latin:'Solanum lycopersicum', diseases:12, category:'Sayuran', category_en:'Vegetable' },
+  { id:'potato',   emoji:'🥔', name:'Kentang', name_en:'Potato', latin:'Solanum tuberosum', diseases:8, category:'Sayuran', category_en:'Vegetable' },
+  { id:'corn',     emoji:'🌽', name:'Jagung', name_en:'Corn', latin:'Zea mays', diseases:7, category:'Sayuran', category_en:'Vegetable' },
+  { id:'pepper',   emoji:'🫑', name:'Cabai', name_en:'Pepper', latin:'Capsicum annuum', diseases:6, category:'Sayuran', category_en:'Vegetable' },
+  { id:'squash',   emoji:'🎃', name:'Labu', name_en:'Squash', latin:'Cucurbita pepo', diseases:5, category:'Sayuran', category_en:'Vegetable' },
+  { id:'cucumber', emoji:'🥒', name:'Mentimun', name_en:'Cucumber', latin:'Cucumis sativus', diseases:6, category:'Sayuran', category_en:'Vegetable' },
+  { id:'eggplant', emoji:'🍆', name:'Terong', name_en:'Eggplant', latin:'Solanum melongena', diseases:5, category:'Sayuran', category_en:'Vegetable' },
+  { id:'spinach',  emoji:'🥬', name:'Bayam', name_en:'Spinach', latin:'Spinacia oleracea', diseases:4, category:'Sayuran', category_en:'Vegetable' },
+  { id:'shallot',  emoji:'🧅', name:'Bawang Merah', name_en:'Shallot', latin:'Allium cepa aggregatum', diseases:5, category:'Sayuran', category_en:'Vegetable' },
+  { id:'garlic',   emoji:'🧄', name:'Bawang Putih', name_en:'Garlic', latin:'Allium sativum', diseases:5, category:'Sayuran', category_en:'Vegetable' },
+  { id:'water_spinach', emoji:'🥬', name:'Kangkung', name_en:'Water Spinach', latin:'Ipomoea aquatica', diseases:4, category:'Sayuran', category_en:'Vegetable' },
+  { id:'mustard_greens', emoji:'🥬', name:'Sawi / Pakcoy', name_en:'Mustard Greens / Bok Choy', latin:'Brassica rapa', diseases:5, category:'Sayuran', category_en:'Vegetable' },
+  { id:'cabbage',  emoji:'🥬', name:'Kubis', name_en:'Cabbage', latin:'Brassica oleracea', diseases:6, category:'Sayuran', category_en:'Vegetable' },
+  { id:'carrot',   emoji:'🥕', name:'Wortel', name_en:'Carrot', latin:'Daucus carota', diseases:4, category:'Sayuran', category_en:'Vegetable' },
   
   // Kacang & Pangan
-  { id:'soybean',  emoji:'🫘', name:'Kedelai',    latin:'Glycine max',            diseases:5,  category:'Kacang' },
-  { id:'peanut',   emoji:'🥜', name:'Kacang Tanah',latin:'Arachis hypogaea',     diseases:5,  category:'Kacang' },
-  { id:'rice',     emoji:'🌾', name:'Padi',       latin:'Oryza sativa',           diseases:9,  category:'Pangan' },
-  { id:'wheat',    emoji:'🌾', name:'Gandum',     latin:'Triticum aestivum',      diseases:6,  category:'Pangan' },
-  { id:'cassava',  emoji:'🍠', name:'Singkong',   latin:'Manihot esculenta',      diseases:5,  category:'Pangan' },
-  { id:'sweet_potato', emoji:'🍠', name:'Ubi Jalar', latin:'Ipomoea batatas',     diseases:5,  category:'Pangan' },
+  { id:'soybean',  emoji:'🫘', name:'Kedelai', name_en:'Soybean', latin:'Glycine max', diseases:5, category:'Kacang', category_en:'Nut' },
+  { id:'peanut',   emoji:'🥜', name:'Kacang Tanah', name_en:'Peanut', latin:'Arachis hypogaea', diseases:5, category:'Kacang', category_en:'Nut' },
+  { id:'rice',     emoji:'🌾', name:'Padi', name_en:'Rice', latin:'Oryza sativa', diseases:9, category:'Pangan', category_en:'Crop' },
+  { id:'wheat',    emoji:'🌾', name:'Gandum', name_en:'Wheat', latin:'Triticum aestivum', diseases:6, category:'Pangan', category_en:'Crop' },
+  { id:'cassava',  emoji:'🍠', name:'Singkong', name_en:'Cassava', latin:'Manihot esculenta', diseases:5, category:'Pangan', category_en:'Crop' },
+  { id:'sweet_potato', emoji:'🍠', name:'Ubi Jalar', name_en:'Sweet Potato', latin:'Ipomoea batatas', diseases:5, category:'Pangan', category_en:'Crop' },
   
   // Buah
-  { id:'apple',    emoji:'🍎', name:'Apel',       latin:'Malus domestica',        diseases:8,  category:'Buah' },
-  { id:'grape',    emoji:'🍇', name:'Anggur',     latin:'Vitis vinifera',         diseases:8,  category:'Buah' },
-  { id:'strawb',   emoji:'🍓', name:'Stroberi',   latin:'Fragaria × ananassa',   diseases:6,  category:'Buah' },
-  { id:'cherry',   emoji:'🍒', name:'Ceri',       latin:'Prunus avium',           diseases:5,  category:'Buah' },
-  { id:'peach',    emoji:'🍑', name:'Persik',     latin:'Prunus persica',         diseases:6,  category:'Buah' },
-  { id:'banana',   emoji:'🍌', name:'Pisang',     latin:'Musa acuminata',         diseases:7,  category:'Buah' },
-  { id:'mango',    emoji:'🥭', name:'Mangga',     latin:'Mangifera indica',       diseases:6,  category:'Buah' },
-  { id:'orange',   emoji:'🍊', name:'Jeruk',      latin:'Citrus sinensis',        diseases:7,  category:'Buah' },
-  { id:'papaya',   emoji:'🍈', name:'Pepaya',     latin:'Carica papaya',          diseases:5,  category:'Buah' },
-  { id:'durian',   emoji:'🍈', name:'Durian',     latin:'Durio zibethinus',       diseases:6,  category:'Buah' },
-  { id:'watermelon', emoji:'🍉', name:'Semangka', latin:'Citrullus lanatus',      diseases:5,  category:'Buah' },
-  { id:'melon',    emoji:'🍈', name:'Melon',      latin:'Cucumis melo',           diseases:5,  category:'Buah' },
-  { id:'pineapple',emoji:'🍍', name:'Nanas',      latin:'Ananas comosus',         diseases:4,  category:'Buah' },
-  { id:'rambutan', emoji:'🍒', name:'Rambutan',   latin:'Nephelium lappaceum',    diseases:4,  category:'Buah' },
+  { id:'apple',    emoji:'🍎', name:'Apel', name_en:'Apple', latin:'Malus domestica', diseases:8, category:'Buah', category_en:'Fruit' },
+  { id:'grape',    emoji:'🍇', name:'Anggur', name_en:'Grape', latin:'Vitis vinifera', diseases:8, category:'Buah', category_en:'Fruit' },
+  { id:'strawb',   emoji:'🍓', name:'Stroberi', name_en:'Strawberry', latin:'Fragaria × ananassa', diseases:6, category:'Buah', category_en:'Fruit' },
+  { id:'cherry',   emoji:'🍒', name:'Ceri', name_en:'Cherry', latin:'Prunus avium', diseases:5, category:'Buah', category_en:'Fruit' },
+  { id:'peach',    emoji:'🍑', name:'Persik', name_en:'Peach', latin:'Prunus persica', diseases:6, category:'Buah', category_en:'Fruit' },
+  { id:'banana',   emoji:'🍌', name:'Pisang', name_en:'Banana', latin:'Musa acuminata', diseases:7, category:'Buah', category_en:'Fruit' },
+  { id:'mango',    emoji:'🥭', name:'Mangga', name_en:'Mango', latin:'Mangifera indica', diseases:6, category:'Buah', category_en:'Fruit' },
+  { id:'orange',   emoji:'🍊', name:'Jeruk', name_en:'Orange', latin:'Citrus sinensis', diseases:7, category:'Buah', category_en:'Fruit' },
+  { id:'papaya',   emoji:'🍈', name:'Pepaya', name_en:'Papaya', latin:'Carica papaya', diseases:5, category:'Buah', category_en:'Fruit' },
+  { id:'durian',   emoji:'🍈', name:'Durian', name_en:'Durian', latin:'Durio zibethinus', diseases:6, category:'Buah', category_en:'Fruit' },
+  { id:'watermelon', emoji:'🍉', name:'Semangka', name_en:'Watermelon', latin:'Citrullus lanatus', diseases:5, category:'Buah', category_en:'Fruit' },
+  { id:'melon',    emoji:'🍈', name:'Melon', name_en:'Melon', latin:'Cucumis melo', diseases:5, category:'Buah', category_en:'Fruit' },
+  { id:'pineapple',emoji:'🍍', name:'Nanas', name_en:'Pineapple', latin:'Ananas comosus', diseases:4, category:'Buah', category_en:'Fruit' },
+  { id:'rambutan', emoji:'🍒', name:'Rambutan', name_en:'Rambutan', latin:'Nephelium lappaceum', diseases:4, category:'Buah', category_en:'Fruit' },
 
   // Perkebunan Komersial
-  { id:'palm_oil', emoji:'🌴', name:'Kelapa Sawit', latin:'Elaeis guineensis',    diseases:7,  category:'Perkebunan' },
-  { id:'coffee',   emoji:'☕', name:'Kopi',       latin:'Coffea',                 diseases:6,  category:'Perkebunan' },
-  { id:'cocoa',    emoji:'🍫', name:'Kakao',      latin:'Theobroma cacao',        diseases:6,  category:'Perkebunan' },
-  { id:'rubber',   emoji:'🌳', name:'Karet',      latin:'Hevea brasiliensis',     diseases:5,  category:'Perkebunan' },
-  { id:'tea',      emoji:'🍵', name:'Teh',        latin:'Camellia sinensis',      diseases:5,  category:'Perkebunan' },
+  { id:'palm_oil', emoji:'🌴', name:'Kelapa Sawit', name_en:'Palm Oil', latin:'Elaeis guineensis', diseases:7, category:'Perkebunan', category_en:'Plantation' },
+  { id:'coffee',   emoji:'☕', name:'Kopi', name_en:'Coffee', latin:'Coffea', diseases:6, category:'Perkebunan', category_en:'Plantation' },
+  { id:'cocoa',    emoji:'🍫', name:'Kakao', name_en:'Cocoa', latin:'Theobroma cacao', diseases:6, category:'Perkebunan', category_en:'Plantation' },
+  { id:'rubber',   emoji:'🌳', name:'Karet', name_en:'Rubber', latin:'Hevea brasiliensis', diseases:5, category:'Perkebunan', category_en:'Plantation' },
+  { id:'tea',      emoji:'🍵', name:'Teh', name_en:'Tea', latin:'Camellia sinensis', diseases:5, category:'Perkebunan', category_en:'Plantation' },
 
   // Tanaman Hias
-  { id:'orchid',   emoji:'🌸', name:'Anggrek',    latin:'Orchidaceae',            diseases:6,  category:'Hias' },
-  { id:'monstera', emoji:'🪴', name:'Monstera',   latin:'Monstera deliciosa',     diseases:4,  category:'Hias' },
-  { id:'aglaonema',emoji:'🪴', name:'Aglaonema',  latin:'Aglaonema',              diseases:4,  category:'Hias' },
-  { id:'rose',     emoji:'🌹', name:'Mawar',      latin:'Rosa',                   diseases:5,  category:'Hias' },
+  { id:'orchid',   emoji:'🌸', name:'Anggrek', name_en:'Orchid', latin:'Orchidaceae', diseases:6, category:'Hias', category_en:'Ornamental' },
+  { id:'monstera', emoji:'🪴', name:'Monstera', name_en:'Monstera', latin:'Monstera deliciosa', diseases:4, category:'Hias', category_en:'Ornamental' },
+  { id:'aglaonema',emoji:'🪴', name:'Aglaonema', name_en:'Aglaonema', latin:'Aglaonema', diseases:4, category:'Hias', category_en:'Ornamental' },
+  { id:'rose',     emoji:'🌹', name:'Mawar', name_en:'Rose', latin:'Rosa', diseases:5, category:'Hias', category_en:'Ornamental' },
 
   // Rempah
-  { id:'ginger',   emoji:'🫚', name:'Jahe',       latin:'Zingiber officinale',    diseases:4,  category:'Rempah' },
-  { id:'turmeric', emoji:'🫚', name:'Kunyit',     latin:'Curcuma longa',          diseases:4,  category:'Rempah' },
+  { id:'ginger',   emoji:'🫚', name:'Jahe', name_en:'Ginger', latin:'Zingiber officinale', diseases:4, category:'Rempah', category_en:'Spice' },
+  { id:'turmeric', emoji:'🫚', name:'Kunyit', name_en:'Turmeric', latin:'Curcuma longa', diseases:4, category:'Rempah', category_en:'Spice' },
 ];
 
 // ── SYSTEM PROMPT UNTUK AI ────────────────────────────────
@@ -79,7 +79,7 @@ function buildGrid() {
         <svg viewBox="0 0 12 12" fill="none"><polyline points="2 6 5 9 10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <span class="pc-emoji">${p.emoji}</span>
-      <span class="pc-name">${p.name}</span>
+      <span class="pc-name">${currentLang === "en" && p.name_en ? p.name_en : p.name}</span>
       <span class="pc-latin">${p.latin}</span>
     </div>`).join('');
 }
@@ -95,7 +95,7 @@ function selectPlant(id) {
   if (card) card.classList.add('selected');
 
   document.getElementById('sb-emoji').textContent = p.emoji;
-  document.getElementById('sb-name').textContent  = p.name;
+  document.getElementById('sb-name').textContent = currentLang === 'en' && p.name_en ? p.name_en : p.name;
   document.getElementById('sb-latin').textContent = p.latin;
   document.getElementById('selected-banner').classList.add('show');
 
@@ -103,7 +103,7 @@ function selectPlant(id) {
   document.getElementById('btn-camera').disabled = false;
   document.getElementById('upload-hint').classList.add('hidden');
 
-  showToast(`${p.emoji} ${p.name} dipilih — silakan unggah foto daun atau buah`);
+  showToast(`${p.emoji} ${currentLang === 'en' && p.name_en ? p.name_en : p.name} ${t('toast_selected')}`);
 }
 
 function clearPlant() {
@@ -146,7 +146,7 @@ function tryCamera() {
 function shakeHint() {
   const h = document.getElementById('upload-hint');
   h.classList.remove('hidden');
-  showToast('⚠️ Pilih jenis tanaman dahulu ya!');
+  showToast(t('toast_select_first'));
 }
 
 const zone      = document.getElementById('upload-zone');
@@ -163,7 +163,7 @@ zone.addEventListener('drop', e => {
   if (!selectedPlant) { shakeHint(); return; }
   const f = e.dataTransfer.files[0];
   if (f && f.type.startsWith('image/')) processFile(f);
-  else showToast('Format file tidak didukung. Gunakan JPG, PNG, atau WEBP.');
+  else showToast(t('toast_format'));
 });
 fileInput.addEventListener('change', e => {
   if (e.target.files[0]) processFile(e.target.files[0]);
@@ -171,7 +171,7 @@ fileInput.addEventListener('change', e => {
 
 function processFile(file) {
   if (file.size > 10 * 1024 * 1024) {
-    showToast('❌ Ukuran file maksimal 10 MB');
+    showToast(t('toast_size'));
     return;
   }
   const reader = new FileReader();
@@ -211,7 +211,7 @@ function processFile(file) {
       document.getElementById('meta-fsize').textContent = compressedSize + ' KB (Compressed)';
     document.getElementById('img-tag-emoji').textContent = selectedPlant.emoji;
     document.getElementById('img-tag-name').textContent  = selectedPlant.name;
-    document.getElementById('img-status-badge').textContent = 'Menganalisis...';
+    document.getElementById('img-status-badge').textContent = t('processing');
 
     // Show result section
     zone.style.display = 'none';
@@ -238,16 +238,17 @@ function processFile(file) {
 // ── AI ANALYSIS (SERVERLESS) ──────────────────────────────
 async function runAIAnalysis() {
   if (!navigator.onLine) {
-    showError('Anda sedang offline. Koneksi internet dibutuhkan untuk melakukan pemindaian AI.');
+    showError(t('toast_offline'));
     return;
   }
 
   const steps = [
-    'Memuat gambar...',
-    'Menghubungkan ke server cerdas...',
-    'Menganalisis gejala visual...',
-    'Membandingkan dengan database penyakit...',
-    'Menyusun diagnosis lengkap...',
+    t('loader_1'),
+    t('loader_2'),
+    t('loader_3'),
+    t('loader_4'),
+    t('loader_4'),
+    t('loader_4')
   ];
   const pcts = [15, 35, 55, 80, 95];
   let stepIdx = 0;
@@ -363,7 +364,7 @@ function showDiagnosis(r, isHistory = false) {
     <div class="diag-body">
       <div class="conf-section">
         <div class="conf-row">
-          <span class="conf-label">Tingkat Kepercayaan AI</span>
+          <span class="conf-label">${t('ai_confidence')}</span>
           <span class="conf-val">${(r.tingkat_kepercayaan || 85).toFixed(0)}%</span>
         </div>
         <div class="conf-track"><div class="conf-bar" id="conf-bar"></div></div>
@@ -578,7 +579,7 @@ function loadHistory() {
       <div class="hist-card" onclick="viewHistory(${idx})" style="cursor:pointer;" title="Klik untuk melihat detail diagnosis">
         <img src="${item.image}" alt="Scan" class="hist-img">
         <div class="hist-info">
-          <div class="hist-title">${item.plantEmoji} ${item.plantName}</div>
+          <div class="hist-title">${item.plantEmoji} ${currentLang === 'en' && plants.find(p=>p.name===item.plantName)?.name_en ? plants.find(p=>p.name===item.plantName).name_en : item.plantName}</div>
           <div class="hist-disease" style="color: ${sevColor}">${item.diseaseName}</div>
           <div class="hist-date">${date}</div>
         </div>
@@ -645,10 +646,10 @@ if ('serviceWorker' in navigator) {
 
 // ── OFFLINE HANDLING ──────────────────────────────────────
 window.addEventListener('offline', () => {
-  showToast('⚠️ Anda sedang offline. Fitur scan AI tidak tersedia.');
+  showToast(t('toast_offline'));
 });
 window.addEventListener('online', () => {
-  showToast('✅ Kembali terhubung ke internet.');
+  showToast(t('toast_online'));
 });
 
 // ── AUTH LOGIC ───────────────────────────────────────────
@@ -682,26 +683,26 @@ function closeLoginModal() {
 }
 function performLogin() {
   const email = document.getElementById('login-email').value;
-  if (!email) { showToast('Silakan masukkan email / Please enter email'); return; }
+  if (!email) { showToast(t('toast_login_req')); return; }
   localStorage.setItem('plantscan_user', email);
   currentUser = email;
   closeLoginModal();
   updateAuthUI();
-  showToast('Berhasil Login! / Login Successful!');
+  showToast(t('toast_login_ok'));
 }
 function performLogout(e) {
   if (e) e.preventDefault();
   localStorage.removeItem('plantscan_user');
   currentUser = null;
   updateAuthUI();
-  showToast('Berhasil Logout. / Logout Successful.');
+  showToast(t('toast_logout'));
 }
 
 function checkAuthBeforeScan() {
   if (currentUser) return true;
   if (guestScans >= 1) {
     openLoginModal();
-    showToast('Batas scan gratis (1x) telah habis. Silakan login. / Free scan limit reached. Please login.');
+    showToast(t('toast_limit'));
     return false;
   }
   return true;

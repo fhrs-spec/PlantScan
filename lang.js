@@ -49,7 +49,58 @@ const translations = {
     h4_title: "Tunggu Analisis AI",
     h4_desc: "Gemini AI menganalisis gambar secara mendalam — biasanya selesai dalam 5–15 detik tergantung koneksi internet.",
     h5_title: "Baca & Tindak Lanjuti",
-    h5_desc: "Baca diagnosis lengkap, pahami penyebab penyakit, dan ikuti rekomendasi penanganan yang diberikan AI."
+    h5_desc: "Baca diagnosis lengkap, pahami penyebab penyakit, dan ikuti rekomendasi penanganan yang diberikan AI.",
+    // UI Elements
+    page_title: "PlantScan — Deteksi Penyakit Tanaman AI",
+    no_result: "🌿 Tanaman tidak ditemukan",
+    drop_text: "Seret foto ke sini",
+    drop_sub1: "JPG · PNG · WEBP · maks 5 MB",
+    drop_sub2: "Bisa foto <strong>daun</strong> maupun <strong>buah</strong> tanaman",
+    btn_upload: "Pilih Foto",
+    btn_camera: "Kamera",
+    upload_hint: "Pilih jenis tanaman terlebih dahulu",
+    processing: "Memproses...",
+    change_photo: "Ganti Foto",
+    tips_title: "💡 Tips Foto Terbaik",
+    tip1: "Fokus pada satu daun atau buah yang jelas terlihat",
+    tip2: "Pastikan pencahayaan cukup, hindari bayangan gelap",
+    tip3: "Jarak ideal 20–30 cm dari objek foto",
+    tip4: "Seluruh objek (daun/buah) harus masuk dalam frame",
+    ai_analyzing: "AI Menganalisis Foto...",
+    ai_note: "Menggunakan Google Gemini AI untuk deteksi akurat",
+    footer_desc: "Proyek Machine Learning · Teknik Informatika · Dibuat oleh Fharsdev<br>Analisis visual ditenagai oleh Google Gemini AI melalui Vercel Serverless.",
+    cam_title: "📷 Ambil Foto Tanaman",
+    cam_snap: "Ambil Foto",
+    cam_cancel: "Batal",
+
+    // Script texts
+    toast_select_first: "⚠️ Pilih jenis tanaman dahulu ya!",
+    toast_format: "Format file tidak didukung. Gunakan JPG, PNG, atau WEBP.",
+    toast_size: "❌ Ukuran file maksimal 10 MB",
+    toast_selected: "dipilih — silakan unggah foto daun atau buah",
+    loader_1: "Memuat gambar...",
+    loader_2: "Menghubungkan ke server cerdas...",
+    loader_3: "Menganalisis pola penyakit...",
+    loader_4: "Menyiapkan hasil...",
+    ai_confidence: "Tingkat Kepercayaan AI",
+    obs_result: "Hasil Observasi",
+    symp: "Gejala Terlihat",
+    pathogen: "Patogen",
+    cause: "Penyebab",
+    impact: "Dampak",
+    action: "Saran Tindakan",
+    scan_again: "Scan Lagi",
+    share: "Bagikan",
+    diag_error: "Gagal memproses diagnosis.",
+    err_server: "Terjadi kesalahan pada server. Coba beberapa saat lagi.",
+    err_cam: "❌ Tidak dapat mengakses kamera",
+    toast_offline: "⚠️ Anda sedang offline. Fitur scan AI tidak tersedia.",
+    toast_online: "✅ Kembali terhubung ke internet.",
+    toast_limit: "Batas scan gratis (1x) telah habis. Silakan login.",
+    toast_login_req: "Silakan masukkan email",
+    toast_login_ok: "Berhasil Login! Akses scan tanpa batas terbuka.",
+    toast_logout: "Berhasil Logout.",
+    copied: "Hasil disalin ke clipboard!"
   },
   en: {
     nav_deteksi: "Scan",
@@ -101,7 +152,58 @@ const translations = {
     h4_title: "Wait for AI Analysis",
     h4_desc: "Gemini AI analyzes the image deeply — usually completes in 5-15 seconds depending on internet connection.",
     h5_title: "Read & Take Action",
-    h5_desc: "Read the complete diagnosis, understand the causes, and follow the treatment recommendations given by AI."
+    h5_desc: "Read the complete diagnosis, understand the causes, and follow the treatment recommendations given by AI.",
+    // UI Elements
+    page_title: "PlantScan — AI Plant Disease Detection",
+    no_result: "🌿 Plant not found",
+    drop_text: "Drag photo here",
+    drop_sub1: "JPG · PNG · WEBP · max 5 MB",
+    drop_sub2: "Can be photo of plant <strong>leaf</strong> or <strong>fruit</strong>",
+    btn_upload: "Choose Photo",
+    btn_camera: "Camera",
+    upload_hint: "Select plant type first",
+    processing: "Processing...",
+    change_photo: "Change Photo",
+    tips_title: "💡 Best Photo Tips",
+    tip1: "Focus clearly on one leaf or fruit",
+    tip2: "Ensure good lighting, avoid dark shadows",
+    tip3: "Ideal distance is 20–30 cm from the object",
+    tip4: "The entire object (leaf/fruit) must be in frame",
+    ai_analyzing: "AI Analyzing Photo...",
+    ai_note: "Powered by Google Gemini AI for accurate detection",
+    footer_desc: "Machine Learning Project · Informatics Engineering · Created by Fharsdev<br>Visual analysis powered by Google Gemini AI via Vercel Serverless.",
+    cam_title: "📷 Take Plant Photo",
+    cam_snap: "Take Photo",
+    cam_cancel: "Cancel",
+
+    // Script texts
+    toast_select_first: "⚠️ Please select a plant type first!",
+    toast_format: "Unsupported file format. Use JPG, PNG, or WEBP.",
+    toast_size: "❌ Max file size is 10 MB",
+    toast_selected: "selected — please upload a photo of the leaf or fruit",
+    loader_1: "Loading image...",
+    loader_2: "Connecting to smart server...",
+    loader_3: "Analyzing disease patterns...",
+    loader_4: "Preparing results...",
+    ai_confidence: "AI Confidence Level",
+    obs_result: "Observation Results",
+    symp: "Visible Symptoms",
+    pathogen: "Pathogen",
+    cause: "Cause",
+    impact: "Impact",
+    action: "Action Recommendations",
+    scan_again: "Scan Again",
+    share: "Share",
+    diag_error: "Failed to process diagnosis.",
+    err_server: "Server error occurred. Please try again later.",
+    err_cam: "❌ Cannot access camera",
+    toast_offline: "⚠️ You are offline. AI scan is not available.",
+    toast_online: "✅ Back online.",
+    toast_limit: "Free scan limit (1x) reached. Please login.",
+    toast_login_req: "Please enter your email",
+    toast_login_ok: "Login Successful! Unlimited scan access unlocked.",
+    toast_logout: "Logout Successful.",
+    copied: "Results copied to clipboard!"
   }
 };
 
@@ -146,5 +248,10 @@ function applyLang() {
     }
   });
 }
+
+// Global translator function for script.js
+window.t = function(key) {
+  return (translations[currentLang] && translations[currentLang][key]) || key;
+};
 
 document.addEventListener('DOMContentLoaded', applyLang);
