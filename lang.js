@@ -8,6 +8,11 @@ const translations = {
     hero_badge: "Project By Fharsdev",
     hero_title: "Deteksi <em>Penyakit</em><br>Tanamanmu",
     hero_desc: "Upload foto daun atau buah tanamanmu — AI menganalisis kondisinya secara mendalam, memberikan diagnosis akurat dan rekomendasi penanganan.",
+    pill_1: "Daun & Buah",
+    pill_3: "20+ Tanaman",
+    pill_4: "Instan",
+    
+    // Auth & Dashboard
     picker_title: "Pilih Jenis Tanaman",
     search_placeholder: "Cari tanaman...",
     upload_title: "Unggah Foto",
@@ -40,6 +45,8 @@ const translations = {
     // Cara Pakai Section
     how_title: "Cara Menggunakan",
     how_sub: "Lima langkah mudah menuju diagnosis akurat",
+    picker_req: "WAJIB",
+    picker_title: "Pilih Jenis Tanaman",
     h1_title: "Pilih Jenis Tanaman",
     h1_desc: "Pilih jenis tanaman dari daftar yang tersedia. Langkah ini wajib agar AI dapat memberikan analisis yang lebih terfokus dan akurat.",
     h2_title: "Siapkan Foto yang Baik",
@@ -109,8 +116,13 @@ const translations = {
     nav_login: "Login",
     nav_scan: "Start Scan",
     hero_badge: "Project By Fharsdev",
-    hero_title: "Detect Your Plant's<br><em>Diseases</em>",
-    hero_desc: "Upload a photo of your plant's leaf or fruit — AI will deeply analyze its condition, providing accurate diagnosis and treatment recommendations.",
+    hero_title: "Detect <em>Plant</em><br>Diseases",
+    hero_desc: "Upload a photo of your plant's leaf or fruit — AI analyzes its condition deeply, providing accurate diagnosis and treatment recommendations.",
+    pill_1: "Leaves & Fruits",
+    pill_3: "20+ Plants",
+    pill_4: "Instant",
+    
+    // Auth & Dashboard
     picker_title: "Select Plant Type",
     search_placeholder: "Search plants...",
     upload_title: "Upload Photo",
@@ -143,6 +155,8 @@ const translations = {
     // Cara Pakai Section
     how_title: "How to Use",
     how_sub: "Five easy steps to accurate diagnosis",
+    picker_req: "REQUIRED",
+    picker_title: "Select Plant Type",
     h1_title: "Select Plant Type",
     h1_desc: "Choose a plant type from the list. This step is mandatory so AI can provide focused and accurate analysis.",
     h2_title: "Prepare a Good Photo",
