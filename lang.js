@@ -229,14 +229,25 @@ function switchLanguageAndReload(lang) {
   location.reload();
 }
 
+// Dropdown Menu Toggle
+function toggleLangMenu() {
+  document.getElementById('lang-dropdown').classList.toggle('open');
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', (e) => {
+  const dropdown = document.getElementById('lang-dropdown');
+  if (dropdown && !dropdown.contains(e.target)) {
+    dropdown.classList.remove('open');
+  }
+});
+
 function applyLang() {
   const lang = currentLang;
   
-  // Update buttons
-  const btnId = document.getElementById('lang-id');
-  const btnEn = document.getElementById('lang-en');
-  if(btnId) btnId.classList.toggle('active', lang === 'id');
-  if(btnEn) btnEn.classList.toggle('active', lang === 'en');
+  // Update button label
+  const label = document.getElementById('current-lang-label');
+  if(label) label.textContent = lang === 'en' ? 'EN' : 'ID';
 
   // Update simple text
   document.querySelectorAll('[data-i18n]').forEach(el => {

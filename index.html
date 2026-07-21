@@ -41,9 +41,20 @@
         <a href="#deteksi" class="nl" data-i18n="nav_deteksi">Deteksi</a>
         <a href="#fitur" class="nl" data-i18n="nav_fitur">Fitur</a>
         <a href="#cara-pakai" class="nl" data-i18n="nav_panduan">Panduan</a>
-        <div class="lang-switch">
-          <button id="lang-id" class="active" onclick="switchLanguageAndReload('id')">ID</button>
-          <button id="lang-en" onclick="switchLanguageAndReload('en')">EN</button>
+        <div class="lang-dropdown" id="lang-dropdown">
+          <button class="lang-btn" onclick="toggleLangMenu()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <span id="current-lang-label">ID</span>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="lang-menu" id="lang-menu">
+            <button class="lang-option" onclick="switchLanguageAndReload('id')">
+              <span class="lang-flag">🇮🇩</span> Indonesia
+            </button>
+            <button class="lang-option" onclick="switchLanguageAndReload('en')">
+              <span class="lang-flag">🇺🇸</span> English
+            </button>
+          </div>
         </div>
         <a href="#" class="nl cta-login" onclick="openLoginModal()" id="nav-login-btn" data-i18n="nav_login">Login</a>
         <a href="#deteksi" class="nl cta-nav">
