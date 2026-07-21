@@ -105,8 +105,7 @@ export default async function handler(req, res) {
       retryAfterSeconds: rateCheck.resetInSeconds
     });
   }
-
-  const { imageB64, imageBase64, plantName, plantLatin, plantId } = req.body;
+  const { imageB64, imageBase64, plantName, plantLatin, plantId, lang } = req.body;
   
   const finalImage = imageB64 || imageBase64;
 
@@ -178,8 +177,7 @@ export default async function handler(req, res) {
     'gemini-flash-latest',
     'gemini-flash-lite-latest'
   ];
-
-  const systemPrompt = buildSystemPrompt(plantName, plantLatin, plantId);
+  const systemPrompt = buildSystemPrompt(plantName, plantLatin, plantId, lang);
   const requestBody = {
     contents: [
       {
@@ -255,7 +253,8 @@ function getDiseaseContext(plantId) {
   return diseaseContexts[plantId] || diseaseContexts.default;
 }
 
-function buildSystemPrompt(name, latin, id) {
+function buildSystemPrompt(name, latin, id, lang) {
+  const languageInstruction = lang === 'en' ? 'Always respond in English.' : 'Selalu respons dalam Bahasa Indonesia.';
   return `Kamu adalah ahli patologi tanaman (plant pathologist) terkemuka yang berspesialisasi dalam mendiagnosis penyakit tanaman berdasarkan foto.
 
 Kamu akan menganalisis foto DAUN atau BUAH dari tanaman ${name} (${latin}).
@@ -299,5 +298,5 @@ ${getDiseaseContext(id)}
 }
 
 Jika foto tidak jelas / blur, tetap berikan analisis terbaik berdasarkan yang bisa terlihat.
-Selalu respons dalam Bahasa Indonesia.`;
+${languageInstruction}`;
 }

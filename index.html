@@ -38,12 +38,17 @@
         <span>PlantScan</span>
       </a>
       <div class="nav-links" id="nav-links">
-        <a href="#deteksi" class="nl">Deteksi</a>
-        <a href="#fitur" class="nl">Fitur</a>
-        <a href="#cara-pakai" class="nl">Panduan</a>
+        <a href="#deteksi" class="nl" data-i18n="nav_deteksi">Deteksi</a>
+        <a href="#fitur" class="nl" data-i18n="nav_fitur">Fitur</a>
+        <a href="#cara-pakai" class="nl" data-i18n="nav_panduan">Panduan</a>
+        <div class="lang-switch">
+          <button id="lang-id" class="active" onclick="setLang('id')">ID</button>
+          <button id="lang-en" onclick="setLang('en')">EN</button>
+        </div>
+        <a href="#" class="nl cta-login" onclick="openLoginModal()" id="nav-login-btn" data-i18n="nav_login">Login</a>
         <a href="#deteksi" class="nl cta-nav">
           <svg viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          Mulai Scan
+          <span data-i18n="nav_scan">Mulai Scan</span>
         </a>
       </div>
       <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
@@ -326,10 +331,33 @@
     </div>
   </div>
 
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay" id="login-modal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 data-i18n="modal_login_title">Masuk ke PlantScan</h3>
+        <button class="modal-close-btn" onclick="closeLoginModal()">
+          <svg viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <p style="color:rgba(255,255,255,0.7); font-size:14px; margin-bottom: 20px;" data-i18n="modal_login_desc">Dapatkan akses scan tanpa batas</p>
+      <div style="display:flex; flex-direction:column; gap: 12px;">
+        <input type="email" id="login-email" placeholder="Email Address" style="padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;">
+        <input type="password" id="login-password" placeholder="Password" style="padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;">
+        <button class="btn-upload" onclick="performLogin()" style="justify-content:center; width: 100%;" data-i18n="modal_login_btn">Masuk Sekarang</button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
-  <!-- PlantScan Script -->
+  <script src="lang.js"></script>
   <script src="script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(err => console.error(err));
+    }
+  </script>
 </body>
 </html>

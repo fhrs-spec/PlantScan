@@ -134,10 +134,12 @@ function filterPlants(val) {
 
 // ── UPLOAD & CAMERA ───────────────────────────────────────
 function tryUpload() {
+  if (!checkAuthBeforeScan()) return;
   if (!selectedPlant) { shakeHint(); return; }
   document.getElementById('file-input').click();
 }
 function tryCamera() {
+  if (!checkAuthBeforeScan()) return;
   if (!selectedPlant) { shakeHint(); return; }
   openCamera();
 }
@@ -280,7 +282,8 @@ async function runAIAnalysis() {
         mimeType: mimeType,
         plantName: selectedPlant.name,
         plantLatin: selectedPlant.latin,
-        plantId: selectedPlant.id
+        plantId: selectedPlant.id,
+        lang: typeof currentLang !== 'undefined' ? currentLang : 'id'
       })
     });
 
@@ -311,6 +314,11 @@ async function runAIAnalysis() {
     }
 
     const result = await response.json();
+
+    if (typeof currentUser !== 'undefined' && !currentUser) {
+      guestScans++;
+      localStorage.setItem('plantscan_guest_scans', guestScans.toString());
+    }
 
     // Pastikan UI tidak macet sebelum merender
     setTimeout(() => showDiagnosis(result), 400);
@@ -643,3 +651,58 @@ window.addEventListener('online', () => {
   showToast('✅ Kembali terhubung ke internet.');
 });
 
+// ── AUTH LOGIC ───────────────────────────────────────────
+let currentUser = localStorage.getItem('plantscan_user');
+let guestScans = parseInt(localStorage.getItem('plantscan_guest_scans') || '0');
+
+function updateAuthUI() {
+  const loginBtn = document.getElementById('nav-login-btn');
+  if (loginBtn) {
+    if (currentUser) {
+      loginBtn.textContent = 'Logout';
+      loginBtn.removeAttribute('data-i18n');
+      loginBtn.onclick = performLogout;
+    } else {
+      loginBtn.textContent = (typeof translations !== 'undefined' && translations[currentLang]?.nav_login) || 'Login';
+      loginBtn.setAttribute('data-i18n', 'nav_login');
+      loginBtn.onclick = openLoginModal;
+    }
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  updateAuthUI();
+});
+
+function openLoginModal(e) {
+  if (e) e.preventDefault();
+  document.getElementById('login-modal').classList.add('open');
+}
+function closeLoginModal() {
+  document.getElementById('login-modal').classList.remove('open');
+}
+function performLogin() {
+  const email = document.getElementById('login-email').value;
+  if (!email) { showToast('Silakan masukkan email / Please enter email'); return; }
+  localStorage.setItem('plantscan_user', email);
+  currentUser = email;
+  closeLoginModal();
+  updateAuthUI();
+  showToast('Berhasil Login! / Login Successful!');
+}
+function performLogout(e) {
+  if (e) e.preventDefault();
+  localStorage.removeItem('plantscan_user');
+  currentUser = null;
+  updateAuthUI();
+  showToast('Berhasil Logout. / Logout Successful.');
+}
+
+function checkAuthBeforeScan() {
+  if (currentUser) return true;
+  if (guestScans >= 1) {
+    openLoginModal();
+    showToast('Batas scan gratis (1x) telah habis. Silakan login. / Free scan limit reached. Please login.');
+    return false;
+  }
+  return true;
+}
