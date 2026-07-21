@@ -42,8 +42,8 @@
         <a href="#fitur" class="nl" data-i18n="nav_fitur">Fitur</a>
         <a href="#cara-pakai" class="nl" data-i18n="nav_panduan">Panduan</a>
         <div class="lang-switch">
-          <button id="lang-id" class="active" onclick="setLang('id')">ID</button>
-          <button id="lang-en" onclick="setLang('en')">EN</button>
+          <button id="lang-id" class="active" onclick="switchLanguageAndReload('id')">ID</button>
+          <button id="lang-en" onclick="switchLanguageAndReload('en')">EN</button>
         </div>
         <a href="#" class="nl cta-login" onclick="openLoginModal()" id="nav-login-btn" data-i18n="nav_login">Login</a>
         <a href="#deteksi" class="nl cta-nav">
@@ -210,13 +210,13 @@
     <!-- RIWAYAT SCAN -->
     <section id="history-section" style="display:none; padding-top: 2rem;">
       <div class="hist-header">
-        <h2 class="sec-title" style="margin-top:0; margin-bottom:0.2rem; font-size:1.4rem;">Riwayat Pemindaian</h2>
+        <h2 class="sec-title" style="margin-top:0; margin-bottom:0.2rem; font-size:1.4rem;" data-i18n="history_title">Riwayat Pemindaian</h2>
         <button class="btn-clear-hist" onclick="clearHistory()">
           <svg viewBox="0 0 20 20" fill="none"><path d="M4 5h12M9 9v4M11 9v4M5 5l1 10a2 2 0 002 2h4a2 2 0 002-2l1-10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Hapus
+          <span data-i18n="history_clear">Hapus</span>
         </button>
       </div>
-      <p class="sec-sub" style="margin-bottom:1rem; text-align:left;">Catatan diagnosis tanaman Anda sebelumnya</p>
+      <p class="sec-sub" style="margin-bottom:1rem; text-align:left;" data-i18n="history_sub">Catatan diagnosis tanaman Anda sebelumnya</p>
       <div class="history-list" id="history-list">
         <!-- History items will be injected here -->
       </div>
@@ -224,80 +224,80 @@
 
     <!-- FITUR -->
     <section id="fitur">
-      <h2 class="sec-title">Fitur Unggulan</h2>
-      <p class="sec-sub">Semua yang kamu butuhkan untuk menjaga kesehatan tanaman</p>
+      <h2 class="sec-title" data-i18n="feat_title">Fitur Unggulan</h2>
+      <p class="sec-sub" data-i18n="feat_sub">Semua yang kamu butuhkan untuk menjaga kesehatan tanaman</p>
       <div class="feat-grid">
         <div class="feat-card fc-highlight">
           <div class="feat-icon">🧠</div>
-          <h3>AI Vision Nyata</h3>
-          <p>Menggunakan Gemini AI yang sesungguhnya untuk menganalisis foto — bukan database statis, melainkan pemahaman visual mendalam.</p>
+          <h3 data-i18n="f1_title">AI Vision Nyata</h3>
+          <p data-i18n="f1_desc">Menggunakan Gemini AI yang sesungguhnya untuk menganalisis foto — bukan database statis, melainkan pemahaman visual mendalam.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">🍃</div>
-          <h3>Daun & Buah</h3>
-          <p>Bukan hanya daun — PlantScan bisa mendeteksi penyakit pada buah tanaman juga, dengan analisis menyeluruh.</p>
+          <h3 data-i18n="f2_title">Daun & Buah</h3>
+          <p data-i18n="f2_desc">Bukan hanya daun — PlantScan bisa mendeteksi penyakit pada buah tanaman juga, dengan analisis menyeluruh.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">🌿</div>
-          <h3>20+ Jenis Tanaman</h3>
-          <p>Database tanaman terus berkembang, mencakup sayuran, buah-buahan, dan tanaman pangan populer Indonesia.</p>
+          <h3 data-i18n="f3_title">20+ Jenis Tanaman</h3>
+          <p data-i18n="f3_desc">Database tanaman terus berkembang, mencakup sayuran, buah-buahan, dan tanaman pangan populer Indonesia.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">📋</div>
-          <h3>Diagnosis Mendalam</h3>
-          <p>Hasil analisis lengkap: nama penyakit, penyebab, gejala, tingkat keparahan, dan rekomendasi penanganan spesifik.</p>
+          <h3 data-i18n="f4_title">Diagnosis Mendalam</h3>
+          <p data-i18n="f4_desc">Hasil analisis lengkap: nama penyakit, penyebab, gejala, tingkat keparahan, dan rekomendasi penanganan spesifik.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">📱</div>
-          <h3>Ramah Semua Perangkat</h3>
-          <p>Antarmuka responsif yang nyaman digunakan di HP, tablet, maupun komputer dengan performa optimal.</p>
+          <h3 data-i18n="f5_title">Ramah Semua Perangkat</h3>
+          <p data-i18n="f5_desc">Antarmuka responsif yang nyaman digunakan di HP, tablet, maupun komputer dengan performa optimal.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">🔒</div>
-          <h3>Privasi Terjaga</h3>
-          <p>Foto hanya diproses saat analisis berlangsung dan tidak disimpan di server manapun setelah selesai.</p>
+          <h3 data-i18n="f6_title">Privasi Terjaga</h3>
+          <p data-i18n="f6_desc">Foto hanya diproses saat analisis berlangsung dan tidak disimpan di server manapun setelah selesai.</p>
         </div>
       </div>
     </section>
 
     <!-- CARA PAKAI -->
     <section id="cara-pakai">
-      <h2 class="sec-title">Cara Menggunakan</h2>
-      <p class="sec-sub">Lima langkah mudah menuju diagnosis akurat</p>
+      <h2 class="sec-title" data-i18n="how_title">Cara Menggunakan</h2>
+      <p class="sec-sub" data-i18n="how_sub">Lima langkah mudah menuju diagnosis akurat</p>
       <div class="howto-list">
         <div class="howto-item">
           <div class="howto-num">1</div>
           <div class="howto-body">
-            <h4>Pilih Jenis Tanaman</h4>
-            <p>Pilih jenis tanaman dari daftar yang tersedia. Langkah ini wajib agar AI dapat memberikan analisis yang lebih terfokus dan akurat.</p>
+            <h4 data-i18n="h1_title">Pilih Jenis Tanaman</h4>
+            <p data-i18n="h1_desc">Pilih jenis tanaman dari daftar yang tersedia. Langkah ini wajib agar AI dapat memberikan analisis yang lebih terfokus dan akurat.</p>
           </div>
         </div>
         <div class="howto-item">
           <div class="howto-num">2</div>
           <div class="howto-body">
-            <h4>Siapkan Foto yang Baik</h4>
-            <p>Ambil foto daun atau buah yang menunjukkan gejala dengan pencahayaan cukup. Jarak ideal 20–30 cm agar detail terlihat jelas.</p>
+            <h4 data-i18n="h2_title">Siapkan Foto yang Baik</h4>
+            <p data-i18n="h2_desc">Ambil foto daun atau buah yang menunjukkan gejala dengan pencahayaan cukup. Jarak ideal 20–30 cm agar detail terlihat jelas.</p>
           </div>
         </div>
         <div class="howto-item">
           <div class="howto-num">3</div>
           <div class="howto-body">
-            <h4>Unggah atau Ambil Foto</h4>
-            <p>Seret foto ke area drop zone, klik "Pilih Foto" untuk memilih dari galeri, atau gunakan kamera langsung dari aplikasi.</p>
+            <h4 data-i18n="h3_title">Unggah atau Ambil Foto</h4>
+            <p data-i18n="h3_desc">Seret foto ke area drop zone, klik "Pilih Foto" untuk memilih dari galeri, atau gunakan kamera langsung dari aplikasi.</p>
           </div>
         </div>
         <div class="howto-item">
           <div class="howto-num">4</div>
           <div class="howto-body">
-            <h4>Tunggu Analisis AI</h4>
-            <p>Gemini AI menganalisis gambar secara mendalam — biasanya selesai dalam 5–15 detik tergantung koneksi internet.</p>
+            <h4 data-i18n="h4_title">Tunggu Analisis AI</h4>
+            <p data-i18n="h4_desc">Gemini AI menganalisis gambar secara mendalam — biasanya selesai dalam 5–15 detik tergantung koneksi internet.</p>
           </div>
         </div>
         <div class="howto-item">
           <div class="howto-num">5</div>
           <div class="howto-body">
-            <h4>Baca & Tindak Lanjuti</h4>
-            <p>Baca diagnosis lengkap, pahami penyebab penyakit, dan ikuti rekomendasi penanganan yang diberikan AI.</p>
+            <h4 data-i18n="h5_title">Baca & Tindak Lanjuti</h4>
+            <p data-i18n="h5_desc">Baca diagnosis lengkap, pahami penyebab penyakit, dan ikuti rekomendasi penanganan yang diberikan AI.</p>
           </div>
         </div>
       </div>
