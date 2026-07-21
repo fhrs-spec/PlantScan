@@ -254,7 +254,9 @@ function getDiseaseContext(plantId) {
 }
 
 function buildSystemPrompt(name, latin, id, lang) {
-  const languageInstruction = lang === 'en' ? 'Always respond in English.' : 'Selalu respons dalam Bahasa Indonesia.';
+  const languageInstruction = lang === 'en' 
+    ? 'CRITICAL: Always write the VALUES of the JSON in English. However, you MUST keep the exact JSON KEYS as defined below. DO NOT translate the JSON keys.' 
+    : 'Selalu respons dalam Bahasa Indonesia.';
   return `Kamu adalah ahli patologi tanaman (plant pathologist) terkemuka yang berspesialisasi dalam mendiagnosis penyakit tanaman berdasarkan foto.
 
 Kamu akan menganalisis foto DAUN atau BUAH dari tanaman ${name} (${latin}).

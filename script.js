@@ -344,8 +344,8 @@ function showDiagnosis(r, isHistory = false) {
   const cond = (r.kondisi || 'perhatian').toLowerCase();
   
   const sevClass  = cond === 'sehat' ? 'sev-safe' : cond === 'parah' ? 'sev-danger' : 'sev-warn';
-  const sevLabel  = cond === 'sehat' ? '🟢 Sehat' : cond === 'parah' ? '🔴 Terinfeksi Parah' : '🟡 Perlu Perhatian';
-  const badgeText = cond === 'sehat' ? 'Sehat' : cond === 'parah' ? 'Terinfeksi' : 'Perhatian';
+  const sevLabel  = cond === 'sehat' ? (currentLang==='en'?'🟢 Healthy':'🟢 Sehat') : cond === 'parah' ? (currentLang==='en'?'🔴 Severely Infected':'🔴 Terinfeksi Parah') : (currentLang==='en'?'🟡 Needs Attention':'🟡 Perlu Perhatian');
+  const badgeText = cond === 'sehat' ? (currentLang==='en'?'Healthy':'Sehat') : cond === 'parah' ? (currentLang==='en'?'Infected':'Terinfeksi') : (currentLang==='en'?'Attention':'Perhatian');
 
   document.getElementById('img-status-badge').textContent = badgeText;
 
@@ -357,9 +357,9 @@ function showDiagnosis(r, isHistory = false) {
   const html = `
     <div class="diag-head">
       <div class="diag-sev-badge ${sevClass}">${sevLabel}</div>
-      <div class="diag-disease-name">${r.nama_penyakit || 'Tidak Teridentifikasi'}</div>
+      <div class="diag-disease-name">${r.nama_penyakit || (currentLang==='en'?'Unidentified':'Tidak Teridentifikasi')}</div>
       <div class="diag-plant-label">${selectedPlant.emoji} ${selectedPlant.name} · <em>${selectedPlant.latin}</em></div>
-      <div class="diag-scan-type">⚡ Analisis AI Serverless Gemini</div>
+      <div class="diag-scan-type">${currentLang==='en'?'⚡ Gemini Serverless AI Analysis':'⚡ Analisis AI Serverless Gemini'}</div>
     </div>
     <div class="diag-body">
       <div class="conf-section">
@@ -368,23 +368,23 @@ function showDiagnosis(r, isHistory = false) {
           <span class="conf-val">${(r.tingkat_kepercayaan || 85).toFixed(0)}%</span>
         </div>
         <div class="conf-track"><div class="conf-bar" id="conf-bar"></div></div>
-        <div class="diag-summary">"${r.ringkasan || 'Diagnosis selesai.'}"</div>
+        <div class="diag-summary">"${r.ringkasan || (currentLang==='en'?'Diagnosis completed.':'Diagnosis selesai.')}"</div>
       </div>
 
       <div class="info-block">
-        <div class="info-block-title">🔍 Hasil Observasi</div>
+        <div class="info-block-title">🔍 ${t('obs_result')}</div>
         <div class="info-block-body">
-          <p><strong>Gejala Terlihat:</strong> ${r.gejala_terlihat || '—'}</p>
-          <p><strong>Patogen:</strong> ${r.pathogen || '—'}</p>
-          <p><strong>Penyebab:</strong> ${r.penyebab || '—'}</p>
-          <p><strong>Dampak:</strong> ${r.dampak || '—'}</p>
+          <p><strong>${t('symp')}:</strong> ${r.gejala_terlihat || '—'}</p>
+          <p><strong>${t('pathogen')}:</strong> ${r.pathogen || '—'}</p>
+          <p><strong>${t('cause')}:</strong> ${r.penyebab || '—'}</p>
+          <p><strong>${t('impact')}:</strong> ${r.dampak || '—'}</p>
         </div>
       </div>
 
       <div class="rec-block">
         <div class="rec-title">
           <svg viewBox="0 0 20 20" fill="none"><path d="M10 18s7-3.5 7-8.75V4.5l-7-2.5-7 2.5v4.75C3 14.5 10 18 10 18z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Saran Tindakan (${(r.urgensi||'').toUpperCase()})
+          ${t('action')} (${(r.urgensi||'').toUpperCase()})
         </div>
         <div class="rec-steps">${recSteps}</div>
       </div>
@@ -392,7 +392,7 @@ function showDiagnosis(r, isHistory = false) {
       <div class="act-row">
         <button class="btn-scan-again" onclick="resetApp()">
           <svg viewBox="0 0 20 20" fill="none"><path d="M3 10a7 7 0 0114 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M3 10L1 8l2-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Scan Lagi
+          ${t('scan_again')}
         </button>
         <button class="btn-share" onclick="shareResult('${(r.nama_penyakit||'').replace(/'/g,"\\'")}','${(r.tingkat_kepercayaan||85).toFixed(0)}')" title="Bagikan hasil">
           <svg viewBox="0 0 20 20" fill="none"><circle cx="15" cy="4" r="2" stroke="currentColor" stroke-width="1.8"/><circle cx="5" cy="10" r="2" stroke="currentColor" stroke-width="1.8"/><circle cx="15" cy="16" r="2" stroke="currentColor" stroke-width="1.8"/><line x1="7" y1="11" x2="13" y2="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="13" y1="5" x2="7" y2="9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
