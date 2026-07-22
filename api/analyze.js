@@ -182,7 +182,7 @@ export default async function handler(req, res) {
     contents: [
       {
         parts: [
-          { text: "Lakukan analisis menyeluruh pada gambar tanaman ini berdasarkan instruksi sistem." },
+          { text: lang === 'en' ? "Perform a thorough analysis of this plant image based on the system instructions." : "Lakukan analisis menyeluruh pada gambar tanaman ini berdasarkan instruksi sistem." },
           {
             inline_data: {
               mime_type: "image/jpeg",
@@ -254,14 +254,29 @@ function getDiseaseContext(plantId) {
 }
 
 function buildSystemPrompt(name, latin, id, lang) {
-  const languageInstruction = lang === 'en' 
-    ? 'CRITICAL: Always write the VALUES of the JSON in English. However, you MUST keep the exact JSON KEYS as defined below. DO NOT translate the JSON keys.' 
-    : 'Selalu respons dalam Bahasa Indonesia.';
-  return `Kamu adalah ahli patologi tanaman (plant pathologist) terkemuka yang berspesialisasi dalam mendiagnosis penyakit tanaman berdasarkan foto.
+  const isEn = lang === 'en';
+  
+  const languageBlock = isEn
+    ? `## LANGUAGE RULE (HIGHEST PRIORITY):
+You MUST write ALL text values in English. 
+The JSON keys must remain exactly as specified below (do NOT translate keys).
+Every string value — disease names, descriptions, causes, symptoms, recommendations — MUST be in English.`
+    : `## ATURAN BAHASA (PRIORITAS TERTINGGI):
+Kamu WAJIB menulis SEMUA nilai teks dalam Bahasa Indonesia.
+Key JSON harus tetap persis sesuai format di bawah (JANGAN terjemahkan key).
+Setiap nilai string — nama penyakit, deskripsi, penyebab, gejala, rekomendasi — WAJIB dalam Bahasa Indonesia.`;
 
-Kamu akan menganalisis foto DAUN atau BUAH dari tanaman ${name} (${latin}).
-
-## TUGAS VALIDASI KRITIS (ANTI-HALUSINASI):
+  const validationBlock = isEn
+    ? `## CRITICAL VALIDATION TASK (ANTI-HALLUCINATION):
+1. Examine the photo carefully. Does it really show a LEAF or FRUIT of a plant (especially ${name})?
+2. IF THE PHOTO IS CLEARLY NOT A PLANT (e.g. photo of a person, animal, room, furniture, or other random object):
+   - You MUST stop the analysis.
+   - Set "nama_penyakit" to: "Unrecognized Object"
+   - Set "kondisi" to: "error"
+   - Set "gejala_terlihat" to: "The system detected that the uploaded photo is not a plant photo or is irrelevant."
+   - Ignore other fields or fill with N/A.
+3. If the photo is NOT ${name} but another plant, you may warn in "ringkasan" that it looks like a different plant.`
+    : `## TUGAS VALIDASI KRITIS (ANTI-HALUSINASI):
 1. Periksa foto dengan saksama. Apakah foto ini benar-benar menampilkan DAUN atau BUAH dari tanaman (terutama ${name})?
 2. JIKA FOTO TERSEBUT JELAS BUKAN TANAMAN (misalnya foto manusia, hewan, ruangan, perabotan, atau objek acak lainnya):
    - Kamu WAJIB menghentikan analisis.
@@ -269,36 +284,83 @@ Kamu akan menganalisis foto DAUN atau BUAH dari tanaman ${name} (${latin}).
    - Isi field "kondisi" dengan: "error"
    - Isi field "gejala_terlihat" dengan: "Sistem mendeteksi bahwa foto yang diunggah bukan foto tanaman atau tidak relevan."
    - Abaikan field lain atau isi dengan N/A.
-3. Jika foto BUKAN tanaman ${name} tapi tanaman lain, kamu boleh memperingatkan di "ringkasan" bahwa itu tampak seperti tanaman lain.
+3. Jika foto BUKAN tanaman ${name} tapi tanaman lain, kamu boleh memperingatkan di "ringkasan" bahwa itu tampak seperti tanaman lain.`;
 
-## Penyakit Umum pada ${name}:
-${getDiseaseContext(id)}
-
-## Tugas Analisis (JIKA VALID):
+  const analysisBlock = isEn
+    ? `## Analysis Tasks (IF VALID):
+1. Identify whether the photo shows a leaf or fruit.
+2. Check visual symptoms: discoloration, spots, texture, deformation, wilting, etc.
+3. Determine condition: Healthy, Needs Attention (mild disease), or Severely Infected.
+4. Provide specific diagnosis based on visible symptoms.
+5. Provide practical treatment recommendations.`
+    : `## Tugas Analisis (JIKA VALID):
 1. Identifikasi apakah foto menunjukkan daun atau buah tanaman.
 2. Periksa gejala visual: perubahan warna, bercak, tekstur, deformasi, layu, dll.
 3. Tentukan kondisi: Sehat, Perlu Perhatian (penyakit ringan), atau Terinfeksi Parah.
 4. Berikan diagnosis spesifik berdasarkan gejala yang terlihat.
-5. Berikan rekomendasi penanganan yang praktis.
+5. Berikan rekomendasi penanganan yang praktis.`;
 
-## Format Respons (WAJIB JSON murni, tanpa markdown, tanpa komentar):
+  const formatBlock = isEn
+    ? `## Response Format (MUST be pure JSON, no markdown, no comments):
+{
+  "scan_type": "daun" or "buah" or "bukan tanaman",
+  "kondisi": "sehat" or "perhatian" or "parah" or "error",
+  "nama_penyakit": "Specific disease name IN ENGLISH, 'Healthy Leaf', or 'Unrecognized Object'",
+  "pathogen": "Scientific name of pathogen or 'No infection'",
+  "tingkat_kepercayaan": number 70-98,
+  "ringkasan": "1-2 sentence summary IN ENGLISH",
+  "gejala_terlihat": "Description of visible symptoms IN ENGLISH (2-3 sentences)",
+  "penyebab": "Explanation of disease cause IN ENGLISH (2-3 sentences)",
+  "dampak": "Impact on plant IN ENGLISH",
+  "rekomendasi": [
+    "Specific treatment step 1 IN ENGLISH",
+    "Specific treatment step 2 IN ENGLISH"
+  ],
+  "urgensi": "segera" or "dalam seminggu" or "pantau saja" or "tidak perlu tindakan"
+}
+
+IMPORTANT: The keys ("kondisi", "urgensi" values like "segera", "sehat", "parah", etc.) must stay in Indonesian as shown. Only the descriptive text values must be in English.`
+    : `## Format Respons (WAJIB JSON murni, tanpa markdown, tanpa komentar):
 {
   "scan_type": "daun" atau "buah" atau "bukan tanaman",
   "kondisi": "sehat" atau "perhatian" atau "parah" atau "error",
-  "nama_penyakit": "Nama penyakit spesifik, 'Daun Sehat', atau 'Objek Tidak Dikenali'",
+  "nama_penyakit": "Nama penyakit spesifik DALAM BAHASA INDONESIA, 'Daun Sehat', atau 'Objek Tidak Dikenali'",
   "pathogen": "Nama ilmiah patogen atau 'Tidak ada infeksi'",
   "tingkat_kepercayaan": angka 70-98,
-  "ringkasan": "1-2 kalimat ringkas tentang kondisi",
-  "gejala_terlihat": "Deskripsi gejala visual yang terlihat pada foto (2-3 kalimat)",
-  "penyebab": "Penjelasan penyebab penyakit dan bagaimana menyebar (2-3 kalimat)",
-  "dampak": "Dampak pada tanaman dan potensi kerugian jika tidak ditangani",
+  "ringkasan": "1-2 kalimat ringkas DALAM BAHASA INDONESIA",
+  "gejala_terlihat": "Deskripsi gejala visual DALAM BAHASA INDONESIA (2-3 kalimat)",
+  "penyebab": "Penjelasan penyebab penyakit DALAM BAHASA INDONESIA (2-3 kalimat)",
+  "dampak": "Dampak pada tanaman DALAM BAHASA INDONESIA",
   "rekomendasi": [
-    "Langkah penanganan 1 yang spesifik",
-    "Langkah penanganan 2"
+    "Langkah penanganan 1 DALAM BAHASA INDONESIA",
+    "Langkah penanganan 2 DALAM BAHASA INDONESIA"
   ],
   "urgensi": "segera" atau "dalam seminggu" atau "pantau saja" atau "tidak perlu tindakan"
+}`;
+
+  const roleIntro = isEn
+    ? `You are a leading plant pathologist specializing in diagnosing plant diseases from photos.
+You will analyze a photo of a LEAF or FRUIT from the plant ${name} (${latin}).`
+    : `Kamu adalah ahli patologi tanaman (plant pathologist) terkemuka yang berspesialisasi dalam mendiagnosis penyakit tanaman berdasarkan foto.
+Kamu akan menganalisis foto DAUN atau BUAH dari tanaman ${name} (${latin}).`;
+
+  const blurNote = isEn
+    ? 'If the photo is unclear/blurry, still provide the best analysis based on what is visible.'
+    : 'Jika foto tidak jelas / blur, tetap berikan analisis terbaik berdasarkan yang bisa terlihat.';
+
+  return `${languageBlock}
+
+${roleIntro}
+
+${validationBlock}
+
+## ${isEn ? 'Common Diseases of' : 'Penyakit Umum pada'} ${name}:
+${getDiseaseContext(id)}
+
+${analysisBlock}
+
+${formatBlock}
+
+${blurNote}`;
 }
 
-Jika foto tidak jelas / blur, tetap berikan analisis terbaik berdasarkan yang bisa terlihat.
-${languageInstruction}`;
-}

@@ -411,7 +411,7 @@ function showDiagnosis(r, isHistory = false) {
       plantName: selectedPlant.name,
       plantEmoji: selectedPlant.emoji,
       plantLatin: selectedPlant.latin,
-      diseaseName: r.nama_penyakit || 'Tidak Teridentifikasi',
+      diseaseName: r.nama_penyakit || (currentLang==='en'?'Unidentified':'Tidak Teridentifikasi'),
       severity: cond,
       image: document.getElementById('preview-img').src,
       fullResult: r
@@ -433,9 +433,9 @@ function showError(msg) {
   content.innerHTML = `
     <div class="error-state">
       <div class="error-icon">⚠️</div>
-      <div class="error-title">Analisis Gagal</div>
-      <div class="error-msg">${msg || 'Terjadi kesalahan saat menganalisis gambar. Pastikan koneksi internet aktif dan coba lagi.'}</div>
-      <button class="btn-retry" onclick="resetApp()">Coba Lagi</button>
+      <div class="error-title">${currentLang==='en'?'Analysis Failed':'Analisis Gagal'}</div>
+      <div class="error-msg">${msg || (currentLang==='en'?'An error occurred while analyzing the image. Make sure your internet connection is active and try again.':'Terjadi kesalahan saat menganalisis gambar. Pastikan koneksi internet aktif dan coba lagi.')}</div>
+      <button class="btn-retry" onclick="resetApp()">${currentLang==='en'?'Try Again':'Coba Lagi'}</button>
     </div>`;
   content.style.display = 'block';
 }
@@ -464,11 +464,14 @@ function resetApp() {
 
 // ── SHARE ─────────────────────────────────────────────────
 function shareResult(name, conf) {
-  const txt = `🌿 Hasil Scan PlantScan:\n"${name}" terdeteksi pada ${selectedPlant ? selectedPlant.name : 'tanaman'} dengan kepercayaan ${conf}%.\n\nCek tanamanmu di PlantScan!`;
+  const plantDisplayName = selectedPlant ? (currentLang === 'en' && selectedPlant.name_en ? selectedPlant.name_en : selectedPlant.name) : (currentLang==='en'?'plant':'tanaman');
+  const txt = currentLang === 'en'
+    ? `🌿 PlantScan Result:\n"${name}" detected on ${plantDisplayName} with ${conf}% confidence.\n\nCheck your plants at PlantScan!`
+    : `🌿 Hasil Scan PlantScan:\n"${name}" terdeteksi pada ${plantDisplayName} dengan kepercayaan ${conf}%.\n\nCek tanamanmu di PlantScan!`;
   if (navigator.share) {
-    navigator.share({ title: 'Hasil PlantScan', text: txt }).catch(() => {});
+    navigator.share({ title: currentLang==='en'?'PlantScan Result':'Hasil PlantScan', text: txt }).catch(() => {});
   } else {
-    navigator.clipboard.writeText(txt).then(() => showToast('✅ Hasil disalin ke clipboard!'));
+    navigator.clipboard.writeText(txt).then(() => showToast(t('copied')));
   }
 }
 
@@ -564,19 +567,19 @@ function loadHistory() {
   const history = JSON.parse(localStorage.getItem('plantscan_history') || '[]');
   
   if (history.length === 0) {
-    container.innerHTML = '<div class="no-history">Belum ada riwayat pemindaian.</div>';
+    container.innerHTML = `<div class="no-history">${currentLang==='en'?'No scan history yet.':'Belum ada riwayat pemindaian.'}</div>`;
     document.getElementById('history-section').style.display = 'none';
     return;
   }
   
   document.getElementById('history-section').style.display = 'block';
   container.innerHTML = history.map((item, idx) => {
-    const date = new Date(item.date).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-    const sevLabel = item.severity === 'sehat' ? 'Sehat' : item.severity === 'parah' ? 'Parah' : 'Perhatian';
+    const date = new Date(item.date).toLocaleDateString(currentLang==='en'?'en-US':'id-ID', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const sevLabel = item.severity === 'sehat' ? (currentLang==='en'?'Healthy':'Sehat') : item.severity === 'parah' ? (currentLang==='en'?'Severe':'Parah') : (currentLang==='en'?'Attention':'Perhatian');
     const sevColor = item.severity === 'sehat' ? '#27864F' : item.severity === 'parah' ? '#C0392B' : '#C97A12';
     
     return `
-      <div class="hist-card" onclick="viewHistory(${idx})" style="cursor:pointer;" title="Klik untuk melihat detail diagnosis">
+      <div class="hist-card" onclick="viewHistory(${idx})" style="cursor:pointer;" title="${currentLang==='en'?'Click to view diagnosis detail':'Klik untuk melihat detail diagnosis'}">
         <img src="${item.image}" alt="Scan" class="hist-img">
         <div class="hist-info">
           <div class="hist-title">${item.plantEmoji} ${currentLang === 'en' && plants.find(p=>p.name===item.plantName)?.name_en ? plants.find(p=>p.name===item.plantName).name_en : item.plantName}</div>
@@ -589,7 +592,7 @@ function loadHistory() {
 }
 
 function clearHistory() {
-  if(confirm('Hapus semua riwayat pemindaian?')) {
+  if(confirm(currentLang==='en'?'Delete all scan history?':'Hapus semua riwayat pemindaian?')) {
     localStorage.removeItem('plantscan_history');
     loadHistory();
   }
@@ -599,7 +602,7 @@ function viewHistory(idx) {
   const history = JSON.parse(localStorage.getItem('plantscan_history') || '[]');
   const item = history[idx];
   if (!item || !item.fullResult) {
-    showToast('❌ Detail riwayat lama tidak tersedia (karena tidak menyimpan log AI penuh). Silakan scan ulang.');
+    showToast(currentLang==='en'?'❌ Old history details unavailable (no full AI log saved). Please re-scan.':'❌ Detail riwayat lama tidak tersedia (karena tidak menyimpan log AI penuh). Silakan scan ulang.');
     return;
   }
   
@@ -607,7 +610,7 @@ function viewHistory(idx) {
   selectedPlant = {
     name: item.plantName,
     emoji: item.plantEmoji,
-    latin: item.plantLatin || 'Spesies tidak diketahui'
+    latin: item.plantLatin || (currentLang==='en'?'Unknown species':'Spesies tidak diketahui')
   };
 
   // Switch UI to result view
@@ -617,8 +620,8 @@ function viewHistory(idx) {
   rs.style.display = 'block';
   
   document.getElementById('preview-img').src = item.image;
-  document.getElementById('meta-fname').textContent = 'Riwayat Scan';
-  const dateStr = new Date(item.date).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  document.getElementById('meta-fname').textContent = currentLang==='en'?'Scan History':'Riwayat Scan';
+  const dateStr = new Date(item.date).toLocaleDateString(currentLang==='en'?'en-US':'id-ID', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
   document.getElementById('meta-fsize').textContent = dateStr;
   document.getElementById('img-tag-emoji').textContent = item.plantEmoji;
   document.getElementById('img-tag-name').textContent = item.plantName;
