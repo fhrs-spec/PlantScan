@@ -6,9 +6,16 @@ This template is built as a **Commercial SaaS Template**, ready to be used as a 
 
 ---
 
+## 🌐 Live Demo
+- **Demo Link**: [https://your-demo-app.vercel.app](https://your-demo-app.vercel.app) *(Replace with your actual Vercel URL)*
+
+---
+
 ## ✨ Key Features
 
 - **🤖 Smart AI Detection**: Powered by Google Gemini Vision API for high-precision plant disease recognition and treatment solutions.
+- **🛡️ Anti-Hallucination AI Guard**: Built-in prompt validation that automatically rejects non-plant photos (e.g., humans, animals, objects).
+- **🔄 Out-of-the-Box Simulation Mode**: Automatically runs mock AI analysis if no API key is provided—perfect for immediate testing & client demos.
 - **🌐 Dual-Language Support (i18n)**: Integrated bilingual system (English & Indonesian) dynamically supported across the entire interface.
 - **🔒 SaaS Template Ready**: Features mock authentication powered by `localStorage`, including a **Guest Scan Limit** (1 free guest scan before requiring sign-in).
 - **📊 Admin Dashboard**: Includes an admin dashboard page (`admin.html`) simulating user history, daily scan statistics, and AI performance metrics.
@@ -23,7 +30,7 @@ This template is built as a **Commercial SaaS Template**, ready to be used as a 
 
 - **Frontend**: HTML5, CSS3 (Vanilla), JavaScript (Framework-free, lightweight, & ultra-fast load speed).
 - **Backend / API**: Node.js (Vercel Serverless Functions).
-- **AI Engine**: Google Gemini API.
+- **AI Engine**: Google Gemini API (with multi-model fallback).
 
 ---
 
@@ -63,8 +70,11 @@ This repository includes a pre-configured `vercel.json` file.
 - `lang.js` : Internationalization (i18n) dictionary and dynamic language switcher.
 - `script.js` : Frontend logic (Camera capture, image upload, mock authentication, guest limit).
 - `manifest.json` & `sw.js` : PWA web manifest and Service Worker caching configuration.
+- `vercel.json` : Vercel Serverless Function rewrites and header cache rules.
+- `.env.example` : Template file for environment variable configuration.
 - `/api` : Vercel Serverless Backend folder.
   - `analyze.js` : Primary API endpoint handling Gemini Vision API communication, dynamic prompts, and rate-limiting security.
+  - `diseaseData.js` : Plant pathology context dataset providing specific guidelines for 20+ plant types.
 
 ---
 
