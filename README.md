@@ -7,7 +7,7 @@ This template is built as a **Commercial SaaS Template**, ready to be used as a 
 ---
 
 ## 🌐 Live Demo
-- **Demo Link**: [https://your-demo-app.vercel.app](https://your-demo-app.vercel.app) *(Replace with your actual Vercel URL)*
+- **Demo Link**: [https://plantscan-webapp.vercel.app/](https://plantscan-webapp.vercel.app/)
 
 ---
 
