@@ -675,6 +675,12 @@ function updateAuthUI() {
 }
 document.addEventListener('DOMContentLoaded', () => {
   updateAuthUI();
+  const emailInput = document.getElementById('login-email');
+  if (emailInput) {
+    emailInput.addEventListener('input', () => {
+      emailInput.setCustomValidity('');
+    });
+  }
 });
 
 function openLoginModal(e) {
@@ -684,9 +690,31 @@ function openLoginModal(e) {
 function closeLoginModal() {
   document.getElementById('login-modal').classList.remove('open');
 }
-function performLogin() {
-  const email = document.getElementById('login-email').value;
-  if (!email) { showToast(t('toast_login_req')); return; }
+function performLogin(e) {
+  if (e) e.preventDefault();
+  const emailInput = document.getElementById('login-email');
+  if (!emailInput) return;
+  const email = emailInput.value.trim();
+
+  if (!email) {
+    const reqMsg = (typeof currentLang !== 'undefined' && currentLang === 'en') ? 'Please fill out this field.' : 'Silakan isi bidang ini.';
+    emailInput.setCustomValidity(reqMsg);
+    emailInput.reportValidity();
+    showToast(t('toast_login_req'));
+    return;
+  }
+
+  if (!email.includes('@')) {
+    const invalidMsg = (typeof currentLang !== 'undefined' && currentLang === 'en')
+      ? `Please include an '@' in the email address. '${email}' is missing an '@'.`
+      : `Sertakan '@' dalam alamat email. '${email}' kehilangan '@'.`;
+    emailInput.setCustomValidity(invalidMsg);
+    emailInput.reportValidity();
+    showToast(t('toast_login_invalid'));
+    return;
+  }
+
+  emailInput.setCustomValidity('');
   localStorage.setItem('plantscan_user', email);
   currentUser = email;
   closeLoginModal();

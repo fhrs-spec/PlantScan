@@ -24,6 +24,8 @@ const translations = {
     modal_login_title: "Masuk ke PlantScan",
     modal_login_desc: "Dapatkan akses scan tanpa batas",
     modal_login_btn: "Masuk Sekarang",
+    placeholder_email: "Alamat Email",
+    placeholder_password: "Kata Sandi",
     
     // Fitur Section
     feat_title: "Fitur Unggulan",
@@ -104,6 +106,7 @@ const translations = {
     toast_online: "✅ Kembali terhubung ke internet.",
     toast_limit: "Batas scan gratis (1x) telah habis. Silakan login.",
     toast_login_req: "Silakan masukkan email",
+    toast_login_invalid: "Silakan sertakan '@' dalam alamat email",
     toast_login_ok: "Berhasil Login! Akses scan tanpa batas terbuka.",
     toast_logout: "Berhasil Logout.",
     copied: "Hasil disalin ke clipboard!"
@@ -133,6 +136,8 @@ const translations = {
     modal_login_title: "Login to PlantScan",
     modal_login_desc: "Get unlimited scanning access",
     modal_login_btn: "Login Now",
+    placeholder_email: "Email Address",
+    placeholder_password: "Password",
 
     // Fitur Section
     feat_title: "Key Features",
@@ -213,6 +218,7 @@ const translations = {
     toast_online: "✅ Back online.",
     toast_limit: "Free scan limit (1x) reached. Please login.",
     toast_login_req: "Please enter your email",
+    toast_login_invalid: "Please include an '@' in the email address",
     toast_login_ok: "Login Successful! Unlimited scan access unlocked.",
     toast_logout: "Logout Successful.",
     copied: "Results copied to clipboard!"
@@ -242,6 +248,7 @@ document.addEventListener('click', (e) => {
 
 function applyLang() {
   const lang = currentLang;
+  document.documentElement.lang = lang;
   
   // Update button label
   const label = document.getElementById('current-lang-label');

@@ -347,12 +347,12 @@
           <svg viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
-      <p style="color:rgba(255,255,255,0.7); font-size:14px; margin-bottom: 20px;" data-i18n="modal_login_desc">Dapatkan akses scan tanpa batas</p>
-      <div style="display:flex; flex-direction:column; gap: 12px;">
-        <input type="email" id="login-email" placeholder="Email Address" style="padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;">
-        <input type="password" id="login-password" placeholder="Password" style="padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: white;">
-        <button class="btn-upload" onclick="performLogin()" style="justify-content:center; width: 100%;" data-i18n="modal_login_btn">Masuk Sekarang</button>
-      </div>
+      <p class="modal-desc" data-i18n="modal_login_desc">Dapatkan akses scan tanpa batas</p>
+      <form id="login-form" onsubmit="performLogin(event)">
+        <input type="email" id="login-email" class="modal-input" placeholder="Alamat Email" data-i18n-placeholder="placeholder_email">
+        <input type="password" id="login-password" class="modal-input" placeholder="Kata Sandi" data-i18n-placeholder="placeholder_password">
+        <button type="submit" class="btn-upload" style="justify-content:center; width: 100%;" data-i18n="modal_login_btn">Masuk Sekarang</button>
+      </form>
     </div>
   </div>
 
