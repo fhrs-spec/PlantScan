@@ -579,31 +579,84 @@ function sendChatMessage() {
 function generateAIPlantDoctorReply(userText, diag) {
   const q = userText.toLowerCase();
   const lang = currentLang;
-  const plant = selectedPlant ? (lang === 'en' && selectedPlant.name_en ? selectedPlant.name_en : selectedPlant.name) : 'tanaman';
-  const disease = diag?.nama_penyakit || 'Penyakit Tanaman';
+  const plant = selectedPlant ? (lang === 'en' && selectedPlant.name_en ? selectedPlant.name_en : selectedPlant.name) : (lang === 'en' ? 'plant' : 'tanaman');
+  const disease = diag?.nama_penyakit || (lang === 'en' ? 'Plant Disease' : 'Penyakit Tanaman');
 
-  if (q.includes('dosis') || q.includes('obat') || q.includes('takaran') || q.includes('dosage') || q.includes('medication')) {
+  // 🧪 PUPUK & NUTRISI (Fertilizer & Nutrition)
+  if (q.includes('pupuk') || q.includes('fertilizer') || q.includes('nutrisi') || q.includes('kompos') || q.includes('npk') || q.includes('kalsium') || q.includes('kalium')) {
+    return lang === 'en'
+      ? `🧪 <strong>Recommended Fertilizer for ${plant}:</strong><br>
+• <strong>Organic Option:</strong> Use well-aged compost or fermented organic fertilizer mixed with <em>Trichoderma sp.</em> to boost root immunity.<br>
+• <strong>Nutrient Balance:</strong> Apply balanced NPK (16-16-16) at 1 teaspoon per pot once every 2 weeks.<br>
+• <strong>Important Note for ${disease}:</strong> Reduce high-Nitrogen fertilizers temporarily during active infection as excessive Nitrogen makes leaf tissue soft and vulnerable. Supplement with <strong>Calcium Nitrate (CaNO3)</strong> and Potassium to fortify leaf cell walls against fungal/bacterial penetration.`
+      : `🧪 <strong>Rekomendasi Pupuk Terbaik untuk ${plant}:</strong><br>
+• <strong>Pupuk Organik:</strong> Gunakan kompos matang, kasgot, atau pupuk kandang terfermentasi yang diperkaya agens hayati <em>Trichoderma sp.</em> untuk memperkuat kekebalan akar.<br>
+• <strong>Pupuk Anorganik (NPK):</strong> Berikan pupuk NPK seimbang (16-16-16) sebanyak 1 sendok teh per pot setiap 2 minggu sekali.<br>
+• <strong>Catatan Penting Saat Terinfeksi (${disease}):</strong> Hindari pupuk Nitrogen tinggi secara berlebihan saat tanaman sakit karena membuat jaringan daun terlalu lunak. Tambahkan **Pupuk Kalsium Nitrat** & Kalium tinggi untuk mempertebal dinding sel daun agar lebih tahan serangan jamur/bakteri.`;
+  }
+
+  // 💧 PENYIRAMAM & AIR (Watering & Moisture)
+  if (q.includes('siram') || q.includes('air') || q.includes('kelembapan') || q.includes('water') || q.includes('becek') || q.includes('kering')) {
+    return lang === 'en'
+      ? `💧 <strong>Watering Guide for ${plant}:</strong><br>
+• Water directly at the root zone/soil, <strong>avoid wetting the leaves</strong>.<br>
+• Water early in the morning (6–8 AM) so excess surface moisture evaporates before noon.<br>
+• Check soil moisture with your finger: water only when the top 2-3 cm layer feels dry. Avoid waterlogging which promotes <em>${disease}</em>.`
+      : `💧 <strong>Panduan Penyiraman untuk ${plant}:</strong><br>
+• Siram langsung ke permukaan tanah/akar, <strong>hindari menyiram atau membasahi tajuk daun</strong>.<br>
+• Lakukan penyiraman di pagi hari (pukul 06.00–08.00) agar sisa kelembapan di permukaan tanah menguap saat siang.<br>
+• Cek kelembapan: siram hanya jika lapisan tanah atas (2-3 cm) sudah terasa agak kering. Jangan biarkan pot becek karena memicu perkembangan spora <em>${disease}</em>.`;
+  }
+
+  // 🪴 MEDIA TANAM & POT (Soil & Pot)
+  if (q.includes('tanah') || q.includes('media') || q.includes('pot') || q.includes('drenase') || q.includes('soil')) {
+    return lang === 'en'
+      ? `🪴 <strong>Soil & Pot Setup for ${plant}:</strong><br>
+• Mix 40% topsoil, 30% burnt rice husk (sekam bakar), and 30% organic compost for optimal drainage.<br>
+• Ensure the pot has adequate bottom drainage holes.<br>
+• Keep soil pH between 6.0 – 6.8 for optimal nutrient absorption.`
+      : `🪴 <strong>Rekomendasi Media Tanam & Pot untuk ${plant}:</strong><br>
+• Campurkan 40% tanah topsoil, 30% sekam bakar/cocopeat, dan 30% kompos organik matang agar media bersifat poros dan gembur.<br>
+• Pastikan dasar pot memiliki lubang drenase yang cukup agar air siraman tidak tergenang.<br>
+• Jaga pH tanah di kisaran ideal 6,0 – 6,8 agar penyerapan unsur hara maksimal.`;
+  }
+
+  // 🐛 HAMA & SERANGGA (Pest Control)
+  if (q.includes('hama') || q.includes('kutu') || q.includes('ulat') || q.includes('serangga') || q.includes('pest') || q.includes('insect')) {
+    return lang === 'en'
+      ? `🐛 <strong>Pest Control Strategy:</strong><br>
+• For sucking insects (aphids, thrips, spider mites), spray <strong>Neem Oil (Minyak Mimba)</strong> 5 ml + 1 drop mild dish soap per 1 Liter water.<br>
+• Spray on lower leaf surfaces late in the afternoon (4-6 PM) twice a week.`
+      : `🐛 <strong>Strategi Penanganan Hama:</strong><br>
+• Untuk hama penyedot cairan (kutu daun, thrips, tungau), semprotkan larutan <strong>Minyak Mimba (Neem Oil)</strong> 5 ml + 1 tetes sabun pencuci piring encer per 1 Liter air.<br>
+• Semprotkan terutama ke balik permukaan daun pada sore hari (pukul 16.00–18.00) setiap 3-4 hari sekali.`;
+  }
+
+  // 💊 DOSIS OBAT / FUNGISIDA
+  if (q.includes('dosis') || q.includes('obat') || q.includes('takaran') || q.includes('dosage') || q.includes('medication') || q.includes('fungisida') || q.includes('pestisida')) {
     return lang === 'en'
       ? `💊 <strong>Dosage & Application Recommendation:</strong><br>For <em>${disease}</em> on ${plant}, use an organic or systemic fungicide/bactericide at a ratio of <strong>1.5 – 2 ml per 1 Liter of water</strong>. Spray evenly on upper and lower leaf surfaces early in the morning (6-8 AM) or late afternoon (4-6 PM) every 5-7 days until symptoms subside.`
       : `💊 <strong>Rekomendasi Dosis & Dosis Penggunaan:</strong><br>Untuk menangani <em>${disease}</em> pada ${plant}, gunakan fungisida/bakterisida organik atau sistemik dengan takaran <strong>1.5 – 2 ml per 1 Liter air</strong>. Semprotkan secara merata pada permukaan atas dan bawah daun pada pagi hari (pukul 06.00–08.00) atau sore hari (pukul 16.00–18.00) setiap 5–7 hari sekali hingga gejala berkurang.`;
   }
 
+  // 🦠 RISIKO PENULARAN
   if (q.includes('tular') || q.includes('menular') || q.includes('sebar') || q.includes('contagious') || q.includes('spread')) {
     return lang === 'en'
       ? `🦠 <strong>Contagion Risk Analysis:</strong><br>Yes, spora/pathogens of <em>${disease}</em> can easily spread to nearby plants through wind blowing, rainwater splashes, or contaminated pruning shears. <strong>Precaution:</strong> Immediately isolate affected plants and sanitize garden tools with 70% alcohol after pruning.`
       : `🦠 <strong>Analisis Risiko Penularan:</strong><br>Ya, spora patogen <em>${disease}</em> sangat mudah menular ke tanaman sekitar melalui tiupan angin, percikan air siraman, atau gunting stek yang tercemar. <strong>Langkah Aman:</strong> Segera pisahkan/pangkas bagian terinfeksi dan sterilkan alat kebun dengan alkohol 70% setelah digunakan.`;
   }
 
-  if (q.includes('cegah') || q.includes('pencegahan') || q.includes('prevent') || q.includes('prevention')) {
+  // 🛡️ PENCEGAHAN & SANITASI
+  if (q.includes('cegah') || q.includes('pencegahan') || q.includes('prevent') || q.includes('prevention') || q.includes('pangkas') || q.includes('potong')) {
     return lang === 'en'
       ? `🛡️ <strong>Preventive Care Guide:</strong><br>1. Ensure proper plant spacing for sunlight penetration & air circulation.<br>2. Avoid watering leaf canopy directly; water near the soil roots.<br>3. Apply trichoderma or organic compost to strengthen root resistance against soil-borne pathogens.`
       : `🛡️ <strong>Panduan Pencegahan Agar Tidak Terulang:</strong><br>1. Jaga jarak tanam agar sinar matahari & sirkulasi udara lancar di sela daun.<br>2. Hindari menyiram langsung ke tajuk daun pada malam hari; siramlah di permukaan tanah area perakaran.<br>3. Aplikasikan agens hayati <em>Trichoderma sp.</em> atau kompos organik untuk memperkuat daya tahan tanaman.`;
   }
 
-  // Default contextual advice
+  // 🌿 JAWABAN KHUSUS DINAMIS BERDASARKAN PERTANYAAN PENGGUNA (Dynamic Specific Reply)
   return lang === 'en'
-    ? `🌿 <strong>Plant Doctor Advice:</strong><br>Regarding your question about <em>${plant}</em> diagnosed with <strong>${disease}</strong>: Keep monitoring soil moisture and ensure diseased leaf litter is removed. If you see new healthy shoots growing after treatment, your plant is recovering nicely!`
-    : `🌿 <strong>Saran Dokter Tanaman:</strong><br>Mengenai pertanyaan Anda untuk <sup>${plant}</sup> yang terdeteksi <strong>${disease}</strong>: Pastikan kelembapan tanah terjaga ideal (tidak becek) dan segera bersihkan guguran daun sakit. Jika pucuk daun baru mulai tumbuh segar tanpa bercak, itu pertanda pemulihan berjalan baik!`;
+    ? `🌿 <strong>Plant Doctor Answer regarding ${plant}:</strong><br>To help your ${plant} recover from <strong>${disease}</strong> regarding your query "<em>${escapeHtml(userText)}</em>":<br>• Focus on restoring root health and maintaining good air circulation.<br>• Remove badly infected leaves to prevent secondary fungal spore buildup.<br>• Maintain a consistent routine of balanced organic nutrition and proper morning watering.`
+    : `🌿 <strong>Jawaban Dokter Tanaman mengenai ${plant}:</strong><br>Terkait pertanyaan Anda "<em>${escapeHtml(userText)}</em>" untuk tanaman <strong>${plant}</strong> yang terdeteksi <strong>${disease}</strong>:<br>• Fokus utama adalah menjaga daya tahan akar dan kebersihan area sekitar pot.<br>• Potong daun yang sudah parah terinfeksi agar nutrisi fokus ke pucuk baru.<br>• Berikan perhatian ekstra pada pencahayaan matahari pagi (minimal 4-6 jam sehari) untuk mempercepat fotosintesis pemulihan.`;
 }
 
 function escapeHtml(str) {
