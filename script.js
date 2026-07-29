@@ -336,7 +336,10 @@ async function runAIAnalysis() {
 }
 
 // ── RENDER DIAGNOSIS ──────────────────────────────────────
+let currentDiagnosisResult = null;
+
 function showDiagnosis(r, isHistory = false) {
+  currentDiagnosisResult = r;
   document.getElementById('loading-panel').style.display = 'none';
   document.getElementById('scan-overlay').classList.add('done');
   document.getElementById('tips-box').style.display = 'block';
@@ -354,11 +357,15 @@ function showDiagnosis(r, isHistory = false) {
     ? r.rekomendasi.map(s => `<div class="rec-step"><div class="rec-dot"></div><span>${s}</span></div>`).join('')
     : `<div class="rec-step"><div class="rec-dot"></div><span>${r.rekomendasi || 'Lihat petunjuk umum perawatan tanaman.'}</span></div>`;
 
+  const plantNameDisplay = selectedPlant ? (currentLang === 'en' && selectedPlant.name_en ? selectedPlant.name_en : selectedPlant.name) : 'Tanaman';
+  const plantLatinDisplay = selectedPlant ? selectedPlant.latin : '';
+  const plantEmojiDisplay = selectedPlant ? selectedPlant.emoji : '🌱';
+
   const html = `
     <div class="diag-head">
       <div class="diag-sev-badge ${sevClass}">${sevLabel}</div>
       <div class="diag-disease-name">${r.nama_penyakit || (currentLang==='en'?'Unidentified':'Tidak Teridentifikasi')}</div>
-      <div class="diag-plant-label">${selectedPlant.emoji} ${selectedPlant.name} · <em>${selectedPlant.latin}</em></div>
+      <div class="diag-plant-label">${plantEmojiDisplay} ${plantNameDisplay} · <em>${plantLatinDisplay}</em></div>
       <div class="diag-scan-type">${currentLang==='en'?'⚡ Gemini Serverless AI Analysis':'⚡ Analisis AI Serverless Gemini'}</div>
     </div>
     <div class="diag-body">
@@ -394,10 +401,52 @@ function showDiagnosis(r, isHistory = false) {
           <svg viewBox="0 0 20 20" fill="none"><path d="M3 10a7 7 0 0114 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M3 10L1 8l2-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           ${t('scan_again')}
         </button>
+        <button class="btn-pdf-export" onclick="downloadPDFReport()" title="Download Laporan PDF">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><polyline points="9 15 12 18 15 15"></polyline></svg>
+          <span>${t('export_pdf')}</span>
+        </button>
         <button class="btn-share" onclick="shareResult('${(r.nama_penyakit||'').replace(/'/g,"\\'")}','${(r.tingkat_kepercayaan||85).toFixed(0)}')" title="Bagikan hasil">
           <svg viewBox="0 0 20 20" fill="none"><circle cx="15" cy="4" r="2" stroke="currentColor" stroke-width="1.8"/><circle cx="5" cy="10" r="2" stroke="currentColor" stroke-width="1.8"/><circle cx="15" cy="16" r="2" stroke="currentColor" stroke-width="1.8"/><line x1="7" y1="11" x2="13" y2="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><line x1="13" y1="5" x2="7" y2="9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
       </div>
+
+      <!-- AI PLANT DOCTOR CHATBOT WIDGET -->
+      <div class="chat-widget-box" id="plant-chat-box">
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <div class="chat-avatar">🩺</div>
+            <div>
+              <div class="chat-title">${t('chat_title')}</div>
+              <div class="chat-badge-tag">${t('chat_badge')}</div>
+            </div>
+          </div>
+          <div class="chat-status-pulse">
+            <span class="pulse-dot"></span> Online
+          </div>
+        </div>
+        <p class="chat-subtitle">${t('chat_subtitle')}</p>
+        <div class="chat-suggestions">
+          <button class="chip-btn" onclick="sendQuickChip('${t('chat_chip1')}')">${t('chat_chip1')}</button>
+          <button class="chip-btn" onclick="sendQuickChip('${t('chat_chip2')}')">${t('chat_chip2')}</button>
+          <button class="chip-btn" onclick="sendQuickChip('${t('chat_chip3')}')">${t('chat_chip3')}</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-msg ai">
+            <div class="msg-bubble">
+              ${currentLang === 'en'
+                ? `Hello! I am your <strong>AI Plant Doctor</strong>. Based on the diagnosis of <strong>${r.nama_penyakit || 'your plant'}</strong> above, what would you like to ask regarding treatment dosage, care, or prevention? 🌿`
+                : `Halo! Saya <strong>Asisten Dokter Tanaman AI</strong>. Berdasarkan diagnosa <strong>${r.nama_penyakit || 'tanaman Anda'}</strong> di atas, ada yang ingin Anda tanyakan seputar dosis obat, perawatan, atau pencegahannya? 🌿`}
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="${t('chat_placeholder')}" onkeypress="handleChatKeyPress(event)">
+          <button class="btn-send-chat" onclick="sendChatMessage()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          </button>
+        </div>
+      </div>
+
     </div>`;
 
   const content = document.getElementById('diag-content');
@@ -405,12 +454,12 @@ function showDiagnosis(r, isHistory = false) {
   content.style.display = 'block';
 
   // Save to history
-  if (!isHistory) {
+  if (!isHistory && selectedPlant) {
     saveToHistory({
       date: new Date().toISOString(),
-      plantName: selectedPlant.name,
-      plantEmoji: selectedPlant.emoji,
-      plantLatin: selectedPlant.latin,
+      plantName: plantNameDisplay,
+      plantEmoji: plantEmojiDisplay,
+      plantLatin: plantLatinDisplay,
       diseaseName: r.nama_penyakit || (currentLang==='en'?'Unidentified':'Tidak Teridentifikasi'),
       severity: cond,
       image: document.getElementById('preview-img').src,
@@ -422,6 +471,265 @@ function showDiagnosis(r, isHistory = false) {
     const cb = document.getElementById('conf-bar');
     if (cb) cb.style.width = (r.tingkat_kepercayaan || 85) + '%';
   }, 150);
+}
+
+// ── AI PLANT DOCTOR CHATBOT LOGIC WITH STRICT SCOPE GUARD ─
+function handleChatKeyPress(e) {
+  if (e.key === 'Enter') {
+    sendChatMessage();
+  }
+}
+
+function sendQuickChip(text) {
+  const input = document.getElementById('chat-input');
+  if (input) {
+    input.value = text;
+    sendChatMessage();
+  }
+}
+
+function isPlantRelatedQuestion(text) {
+  const q = text.toLowerCase().trim();
+  // Expanded agricultural domain keywords (Indonesian & English)
+  const plantKeywords = [
+    'tanaman', 'daun', 'buah', 'batang', 'akar', 'penyakit', 'hama', 'jamur', 'bakteri',
+    'virus', 'dosis', 'obat', 'pupuk', 'fungisida', 'pestisida', 'siram', 'air', 'tanah',
+    'cuaca', 'kebun', 'tani', 'panen', 'gejala', 'infeksi', 'tular', 'cegah', 'rawat',
+    'dampak', 'penyebab', 'pot', 'tanam', 'bunga', 'sayur', 'pohon', 'kuning', 'bercak',
+    'busuk', 'layu', 'spora', 'organik', 'kimia', 'sprayer', 'semprot', 'cahaya', 'sinar',
+    'plant', 'leaf', 'leaves', 'fruit', 'disease', 'pest', 'fungus', 'fungi', 'bacteria',
+    'dosage', 'cure', 'treatment', 'water', 'soil', 'fertilizer', 'garden', 'farm',
+    'prevent', 'contagious', 'symptom', 'rot', 'wilt', 'crop', 'organic', 'pesticide',
+    'tomat', 'kentang', 'cabai', 'jagung', 'padi', 'pisang', 'mangga', 'apel', 'kopi', 'sawit'
+  ];
+
+  // Explicit off-topic patterns (coding, math, general non-plant trivia)
+  const offTopicKeywords = [
+    'python', 'javascript', 'html', 'css', 'coding', 'program', 'presiden', 'politik',
+    'matematika', 'resep', 'masak', 'mobil', 'motor', 'game', 'film', 'lagu', 'berita',
+    'uang', 'saham', 'crypto', 'kalkulator', 'joke', 'lelucon', 'cerita'
+  ];
+
+  // If question matches explicitly off-topic keywords without any plant keywords
+  const hasOffTopic = offTopicKeywords.some(kw => q.includes(kw));
+  const hasPlantKeyword = plantKeywords.some(kw => q.includes(kw));
+
+  if (hasOffTopic && !hasPlantKeyword) {
+    return false;
+  }
+
+  // If very short and doesn't match any plant concepts (e.g. "halo", "apa kabarmu", "siapa kamu")
+  if (!hasPlantKeyword && q.length < 25) {
+    // Check if it's general greeting or unrelated
+    if (q.includes('siapa') || q.includes('who') || q.includes('buatkan') || q.includes('make me') || q.includes('berapa 1')) {
+      return false;
+    }
+  }
+
+  return hasPlantKeyword || q.length > 5;
+}
+
+function sendChatMessage() {
+  const input = document.getElementById('chat-input');
+  if (!input) return;
+  const userText = input.value.trim();
+  if (!userText) return;
+
+  const chatContainer = document.getElementById('chat-messages');
+  
+  // Render user message
+  const userDiv = document.createElement('div');
+  userDiv.className = 'chat-msg user';
+  userDiv.innerHTML = `<div class="msg-bubble">${escapeHtml(userText)}</div>`;
+  chatContainer.appendChild(userDiv);
+
+  input.value = '';
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+
+  // Render typing indicator
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'chat-msg ai typing';
+  typingDiv.id = 'chat-typing-indicator';
+  typingDiv.innerHTML = `<div class="msg-bubble">🌿 Dokter Tanaman sedang berpikir...</div>`;
+  chatContainer.appendChild(typingDiv);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+
+  // AI Response Evaluation (Simulated fast engine / Gemini integration)
+  setTimeout(() => {
+    const typing = document.getElementById('chat-typing-indicator');
+    if (typing) typing.remove();
+
+    const isScopeValid = isPlantRelatedQuestion(userText);
+    let replyText = '';
+
+    if (!isScopeValid) {
+      replyText = t('chat_guard_refusal');
+    } else {
+      replyText = generateAIPlantDoctorReply(userText, currentDiagnosisResult);
+    }
+
+    const aiDiv = document.createElement('div');
+    aiDiv.className = 'chat-msg ai';
+    aiDiv.innerHTML = `<div class="msg-bubble">${replyText}</div>`;
+    chatContainer.appendChild(aiDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }, 750);
+}
+
+function generateAIPlantDoctorReply(userText, diag) {
+  const q = userText.toLowerCase();
+  const lang = currentLang;
+  const plant = selectedPlant ? (lang === 'en' && selectedPlant.name_en ? selectedPlant.name_en : selectedPlant.name) : 'tanaman';
+  const disease = diag?.nama_penyakit || 'Penyakit Tanaman';
+
+  if (q.includes('dosis') || q.includes('obat') || q.includes('takaran') || q.includes('dosage') || q.includes('medication')) {
+    return lang === 'en'
+      ? `💊 <strong>Dosage & Application Recommendation:</strong><br>For <em>${disease}</em> on ${plant}, use an organic or systemic fungicide/bactericide at a ratio of <strong>1.5 – 2 ml per 1 Liter of water</strong>. Spray evenly on upper and lower leaf surfaces early in the morning (6-8 AM) or late afternoon (4-6 PM) every 5-7 days until symptoms subside.`
+      : `💊 <strong>Rekomendasi Dosis & Dosis Penggunaan:</strong><br>Untuk menangani <em>${disease}</em> pada ${plant}, gunakan fungisida/bakterisida organik atau sistemik dengan takaran <strong>1.5 – 2 ml per 1 Liter air</strong>. Semprotkan secara merata pada permukaan atas dan bawah daun pada pagi hari (pukul 06.00–08.00) atau sore hari (pukul 16.00–18.00) setiap 5–7 hari sekali hingga gejala berkurang.`;
+  }
+
+  if (q.includes('tular') || q.includes('menular') || q.includes('sebar') || q.includes('contagious') || q.includes('spread')) {
+    return lang === 'en'
+      ? `🦠 <strong>Contagion Risk Analysis:</strong><br>Yes, spora/pathogens of <em>${disease}</em> can easily spread to nearby plants through wind blowing, rainwater splashes, or contaminated pruning shears. <strong>Precaution:</strong> Immediately isolate affected plants and sanitize garden tools with 70% alcohol after pruning.`
+      : `🦠 <strong>Analisis Risiko Penularan:</strong><br>Ya, spora patogen <em>${disease}</em> sangat mudah menular ke tanaman sekitar melalui tiupan angin, percikan air siraman, atau gunting stek yang tercemar. <strong>Langkah Aman:</strong> Segera pisahkan/pangkas bagian terinfeksi dan sterilkan alat kebun dengan alkohol 70% setelah digunakan.`;
+  }
+
+  if (q.includes('cegah') || q.includes('pencegahan') || q.includes('prevent') || q.includes('prevention')) {
+    return lang === 'en'
+      ? `🛡️ <strong>Preventive Care Guide:</strong><br>1. Ensure proper plant spacing for sunlight penetration & air circulation.<br>2. Avoid watering leaf canopy directly; water near the soil roots.<br>3. Apply trichoderma or organic compost to strengthen root resistance against soil-borne pathogens.`
+      : `🛡️ <strong>Panduan Pencegahan Agar Tidak Terulang:</strong><br>1. Jaga jarak tanam agar sinar matahari & sirkulasi udara lancar di sela daun.<br>2. Hindari menyiram langsung ke tajuk daun pada malam hari; siramlah di permukaan tanah area perakaran.<br>3. Aplikasikan agens hayati <em>Trichoderma sp.</em> atau kompos organik untuk memperkuat daya tahan tanaman.`;
+  }
+
+  // Default contextual advice
+  return lang === 'en'
+    ? `🌿 <strong>Plant Doctor Advice:</strong><br>Regarding your question about <em>${plant}</em> diagnosed with <strong>${disease}</strong>: Keep monitoring soil moisture and ensure diseased leaf litter is removed. If you see new healthy shoots growing after treatment, your plant is recovering nicely!`
+    : `🌿 <strong>Saran Dokter Tanaman:</strong><br>Mengenai pertanyaan Anda untuk <sup>${plant}</sup> yang terdeteksi <strong>${disease}</strong>: Pastikan kelembapan tanah terjaga ideal (tidak becek) dan segera bersihkan guguran daun sakit. Jika pucuk daun baru mulai tumbuh segar tanpa bercak, itu pertanda pemulihan berjalan baik!`;
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+// ── EXPORT PDF SCAN REPORT ────────────────────────────────
+function downloadPDFReport() {
+  if (!currentDiagnosisResult) {
+    showToast("⚠️ Tidak ada hasil diagnosis untuk diunduh.");
+    return;
+  }
+
+  showToast(t('toast_pdf_gen'));
+
+  // Ensure html2pdf library is loaded
+  if (typeof html2pdf === 'undefined') {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+    script.onload = () => processExportPDF();
+    script.onerror = () => showToast("❌ Gagal memuat library PDF export.");
+    document.head.appendChild(script);
+  } else {
+    processExportPDF();
+  }
+}
+
+function processExportPDF() {
+  const r = currentDiagnosisResult;
+  const plantName = selectedPlant ? (currentLang === 'en' && selectedPlant.name_en ? selectedPlant.name_en : selectedPlant.name) : 'Tanaman';
+  const plantLatin = selectedPlant ? selectedPlant.latin : '';
+  const plantEmoji = selectedPlant ? selectedPlant.emoji : '🌱';
+  const imgSrc = document.getElementById('preview-img')?.src || '';
+  const dateStr = new Date().toLocaleString(currentLang === 'en' ? 'en-US' : 'id-ID');
+
+  const recItems = Array.isArray(r.rekomendasi) 
+    ? r.rekomendasi.map(s => `<li style="margin-bottom:6px;">${s}</li>`).join('')
+    : `<li>${r.rekomendasi || 'Lakukan perawatan umum.'}</li>`;
+
+  // Create temporary printable layout container
+  const printElement = document.createElement('div');
+  printElement.style.padding = '30px';
+  printElement.style.fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+  printElement.style.color = '#1f2937';
+  printElement.style.background = '#ffffff';
+
+  printElement.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #16a34a; padding-bottom:15px; margin-bottom:20px;">
+      <div>
+        <h1 style="margin:0; font-size:24px; color:#16a34a; font-family:serif;">🌱 PlantScan — Laporan Diagnosis AI</h1>
+        <p style="margin:4px 0 0 0; font-size:12px; color:#6b7280;">Sistem Deteksi Kesehatan Tanaman Cerdas (Gemini AI Vision)</p>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:11px; color:#6b7280;">Tanggal Pemindaian:</div>
+        <div style="font-size:12px; font-weight:bold; color:#111827;">${dateStr}</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:20px; margin-bottom:20px; background:#f9fafb; border:1px solid #e5e7eb; border-radius:10px; padding:15px;">
+      ${imgSrc ? `<div style="width:140px; height:140px; border-radius:8px; overflow:hidden; border:1px solid #d1d5db; flex-shrink:0;"><img src="${imgSrc}" style="width:100%; height:100%; object-fit:cover;"></div>` : ''}
+      <div style="flex:1;">
+        <div style="font-size:12px; font-weight:bold; color:#16a34a; text-transform:uppercase; letter-spacing:0.5px;">Informasi Tanaman</div>
+        <h2 style="margin:4px 0 2px 0; font-size:20px; color:#111827;">${plantEmoji} ${plantName}</h2>
+        <div style="font-size:13px; font-style:italic; color:#4b5563; margin-bottom:10px;">${plantLatin}</div>
+        
+        <div style="display:inline-block; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:bold; background:${r.kondisi==='sehat'?'#dcfce7':r.kondisi==='parah'?'#fee2e2':'#fef3c7'}; color:${r.kondisi==='sehat'?'#15803d':r.kondisi==='parah'?'#b91c1c':'#b45309'};">
+          Status: ${(r.kondisi || 'Perhatian').toUpperCase()} · Keyakinan AI: ${(r.tingkat_kepercayaan||85).toFixed(0)}%
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px; background:#f3f4f6; border-left:4px solid #16a34a; padding:12px 16px; border-radius:0 8px 8px 0;">
+      <div style="font-size:12px; font-weight:bold; color:#374151; margin-bottom:4px;">HASIL DIAGNOSIS UTAMA:</div>
+      <div style="font-size:18px; font-weight:bold; color:#111827; margin-bottom:4px;">${r.nama_penyakit || 'Tidak Teridentifikasi'}</div>
+      <div style="font-size:13px; color:#4b5563; line-height:1.4;">"${r.ringkasan || 'Diagnosis selesai.'}"</div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;">
+      <div style="border:1px solid #e5e7eb; border-radius:8px; padding:12px; background:#fafafa;">
+        <div style="font-size:11px; font-weight:bold; color:#6b7280; text-transform:uppercase;">Gejala Terlihat</div>
+        <div style="font-size:12px; color:#1f2937; margin-top:4px;">${r.gejala_terlihat || '—'}</div>
+      </div>
+      <div style="border:1px solid #e5e7eb; border-radius:8px; padding:12px; background:#fafafa;">
+        <div style="font-size:11px; font-weight:bold; color:#6b7280; text-transform:uppercase;">Patogen / Keagenan</div>
+        <div style="font-size:12px; color:#1f2937; margin-top:4px;">${r.pathogen || '—'}</div>
+      </div>
+      <div style="border:1px solid #e5e7eb; border-radius:8px; padding:12px; background:#fafafa;">
+        <div style="font-size:11px; font-weight:bold; color:#6b7280; text-transform:uppercase;">Penyebab</div>
+        <div style="font-size:12px; color:#1f2937; margin-top:4px;">${r.penyebab || '—'}</div>
+      </div>
+      <div style="border:1px solid #e5e7eb; border-radius:8px; padding:12px; background:#fafafa;">
+        <div style="font-size:11px; font-weight:bold; color:#6b7280; text-transform:uppercase;">Dampak Jika Dibiarkan</div>
+        <div style="font-size:12px; color:#1f2937; margin-top:4px;">${r.dampak || '—'}</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:25px; border:1px solid #cbd5e1; border-radius:10px; padding:16px; background:#ffffff;">
+      <div style="font-size:14px; font-weight:bold; color:#16a34a; margin-bottom:8px; display:flex; justify-content:space-between;">
+        <span>🛡️ Rekomendasi Penanganan</span>
+        <span style="font-size:11px; background:#e2e8f0; color:#334155; padding:2px 8px; border-radius:4px;">URGENSI: ${(r.urgensi||'NORMAL').toUpperCase()}</span>
+      </div>
+      <ul style="margin:0; padding-left:20px; font-size:12px; color:#334155; line-height:1.6;">
+        ${recItems}
+      </ul>
+    </div>
+
+    <div style="border-top:1px dashed #d1d5db; padding-top:12px; font-size:10px; color:#9ca3af; text-align:center; line-height:1.4;">
+      Dokumen ini dihasilkan secara otomatis oleh <strong>PlantScan AI Vision Platform</strong>.<br>
+      *Laporan ini bersifat panduan awal penanganan tanaman. Konsultasikan dengan penyuluh pertanian setempat untuk tindakan berisiko tinggi.
+    </div>
+  `;
+
+  const opt = {
+    margin:       10,
+    filename:     `PlantScan_Report_${plantName.replace(/\s+/g, '_')}_${Date.now()}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  html2pdf().set(opt).from(printElement).save().then(() => {
+    showToast(t('toast_pdf_done'));
+  }).catch(err => {
+    console.error("PDF Export error:", err);
+    showToast("❌ Gagal membuat PDF.");
+  });
 }
 
 function showError(msg) {

@@ -109,7 +109,19 @@ const translations = {
     toast_login_invalid: "Silakan sertakan '@' dalam alamat email",
     toast_login_ok: "Berhasil Login! Akses scan tanpa batas terbuka.",
     toast_logout: "Berhasil Logout.",
-    copied: "Hasil disalin ke clipboard!"
+    copied: "Hasil disalin ke clipboard!",
+    export_pdf: "Download PDF",
+    toast_pdf_gen: "📄 Menyiapkan dokumen PDF...",
+    toast_pdf_done: "✅ Laporan PDF berhasil diunduh!",
+    chat_title: "Asisten Dokter Tanaman AI",
+    chat_badge: "🌿 Khusus Kesehatan Tanaman",
+    chat_subtitle: "Tanyakan dosis obat, perawatan, pencegahan, atau risiko penularan.",
+    chat_placeholder: "Ketik pertanyaan seputar tanamanmu...",
+    chat_send: "Kirim",
+    chat_chip1: "💊 Berapa dosis obat yang digunakan?",
+    chat_chip2: "🦠 Apakah ini menular ke tanaman lain?",
+    chat_chip3: "🛡️ Bagaimana cara pencegahan agar tidak terulang?",
+    chat_guard_refusal: "Maaf, saya adalah AI Dokter Tanaman yang khusus dirancang untuk menjawab topik seputar kesehatan tanaman, penyakit tumbuhan, pemupukan, dan perawatan pertanian. Silakan tanyakan hal-hal yang berkaitan dengan tanaman atau hasil pemindaian Anda! 🌿"
   },
   en: {
     nav_deteksi: "Scan",
@@ -221,7 +233,19 @@ const translations = {
     toast_login_invalid: "Please include an '@' in the email address",
     toast_login_ok: "Login Successful! Unlimited scan access unlocked.",
     toast_logout: "Logout Successful.",
-    copied: "Results copied to clipboard!"
+    copied: "Results copied to clipboard!",
+    export_pdf: "Download PDF",
+    toast_pdf_gen: "📄 Preparing PDF document...",
+    toast_pdf_done: "✅ PDF report downloaded successfully!",
+    chat_title: "AI Plant Doctor Assistant",
+    chat_badge: "🌿 Plant Health Specialized",
+    chat_subtitle: "Ask about treatment dosage, care routines, prevention, or contagion risks.",
+    chat_placeholder: "Ask a question about your plant...",
+    chat_send: "Send",
+    chat_chip1: "💊 What medication dosage should I use?",
+    chat_chip2: "🦠 Is this contagious to other plants?",
+    chat_chip3: "🛡️ How to prevent this from recurring?",
+    chat_guard_refusal: "Sorry, I am an AI Plant Doctor specifically designed to answer questions related to plant health, pathology, fertilization, and crop care. Please feel free to ask anything about plants or your scan results! 🌿"
   }
 };
 
