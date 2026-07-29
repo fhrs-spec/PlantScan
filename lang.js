@@ -121,7 +121,8 @@ const translations = {
     chat_chip1: "💊 Berapa dosis obat yang digunakan?",
     chat_chip2: "🦠 Apakah ini menular ke tanaman lain?",
     chat_chip3: "🛡️ Bagaimana cara pencegahan agar tidak terulang?",
-    chat_guard_refusal: "Maaf, saya adalah AI Dokter Tanaman yang khusus dirancang untuk menjawab topik seputar kesehatan tanaman, penyakit tumbuhan, pemupukan, dan perawatan pertanian. Silakan tanyakan hal-hal yang berkaitan dengan tanaman atau hasil pemindaian Anda! 🌿"
+    chat_guard_refusal: "Maaf, saya adalah AI Dokter Tanaman yang khusus dirancang untuk menjawab topik seputar kesehatan tanaman, penyakit tumbuhan, pemupukan, dan perawatan pertanian. Silakan tanyakan hal-hal yang berkaitan dengan tanaman atau hasil pemindaian Anda! 🌿",
+    chat_thinking: "🌿 Asisten dokter tanaman sedang berpikir..."
   },
   en: {
     nav_deteksi: "Scan",
@@ -245,7 +246,8 @@ const translations = {
     chat_chip1: "💊 What medication dosage should I use?",
     chat_chip2: "🦠 Is this contagious to other plants?",
     chat_chip3: "🛡️ How to prevent this from recurring?",
-    chat_guard_refusal: "Sorry, I am an AI Plant Doctor specifically designed to answer questions related to plant health, pathology, fertilization, and crop care. Please feel free to ask anything about plants or your scan results! 🌿"
+    chat_guard_refusal: "Sorry, I am an AI Plant Doctor specifically designed to answer questions related to plant health, pathology, fertilization, and crop care. Please feel free to ask anything about plants or your scan results! 🌿",
+    chat_thinking: "🌿 Plant doctor assistant is thinking..."
   }
 };
 

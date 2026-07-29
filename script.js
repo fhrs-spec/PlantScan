@@ -550,7 +550,7 @@ async function sendChatMessage() {
   const typingDiv = document.createElement('div');
   typingDiv.className = 'chat-msg ai typing';
   typingDiv.id = 'chat-typing-indicator';
-  typingDiv.innerHTML = `<div class="msg-bubble">🌿 Dokter Tanaman (Gemini AI) sedang berpikir...</div>`;
+  typingDiv.innerHTML = `<div class="msg-bubble">${t('chat_thinking')}</div>`;
   chatContainer.appendChild(typingDiv);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 
