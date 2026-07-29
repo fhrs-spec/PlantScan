@@ -529,7 +529,7 @@ function isPlantRelatedQuestion(text) {
   return hasPlantKeyword || q.length > 5;
 }
 
-function sendChatMessage() {
+async function sendChatMessage() {
   const input = document.getElementById('chat-input');
   if (!input) return;
   const userText = input.value.trim();
@@ -550,30 +550,75 @@ function sendChatMessage() {
   const typingDiv = document.createElement('div');
   typingDiv.className = 'chat-msg ai typing';
   typingDiv.id = 'chat-typing-indicator';
-  typingDiv.innerHTML = `<div class="msg-bubble">🌿 Dokter Tanaman sedang berpikir...</div>`;
+  typingDiv.innerHTML = `<div class="msg-bubble">🌿 Dokter Tanaman (Gemini AI) sedang berpikir...</div>`;
   chatContainer.appendChild(typingDiv);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 
-  // AI Response Evaluation (Simulated fast engine / Gemini integration)
-  setTimeout(() => {
+  // Scope check first
+  const isScopeValid = isPlantRelatedQuestion(userText);
+  if (!isScopeValid) {
+    setTimeout(() => {
+      const typing = document.getElementById('chat-typing-indicator');
+      if (typing) typing.remove();
+      const aiDiv = document.createElement('div');
+      aiDiv.className = 'chat-msg ai';
+      aiDiv.innerHTML = `<div class="msg-bubble">${t('chat_guard_refusal')}</div>`;
+      chatContainer.appendChild(aiDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }, 400);
+    return;
+  }
+
+  // Call /api/chat (Vercel Serverless Function powered by Gemini API)
+  const plantNameDisplay = selectedPlant ? (currentLang === 'en' && selectedPlant.name_en ? selectedPlant.name_en : selectedPlant.name) : 'Tanaman';
+  const plantLatinDisplay = selectedPlant ? selectedPlant.latin : '';
+  const diseaseNameDisplay = currentDiagnosisResult?.nama_penyakit || 'Diagnosa Kesehatan Tanaman';
+  const summaryDisplay = currentDiagnosisResult?.ringkasan || '';
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userText: userText,
+        plantName: plantNameDisplay,
+        plantLatin: plantLatinDisplay,
+        diseaseName: diseaseNameDisplay,
+        summary: summaryDisplay,
+        lang: currentLang || 'id'
+      })
+    });
+
+    const data = await res.json().catch(() => ({}));
     const typing = document.getElementById('chat-typing-indicator');
     if (typing) typing.remove();
 
-    const isScopeValid = isPlantRelatedQuestion(userText);
-    let replyText = '';
-
-    if (!isScopeValid) {
-      replyText = t('chat_guard_refusal');
+    let finalReply = '';
+    if (res.ok && data?.reply) {
+      finalReply = data.reply;
     } else {
-      replyText = generateAIPlantDoctorReply(userText, currentDiagnosisResult);
+      // Fallback ke local engine jika API key belum dikonfigurasi di Vercel
+      finalReply = generateAIPlantDoctorReply(userText, currentDiagnosisResult);
     }
 
     const aiDiv = document.createElement('div');
     aiDiv.className = 'chat-msg ai';
-    aiDiv.innerHTML = `<div class="msg-bubble">${replyText}</div>`;
+    aiDiv.innerHTML = `<div class="msg-bubble">${finalReply}</div>`;
     chatContainer.appendChild(aiDiv);
     chatContainer.scrollTop = chatContainer.scrollHeight;
-  }, 750);
+
+  } catch (err) {
+    console.warn("API Chat fetch error, using local engine fallback:", err);
+    const typing = document.getElementById('chat-typing-indicator');
+    if (typing) typing.remove();
+
+    const fallbackReply = generateAIPlantDoctorReply(userText, currentDiagnosisResult);
+    const aiDiv = document.createElement('div');
+    aiDiv.className = 'chat-msg ai';
+    aiDiv.innerHTML = `<div class="msg-bubble">${fallbackReply}</div>`;
+    chatContainer.appendChild(aiDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
 }
 
 function generateAIPlantDoctorReply(userText, diag) {
