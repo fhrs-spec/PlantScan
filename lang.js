@@ -13,7 +13,14 @@ const translations = {
     
     // Auth & Dashboard
     picker_title: "Pilih Jenis Tanaman",
-    search_placeholder: "Cari tanaman...",
+    search_placeholder: "Cari nama atau jenis tanaman...",
+    cat_all: "Semua",
+    cat_veg: "🥬 Sayuran",
+    cat_fruit: "🍎 Buah",
+    cat_crop: "🌾 Pangan",
+    cat_plantation: "🌴 Perkebunan",
+    cat_ornamental: "🪴 Hias",
+    cat_spice: "🫚 Rempah",
     upload_title: "Unggah Foto",
     upload_desc: "Tarik & lepas foto di sini, atau klik untuk memilih",
     camera_btn: "Gunakan Kamera",
@@ -138,7 +145,14 @@ const translations = {
     
     // Auth & Dashboard
     picker_title: "Select Plant Type",
-    search_placeholder: "Search plants...",
+    search_placeholder: "Search plant name or category...",
+    cat_all: "All",
+    cat_veg: "🥬 Vegetables",
+    cat_fruit: "🍎 Fruits",
+    cat_crop: "🌾 Crops",
+    cat_plantation: "🌴 Plantation",
+    cat_ornamental: "🪴 Ornamental",
+    cat_spice: "🫚 Spices",
     upload_title: "Upload Photo",
     upload_desc: "Drag & drop photo here, or click to select",
     camera_btn: "Use Camera",

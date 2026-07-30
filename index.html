@@ -14,12 +14,16 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Background blobs -->
+  <!-- Background blobs & leaf particles -->
   <div class="bg-blobs">
     <div class="blob b1"></div>
     <div class="blob b2"></div>
     <div class="blob b3"></div>
     <div class="blob b4"></div>
+    <div class="leaf-particle l1">🍃</div>
+    <div class="leaf-particle l2">🌿</div>
+    <div class="leaf-particle l3">🌱</div>
+    <div class="leaf-particle l4">🍃</div>
   </div>
 
   <!-- NAV -->
@@ -43,7 +47,7 @@
         <a href="#cara-pakai" class="nl" data-i18n="nav_panduan">Panduan</a>
         <div class="lang-dropdown" id="lang-dropdown">
           <button class="lang-btn" onclick="toggleLangMenu()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
             <span id="current-lang-label">ID</span>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </button>
@@ -98,8 +102,19 @@
             </div>
             <div class="search-wrap">
               <svg viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-              <input type="text" class="search-input" placeholder="Cari tanaman..." id="plant-search" oninput="filterPlants(this.value)" data-i18n-placeholder="search_placeholder">
+              <input type="text" class="search-input" placeholder="Cari nama atau jenis tanaman..." id="plant-search" oninput="filterPlants(this.value)" data-i18n-placeholder="search_placeholder">
             </div>
+          </div>
+
+          <!-- Category Filter Tabs Bar -->
+          <div class="plant-cat-tabs" id="plant-cat-tabs">
+            <button class="cat-tab active" onclick="filterCategory('all', this)" data-i18n="cat_all">Semua</button>
+            <button class="cat-tab" onclick="filterCategory('Sayuran', this)" data-i18n="cat_veg">🥬 Sayuran</button>
+            <button class="cat-tab" onclick="filterCategory('Buah', this)" data-i18n="cat_fruit">🍎 Buah</button>
+            <button class="cat-tab" onclick="filterCategory('Pangan', this)" data-i18n="cat_crop">🌾 Pangan</button>
+            <button class="cat-tab" onclick="filterCategory('Perkebunan', this)" data-i18n="cat_plantation">🌴 Perkebunan</button>
+            <button class="cat-tab" onclick="filterCategory('Hias', this)" data-i18n="cat_ornamental">🪴 Hias</button>
+            <button class="cat-tab" onclick="filterCategory('Rempah', this)" data-i18n="cat_spice">🫚 Rempah</button>
           </div>
 
           <!-- Selected plant banner -->

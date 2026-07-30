@@ -69,21 +69,37 @@ const plants = [
 let selectedPlant = null;
 let cameraStream  = null;
 let currentImageB64 = null;
+let currentActiveCategory = 'all';
 
 // ── BUILD PLANT GRID ──────────────────────────────────────
 function buildGrid() {
   const grid = document.getElementById('plant-grid');
-  grid.innerHTML = plants.map(p => `
-    <div class="plant-card" id="pc-${p.id}" onclick="selectPlant('${p.id}')">
+  grid.innerHTML = plants.map(p => {
+    const catLabel = currentLang === "en" && p.category_en ? p.category_en : p.category;
+    const nameLabel = currentLang === "en" && p.name_en ? p.name_en : p.name;
+    return `
+    <div class="plant-card" id="pc-${p.id}" onclick="selectPlant('${p.id}')" data-category="${p.category}">
       <div class="pc-check">
         <svg viewBox="0 0 12 12" fill="none"><polyline points="2 6 5 9 10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <span class="pc-emoji">${p.emoji}</span>
-      <span class="pc-name">${currentLang === "en" && p.name_en ? p.name_en : p.name}</span>
+      <span class="pc-name">${nameLabel}</span>
       <span class="pc-latin">${p.latin}</span>
-    </div>`).join('');
+      <span class="pc-cat-tag">${catLabel}</span>
+    </div>`;
+  }).join('');
 }
 buildGrid();
+
+function filterCategory(catName, btnEl) {
+  currentActiveCategory = catName;
+  document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+
+  const searchInput = document.getElementById('plant-search');
+  const query = searchInput ? searchInput.value : '';
+  filterPlants(query);
+}
 
 function selectPlant(id) {
   const p = plants.find(x => x.id === id);
@@ -116,18 +132,26 @@ function clearPlant() {
 }
 
 function filterPlants(val) {
-  const q = val.toLowerCase().trim();
+  const q = (val || '').toLowerCase().trim();
   let found = 0;
+  
   plants.forEach(p => {
     const el = document.getElementById('pc-' + p.id);
     if (!el) return;
-    const match = !q
+
+    const matchQuery = !q
       || p.name.toLowerCase().includes(q)
+      || (p.name_en && p.name_en.toLowerCase().includes(q))
       || p.latin.toLowerCase().includes(q)
       || p.category.toLowerCase().includes(q);
-    el.classList.toggle('hidden', !match);
-    if (match) found++;
+
+    const matchCategory = currentActiveCategory === 'all' || p.category.toLowerCase() === currentActiveCategory.toLowerCase();
+
+    const isVisible = matchQuery && matchCategory;
+    el.classList.toggle('hidden', !isVisible);
+    if (isVisible) found++;
   });
+
   const noResult = document.getElementById('no-result');
   if (noResult) noResult.style.display = found ? 'none' : 'block';
 }
