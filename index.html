@@ -60,7 +60,6 @@
             </button>
           </div>
         </div>
-        <a href="#" class="nl cta-login" onclick="openLoginModal()" id="nav-login-btn" data-i18n="nav_login">Login</a>
         <a href="#deteksi" class="nl cta-nav">
           <svg viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           <span data-i18n="nav_scan">Mulai Scan</span>
@@ -352,25 +351,6 @@
       <canvas id="snap-canvas" style="display:none;"></canvas>
     </div>
   </div>
-
-  <!-- LOGIN MODAL -->
-  <div class="modal-overlay" id="login-modal">
-    <div class="modal-box">
-      <div class="modal-head">
-        <h3 data-i18n="modal_login_title">Masuk ke PlantScan</h3>
-        <button class="modal-close-btn" onclick="closeLoginModal()">
-          <svg viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </button>
-      </div>
-      <p class="modal-desc" data-i18n="modal_login_desc">Dapatkan akses scan tanpa batas</p>
-      <form id="login-form" novalidate onsubmit="performLogin(event)">
-        <input type="email" id="login-email" class="modal-input" placeholder="Alamat Email" data-i18n-placeholder="placeholder_email">
-        <input type="password" id="login-password" class="modal-input" placeholder="Kata Sandi" data-i18n-placeholder="placeholder_password">
-        <button type="submit" class="btn-upload" style="justify-content:center; width: 100%;" data-i18n="modal_login_btn">Masuk Sekarang</button>
-      </form>
-    </div>
-  </div>
-
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
