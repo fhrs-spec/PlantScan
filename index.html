@@ -56,6 +56,7 @@
             </button>
           </div>
         </div>
+        <a href="#" class="nl cta-login" onclick="openLoginModal()" id="nav-login-btn" data-i18n="nav_login">Login</a>
         <a href="#deteksi" class="nl cta-nav">
           <svg viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           <span data-i18n="nav_scan">Mulai Scan</span>
@@ -72,8 +73,8 @@
     <!-- HERO -->
     <section class="hero" id="hero">
       <h1 data-i18n-html="hero_title">Deteksi <em>Penyakit</em><br>Tanamanmu</h1>
-      <p class="hero-desc animate-on-scroll" data-i18n="hero_desc">Upload foto daun atau buah tanamanmu — AI menganalisis kondisinya secara mendalam, memberikan diagnosis akurat dan rekomendasi penanganan.</p>
-      <div class="hero-pills animate-on-scroll">
+      <p class="hero-desc" data-i18n="hero_desc">Upload foto daun atau buah tanamanmu — AI menganalisis kondisinya secara mendalam, memberikan diagnosis akurat dan rekomendasi penanganan.</p>
+      <div class="hero-pills">
         <div class="pill"><span>🌿</span><span data-i18n="pill_1">Daun & Buah</span></div>
         <div class="pill"><span>🧠</span>AI</div>
         <div class="pill"><span>🌱</span><span data-i18n="pill_3">20+ Tanaman</span></div>
@@ -85,7 +86,7 @@
     <section id="deteksi">
 
       <!-- UPLOAD ZONE -->
-      <div class="upload-zone animate-on-scroll" id="upload-zone">
+      <div class="upload-zone" id="upload-zone">
         <div class="uz-glow"></div>
 
         <!-- Plant Picker -->
@@ -129,11 +130,11 @@
           <div class="drop-sub scan-types" data-i18n-html="drop_sub2">Bisa foto <strong>daun</strong> maupun <strong>buah</strong> tanaman</div>
 
           <div class="btn-row">
-            <button class="btn-upload" id="btn-upload" onclick="tryUpload()">
+            <button class="btn-upload" id="btn-upload" onclick="tryUpload()" disabled>
               <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.8"/><circle cx="7" cy="7" r="1.8" fill="currentColor"/><path d="M2 13L6 9L10 13L14 9L18 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
               <span data-i18n="btn_upload">Pilih Foto</span>
             </button>
-            <button class="btn-camera" id="btn-camera" onclick="tryCamera()">
+            <button class="btn-camera" id="btn-camera" onclick="tryCamera()" disabled>
               <svg viewBox="0 0 20 20" fill="none"><path d="M18 15a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2h2l2-2h4l2 2h2a2 2 0 012 2v8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="11" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
               <span data-i18n="btn_camera">Kamera</span>
             </button>
@@ -214,7 +215,7 @@
     </section>
 
     <!-- RIWAYAT SCAN -->
-    <section id="history-section" class="animate-on-scroll" style="display:none; padding-top: 2rem;">
+    <section id="history-section" style="display:none; padding-top: 2rem;">
       <div class="hist-header">
         <h2 class="sec-title" style="margin-top:0; margin-bottom:0.2rem; font-size:1.4rem;" data-i18n="history_title">Riwayat Pemindaian</h2>
         <button class="btn-clear-hist" onclick="clearHistory()">
@@ -233,32 +234,32 @@
       <h2 class="sec-title" data-i18n="feat_title">Fitur Unggulan</h2>
       <p class="sec-sub" data-i18n="feat_sub">Semua yang kamu butuhkan untuk menjaga kesehatan tanaman</p>
       <div class="feat-grid">
-        <div class="feat-card fc-highlight animate-on-scroll">
+        <div class="feat-card fc-highlight">
           <div class="feat-icon">🧠</div>
           <h3 data-i18n="f1_title">AI Vision Nyata</h3>
           <p data-i18n="f1_desc">Menggunakan Gemini AI yang sesungguhnya untuk menganalisis foto — bukan database statis, melainkan pemahaman visual mendalam.</p>
         </div>
-        <div class="feat-card animate-on-scroll">
+        <div class="feat-card">
           <div class="feat-icon">🍃</div>
           <h3 data-i18n="f2_title">Daun & Buah</h3>
           <p data-i18n="f2_desc">Bukan hanya daun — PlantScan bisa mendeteksi penyakit pada buah tanaman juga, dengan analisis menyeluruh.</p>
         </div>
-        <div class="feat-card animate-on-scroll">
+        <div class="feat-card">
           <div class="feat-icon">🌿</div>
           <h3 data-i18n="f3_title">20+ Jenis Tanaman</h3>
           <p data-i18n="f3_desc">Database tanaman terus berkembang, mencakup sayuran, buah-buahan, dan tanaman pangan populer Indonesia.</p>
         </div>
-        <div class="feat-card animate-on-scroll">
+        <div class="feat-card">
           <div class="feat-icon">📋</div>
           <h3 data-i18n="f4_title">Diagnosis Mendalam</h3>
           <p data-i18n="f4_desc">Hasil analisis lengkap: nama penyakit, penyebab, gejala, tingkat keparahan, dan rekomendasi penanganan spesifik.</p>
         </div>
-        <div class="feat-card animate-on-scroll">
+        <div class="feat-card">
           <div class="feat-icon">📱</div>
           <h3 data-i18n="f5_title">Ramah Semua Perangkat</h3>
           <p data-i18n="f5_desc">Antarmuka responsif yang nyaman digunakan di HP, tablet, maupun komputer dengan performa optimal.</p>
         </div>
-        <div class="feat-card animate-on-scroll">
+        <div class="feat-card">
           <div class="feat-icon">🔒</div>
           <h3 data-i18n="f6_title">Privasi Terjaga</h3>
           <p data-i18n="f6_desc">Foto hanya diproses saat analisis berlangsung dan tidak disimpan di server manapun setelah selesai.</p>
@@ -271,35 +272,35 @@
       <h2 class="sec-title" data-i18n="how_title">Cara Menggunakan</h2>
       <p class="sec-sub" data-i18n="how_sub">Lima langkah mudah menuju diagnosis akurat</p>
       <div class="howto-list">
-        <div class="howto-item animate-on-scroll">
+        <div class="howto-item">
           <div class="howto-num">1</div>
           <div class="howto-body">
             <h4 data-i18n="h1_title">Pilih Jenis Tanaman</h4>
             <p data-i18n="h1_desc">Pilih jenis tanaman dari daftar yang tersedia. Langkah ini wajib agar AI dapat memberikan analisis yang lebih terfokus dan akurat.</p>
           </div>
         </div>
-        <div class="howto-item animate-on-scroll">
+        <div class="howto-item">
           <div class="howto-num">2</div>
           <div class="howto-body">
             <h4 data-i18n="h2_title">Siapkan Foto yang Baik</h4>
             <p data-i18n="h2_desc">Ambil foto daun atau buah yang menunjukkan gejala dengan pencahayaan cukup. Jarak ideal 20–30 cm agar detail terlihat jelas.</p>
           </div>
         </div>
-        <div class="howto-item animate-on-scroll">
+        <div class="howto-item">
           <div class="howto-num">3</div>
           <div class="howto-body">
             <h4 data-i18n="h3_title">Unggah atau Ambil Foto</h4>
             <p data-i18n="h3_desc">Seret foto ke area drop zone, klik "Pilih Foto" untuk memilih dari galeri, atau gunakan kamera langsung dari aplikasi.</p>
           </div>
         </div>
-        <div class="howto-item animate-on-scroll">
+        <div class="howto-item">
           <div class="howto-num">4</div>
           <div class="howto-body">
             <h4 data-i18n="h4_title">Tunggu Analisis AI</h4>
             <p data-i18n="h4_desc">Gemini AI menganalisis gambar secara mendalam — biasanya selesai dalam 5–15 detik tergantung koneksi internet.</p>
           </div>
         </div>
-        <div class="howto-item animate-on-scroll">
+        <div class="howto-item">
           <div class="howto-num">5</div>
           <div class="howto-body">
             <h4 data-i18n="h5_title">Baca & Tindak Lanjuti</h4>
@@ -334,6 +335,24 @@
         <button class="btn-camera" onclick="closeCamera()" style="justify-content:center;flex:0.6;" data-i18n="cam_cancel">Batal</button>
       </div>
       <canvas id="snap-canvas" style="display:none;"></canvas>
+    </div>
+  </div>
+
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay" id="login-modal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 data-i18n="modal_login_title">Masuk ke PlantScan</h3>
+        <button class="modal-close-btn" onclick="closeLoginModal()">
+          <svg viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <p class="modal-desc" data-i18n="modal_login_desc">Dapatkan akses scan tanpa batas</p>
+      <form id="login-form" novalidate onsubmit="performLogin(event)">
+        <input type="email" id="login-email" class="modal-input" placeholder="Alamat Email" data-i18n-placeholder="placeholder_email">
+        <input type="password" id="login-password" class="modal-input" placeholder="Kata Sandi" data-i18n-placeholder="placeholder_password">
+        <button type="submit" class="btn-upload" style="justify-content:center; width: 100%;" data-i18n="modal_login_btn">Masuk Sekarang</button>
+      </form>
     </div>
   </div>
 
