@@ -69,37 +69,21 @@ const plants = [
 let selectedPlant = null;
 let cameraStream  = null;
 let currentImageB64 = null;
-let currentActiveCategory = 'all';
 
 // ── BUILD PLANT GRID ──────────────────────────────────────
 function buildGrid() {
   const grid = document.getElementById('plant-grid');
-  grid.innerHTML = plants.map(p => {
-    const catLabel = currentLang === "en" && p.category_en ? p.category_en : p.category;
-    const nameLabel = currentLang === "en" && p.name_en ? p.name_en : p.name;
-    return `
-    <div class="plant-card" id="pc-${p.id}" onclick="selectPlant('${p.id}')" data-category="${p.category}">
+  grid.innerHTML = plants.map(p => `
+    <div class="plant-card" id="pc-${p.id}" onclick="selectPlant('${p.id}')">
       <div class="pc-check">
         <svg viewBox="0 0 12 12" fill="none"><polyline points="2 6 5 9 10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <span class="pc-emoji">${p.emoji}</span>
-      <span class="pc-name">${nameLabel}</span>
+      <span class="pc-name">${currentLang === "en" && p.name_en ? p.name_en : p.name}</span>
       <span class="pc-latin">${p.latin}</span>
-      <span class="pc-cat-tag">${catLabel}</span>
-    </div>`;
-  }).join('');
+    </div>`).join('');
 }
 buildGrid();
-
-function filterCategory(catName, btnEl) {
-  currentActiveCategory = catName;
-  document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
-  if (btnEl) btnEl.classList.add('active');
-
-  const searchInput = document.getElementById('plant-search');
-  const query = searchInput ? searchInput.value : '';
-  filterPlants(query);
-}
 
 function selectPlant(id) {
   const p = plants.find(x => x.id === id);
@@ -115,6 +99,8 @@ function selectPlant(id) {
   document.getElementById('sb-latin').textContent = p.latin;
   document.getElementById('selected-banner').classList.add('show');
 
+  document.getElementById('btn-upload').disabled = false;
+  document.getElementById('btn-camera').disabled = false;
   document.getElementById('upload-hint').classList.add('hidden');
 
   showToast(`${p.emoji} ${currentLang === 'en' && p.name_en ? p.name_en : p.name} ${t('toast_selected')}`);
@@ -124,30 +110,24 @@ function clearPlant() {
   selectedPlant = null;
   document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
   document.getElementById('selected-banner').classList.remove('show');
+  document.getElementById('btn-upload').disabled = true;
+  document.getElementById('btn-camera').disabled = true;
   document.getElementById('upload-hint').classList.remove('hidden');
 }
 
 function filterPlants(val) {
-  const q = (val || '').toLowerCase().trim();
+  const q = val.toLowerCase().trim();
   let found = 0;
-  
   plants.forEach(p => {
     const el = document.getElementById('pc-' + p.id);
     if (!el) return;
-
-    const matchQuery = !q
+    const match = !q
       || p.name.toLowerCase().includes(q)
-      || (p.name_en && p.name_en.toLowerCase().includes(q))
       || p.latin.toLowerCase().includes(q)
       || p.category.toLowerCase().includes(q);
-
-    const matchCategory = currentActiveCategory === 'all' || p.category.toLowerCase() === currentActiveCategory.toLowerCase();
-
-    const isVisible = matchQuery && matchCategory;
-    el.classList.toggle('hidden', !isVisible);
-    if (isVisible) found++;
+    el.classList.toggle('hidden', !match);
+    if (match) found++;
   });
-
   const noResult = document.getElementById('no-result');
   if (noResult) noResult.style.display = found ? 'none' : 'block';
 }
@@ -878,6 +858,8 @@ function resetApp() {
   document.getElementById('diag-content').style.display = 'none';
   document.getElementById('loading-panel').style.display = 'flex';
   document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('btn-upload').disabled = true;
+  document.getElementById('btn-camera').disabled = true;
   document.getElementById('selected-banner').classList.remove('show');
   document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
   document.getElementById('upload-hint').classList.remove('hidden');
@@ -1154,6 +1136,11 @@ function performLogout(e) {
 }
 
 function checkAuthBeforeScan() {
-  // Selama masa percobaan/eksperimen, hilangkan batasan scan
+  if (currentUser) return true;
+  if (guestScans >= 1) {
+    openLoginModal();
+    showToast(t('toast_limit'));
+    return false;
+  }
   return true;
 }

@@ -14,16 +14,12 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Background blobs & leaf particles -->
+  <!-- Background blobs -->
   <div class="bg-blobs">
     <div class="blob b1"></div>
     <div class="blob b2"></div>
     <div class="blob b3"></div>
     <div class="blob b4"></div>
-    <div class="leaf-particle l1">🍃</div>
-    <div class="leaf-particle l2">🌿</div>
-    <div class="leaf-particle l3">🌱</div>
-    <div class="leaf-particle l4">🍃</div>
   </div>
 
   <!-- NAV -->
@@ -47,7 +43,7 @@
         <a href="#cara-pakai" class="nl" data-i18n="nav_panduan">Panduan</a>
         <div class="lang-dropdown" id="lang-dropdown">
           <button class="lang-btn" onclick="toggleLangMenu()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
             <span id="current-lang-label">ID</span>
             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </button>
@@ -60,6 +56,7 @@
             </button>
           </div>
         </div>
+        <a href="#" class="nl cta-login" onclick="openLoginModal()" id="nav-login-btn" data-i18n="nav_login">Login</a>
         <a href="#deteksi" class="nl cta-nav">
           <svg viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           <span data-i18n="nav_scan">Mulai Scan</span>
@@ -101,19 +98,8 @@
             </div>
             <div class="search-wrap">
               <svg viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-              <input type="text" class="search-input" placeholder="Cari nama atau jenis tanaman..." id="plant-search" oninput="filterPlants(this.value)" data-i18n-placeholder="search_placeholder">
+              <input type="text" class="search-input" placeholder="Cari tanaman..." id="plant-search" oninput="filterPlants(this.value)" data-i18n-placeholder="search_placeholder">
             </div>
-          </div>
-
-          <!-- Category Filter Tabs Bar -->
-          <div class="plant-cat-tabs" id="plant-cat-tabs">
-            <button class="cat-tab active" onclick="filterCategory('all', this)" data-i18n="cat_all">Semua</button>
-            <button class="cat-tab" onclick="filterCategory('Sayuran', this)" data-i18n="cat_veg">🥬 Sayuran</button>
-            <button class="cat-tab" onclick="filterCategory('Buah', this)" data-i18n="cat_fruit">🍎 Buah</button>
-            <button class="cat-tab" onclick="filterCategory('Pangan', this)" data-i18n="cat_crop">🌾 Pangan</button>
-            <button class="cat-tab" onclick="filterCategory('Perkebunan', this)" data-i18n="cat_plantation">🌴 Perkebunan</button>
-            <button class="cat-tab" onclick="filterCategory('Hias', this)" data-i18n="cat_ornamental">🪴 Hias</button>
-            <button class="cat-tab" onclick="filterCategory('Rempah', this)" data-i18n="cat_spice">🫚 Rempah</button>
           </div>
 
           <!-- Selected plant banner -->
@@ -144,11 +130,11 @@
           <div class="drop-sub scan-types" data-i18n-html="drop_sub2">Bisa foto <strong>daun</strong> maupun <strong>buah</strong> tanaman</div>
 
           <div class="btn-row">
-            <button class="btn-upload" id="btn-upload" onclick="tryUpload()">
+            <button class="btn-upload" id="btn-upload" onclick="tryUpload()" disabled>
               <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.8"/><circle cx="7" cy="7" r="1.8" fill="currentColor"/><path d="M2 13L6 9L10 13L14 9L18 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
               <span data-i18n="btn_upload">Pilih Foto</span>
             </button>
-            <button class="btn-camera" id="btn-camera" onclick="tryCamera()">
+            <button class="btn-camera" id="btn-camera" onclick="tryCamera()" disabled>
               <svg viewBox="0 0 20 20" fill="none"><path d="M18 15a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2h2l2-2h4l2 2h2a2 2 0 012 2v8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="11" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
               <span data-i18n="btn_camera">Kamera</span>
             </button>
@@ -351,6 +337,25 @@
       <canvas id="snap-canvas" style="display:none;"></canvas>
     </div>
   </div>
+
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay" id="login-modal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 data-i18n="modal_login_title">Masuk ke PlantScan</h3>
+        <button class="modal-close-btn" onclick="closeLoginModal()">
+          <svg viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <p class="modal-desc" data-i18n="modal_login_desc">Dapatkan akses scan tanpa batas</p>
+      <form id="login-form" novalidate onsubmit="performLogin(event)">
+        <input type="email" id="login-email" class="modal-input" placeholder="Alamat Email" data-i18n-placeholder="placeholder_email">
+        <input type="password" id="login-password" class="modal-input" placeholder="Kata Sandi" data-i18n-placeholder="placeholder_password">
+        <button type="submit" class="btn-upload" style="justify-content:center; width: 100%;" data-i18n="modal_login_btn">Masuk Sekarang</button>
+      </form>
+    </div>
+  </div>
+
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
