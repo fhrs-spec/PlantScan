@@ -115,8 +115,6 @@ function selectPlant(id) {
   document.getElementById('sb-latin').textContent = p.latin;
   document.getElementById('selected-banner').classList.add('show');
 
-  document.getElementById('btn-upload').disabled = false;
-  document.getElementById('btn-camera').disabled = false;
   document.getElementById('upload-hint').classList.add('hidden');
 
   showToast(`${p.emoji} ${currentLang === 'en' && p.name_en ? p.name_en : p.name} ${t('toast_selected')}`);
@@ -126,8 +124,6 @@ function clearPlant() {
   selectedPlant = null;
   document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
   document.getElementById('selected-banner').classList.remove('show');
-  document.getElementById('btn-upload').disabled = true;
-  document.getElementById('btn-camera').disabled = true;
   document.getElementById('upload-hint').classList.remove('hidden');
 }
 
@@ -882,8 +878,6 @@ function resetApp() {
   document.getElementById('diag-content').style.display = 'none';
   document.getElementById('loading-panel').style.display = 'flex';
   document.getElementById('progress-fill').style.width = '0%';
-  document.getElementById('btn-upload').disabled = true;
-  document.getElementById('btn-camera').disabled = true;
   document.getElementById('selected-banner').classList.remove('show');
   document.querySelectorAll('.plant-card').forEach(c => c.classList.remove('selected'));
   document.getElementById('upload-hint').classList.remove('hidden');
@@ -1160,11 +1154,6 @@ function performLogout(e) {
 }
 
 function checkAuthBeforeScan() {
-  if (currentUser) return true;
-  if (guestScans >= 1) {
-    openLoginModal();
-    showToast(t('toast_limit'));
-    return false;
-  }
+  // Selama masa percobaan/eksperimen, hilangkan batasan scan
   return true;
 }

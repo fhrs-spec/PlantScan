@@ -496,7 +496,16 @@ h1 em {
 }
 .upload-hint.hidden { display: none; }
 .upload-hint svg { width: 16px; height: 16px; }
-#file-input { display: none; }
+#file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
 
 /* ── RESULT & DIAGNOSIS SECTION ─────────────────────────── */
 .result-layout {
