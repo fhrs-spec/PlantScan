@@ -451,6 +451,44 @@ function showDiagnosis(r, isHistory = false) {
 // ── AI PLANT DOCTOR CHATBOT — GLOBAL FLOATING DRAWER ──────
 let chatDrawerInitialized = false;
 let chatDrawerOpen = false;
+let chatMessagesHistory = [];
+
+function loadChatHistory() {
+  try {
+    const saved = localStorage.getItem('plantscan_chat_messages');
+    if (saved) {
+      chatMessagesHistory = JSON.parse(saved);
+    } else {
+      chatMessagesHistory = [];
+    }
+  } catch (e) {
+    chatMessagesHistory = [];
+  }
+}
+
+function saveChatHistory() {
+  try {
+    localStorage.setItem('plantscan_chat_messages', JSON.stringify(chatMessagesHistory));
+  } catch (e) {
+    console.warn("Failed to save chat history to localStorage", e);
+  }
+}
+
+function clearChatHistory() {
+  if (confirm(currentLang === 'en' ? 'Clear all chat history?' : 'Hapus semua riwayat chat?')) {
+    chatMessagesHistory = [];
+    localStorage.removeItem('plantscan_chat_messages');
+    
+    // Re-initialize with fresh welcome message
+    initChatDrawer(true);
+    
+    // Show quick chips again
+    const chips = document.getElementById('chat-suggestions');
+    if (chips) chips.style.display = 'flex';
+    
+    showToast(t('toast_chat_cleared'));
+  }
+}
 
 function toggleChatDrawer() {
   if (chatDrawerOpen) {
@@ -477,11 +515,17 @@ function openChatDrawer() {
   overlay.classList.add('open');
   fab.classList.add('open');
   chatDrawerOpen = true;
+
+  if (window.innerWidth <= 640 && window.visualViewport) {
+    drawer.style.height = `${window.visualViewport.height}px`;
+  }
   
-  // Focus input after animation
+  // Focus input & scroll to bottom after animation
   setTimeout(() => {
     const input = document.getElementById('chat-input');
     if (input) input.focus();
+    const chatContainer = document.getElementById('chat-messages');
+    if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
   }, 380);
 }
 
@@ -494,28 +538,41 @@ function closeChatDrawer() {
   overlay.classList.remove('open');
   fab.classList.remove('open');
   chatDrawerOpen = false;
+  if (drawer) drawer.style.height = '';
 }
 
 function openChatWithContext() {
   openChatDrawer();
 }
 
-function initChatDrawer() {
+function initChatDrawer(forceFresh = false) {
   const chatContainer = document.getElementById('chat-messages');
   if (!chatContainer) return;
   
-  // Add welcome message
-  const welcomeMsg = currentDiagnosisResult
-    ? (currentLang === 'en'
-      ? `Hello! I am your <strong>AI Plant Doctor</strong>. Based on the diagnosis of <strong>${currentDiagnosisResult.nama_penyakit || 'your plant'}</strong>, what would you like to ask regarding treatment dosage, care, or prevention? 🌿`
-      : `Halo! Saya <strong>Asisten Dokter Tanaman AI</strong>. Berdasarkan diagnosa <strong>${currentDiagnosisResult.nama_penyakit || 'tanaman Anda'}</strong>, ada yang ingin Anda tanyakan seputar dosis obat, perawatan, atau pencegahannya? 🌿`)
-    : t('chat_welcome_general');
-  
-  chatContainer.innerHTML = `
-    <div class="chat-msg ai">
-      <div class="chat-msg-avatar">🩺</div>
-      <div class="msg-bubble">${welcomeMsg}</div>
-    </div>`;
+  loadChatHistory();
+
+  if (!forceFresh && chatMessagesHistory && chatMessagesHistory.length > 0) {
+    chatContainer.innerHTML = '';
+    chatMessagesHistory.forEach(msg => {
+      appendChatMessageDOM(msg.role, msg.content);
+    });
+    const chips = document.getElementById('chat-suggestions');
+    if (chips && chatMessagesHistory.some(m => m.role === 'user')) {
+      chips.style.display = 'none';
+    }
+  } else {
+    const welcomeMsg = currentDiagnosisResult
+      ? (currentLang === 'en'
+        ? `Hello! I am your <strong>AI Plant Doctor</strong>. Based on the diagnosis of <strong>${currentDiagnosisResult.nama_penyakit || 'your plant'}</strong>, what would you like to ask regarding treatment dosage, care, or prevention? 🌿`
+        : `Halo! Saya <strong>Asisten Dokter Tanaman AI</strong>. Berdasarkan diagnosa <strong>${currentDiagnosisResult.nama_penyakit || 'tanaman Anda'}</strong>, ada yang ingin Anda tanyakan seputar dosis obat, perawatan, atau pencegahannya? 🌿`)
+      : t('chat_welcome_general');
+    
+    chatContainer.innerHTML = '';
+    appendChatMessageDOM('ai', welcomeMsg);
+    
+    chatMessagesHistory = [{ role: 'ai', content: welcomeMsg }];
+    saveChatHistory();
+  }
 }
 
 function updateChatContext() {
@@ -540,13 +597,11 @@ function updateChatChips() {
   if (!container) return;
   
   if (currentDiagnosisResult) {
-    // Diagnosis-specific chips
     container.innerHTML = `
       <button class="chip-btn" onclick="fillChatChip(this.textContent)">${t('chat_chip1')}</button>
       <button class="chip-btn" onclick="fillChatChip(this.textContent)">${t('chat_chip2')}</button>
       <button class="chip-btn" onclick="fillChatChip(this.textContent)">${t('chat_chip3')}</button>`;
   } else {
-    // General plant care chips
     container.innerHTML = `
       <button class="chip-btn" onclick="fillChatChip(this.textContent)">${t('chat_chip4')}</button>
       <button class="chip-btn" onclick="fillChatChip(this.textContent)">${t('chat_chip5')}</button>
@@ -571,7 +626,6 @@ function handleChatKeyPress(e) {
 
 function isPlantRelatedQuestion(text) {
   const q = text.toLowerCase().trim();
-  // Expanded agricultural domain keywords (Indonesian & English)
   const plantKeywords = [
     'tanaman', 'daun', 'buah', 'batang', 'akar', 'penyakit', 'hama', 'jamur', 'bakteri',
     'virus', 'dosis', 'obat', 'pupuk', 'fungisida', 'pestisida', 'siram', 'air', 'tanah',
@@ -584,14 +638,12 @@ function isPlantRelatedQuestion(text) {
     'tomat', 'kentang', 'cabai', 'jagung', 'padi', 'pisang', 'mangga', 'apel', 'kopi', 'sawit'
   ];
 
-  // Explicit off-topic patterns (coding, math, general non-plant trivia)
   const offTopicKeywords = [
     'python', 'javascript', 'html', 'css', 'coding', 'program', 'presiden', 'politik',
     'matematika', 'resep', 'masak', 'mobil', 'motor', 'game', 'film', 'lagu', 'berita',
     'uang', 'saham', 'crypto', 'kalkulator', 'joke', 'lelucon', 'cerita'
   ];
 
-  // If question matches explicitly off-topic keywords without any plant keywords
   const hasOffTopic = offTopicKeywords.some(kw => q.includes(kw));
   const hasPlantKeyword = plantKeywords.some(kw => q.includes(kw));
 
@@ -599,9 +651,7 @@ function isPlantRelatedQuestion(text) {
     return false;
   }
 
-  // If very short and doesn't match any plant concepts (e.g. "halo", "apa kabarmu", "siapa kamu")
   if (!hasPlantKeyword && q.length < 25) {
-    // Check if it's general greeting or unrelated
     if (q.includes('siapa') || q.includes('who') || q.includes('buatkan') || q.includes('make me') || q.includes('berapa 1')) {
       return false;
     }
@@ -610,14 +660,23 @@ function isPlantRelatedQuestion(text) {
   return hasPlantKeyword || q.length > 5;
 }
 
-function appendChatMessage(role, content) {
+function appendChatMessage(role, content, save = true) {
+  appendChatMessageDOM(role, content);
+  
+  if (save) {
+    chatMessagesHistory.push({ role, content });
+    saveChatHistory();
+  }
+}
+
+function appendChatMessageDOM(role, content) {
   const chatContainer = document.getElementById('chat-messages');
   if (!chatContainer) return;
   
   const msgDiv = document.createElement('div');
   msgDiv.className = `chat-msg ${role}`;
   
-  const avatarEmoji = role === 'ai' ? '🩺' : '👤';
+  const avatarEmoji = role === 'ai' ? '🍃' : '👤';
   msgDiv.innerHTML = `
     <div class="chat-msg-avatar">${avatarEmoji}</div>
     <div class="msg-bubble">${content}</div>`;
@@ -636,7 +695,7 @@ function showTypingIndicator() {
   typingDiv.className = 'chat-msg ai';
   typingDiv.id = 'chat-typing-indicator';
   typingDiv.innerHTML = `
-    <div class="chat-msg-avatar">🩺</div>
+    <div class="chat-msg-avatar">🍃</div>
     <div class="msg-bubble">
       <div class="typing-dots"><span></span><span></span><span></span></div>
     </div>`;
@@ -650,6 +709,18 @@ function showTypingIndicator() {
 function removeTypingIndicator() {
   const typing = document.getElementById('chat-typing-indicator');
   if (typing) typing.remove();
+}
+
+// Attach VisualViewport listener for mobile keyboard viewport resizing
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', () => {
+    const drawer = document.getElementById('chat-drawer');
+    if (drawer && drawer.classList.contains('open') && window.innerWidth <= 640) {
+      drawer.style.height = `${window.visualViewport.height}px`;
+      const chatContainer = document.getElementById('chat-messages');
+      if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+  });
 }
 
 async function sendChatMessage() {

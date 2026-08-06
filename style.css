@@ -997,13 +997,14 @@ footer {
 .chat-open-icon {
   width: 44px;
   height: 44px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(74, 222, 128, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
 }
 .chat-open-info {
@@ -1152,13 +1153,14 @@ footer {
 .chat-drawer-avatar {
   width: 44px;
   height: 44px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(74, 222, 128, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
   position: relative;
 }
 .chat-drawer-avatar::after {
@@ -1190,6 +1192,12 @@ footer {
   display: inline-block;
   margin-top: 3px;
 }
+.chat-drawer-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chat-drawer-clear,
 .chat-drawer-close {
   width: 36px;
   height: 36px;
@@ -1203,12 +1211,16 @@ footer {
   cursor: pointer;
   transition: all 0.2s;
 }
+.chat-drawer-clear:hover,
 .chat-drawer-close:hover {
   background: rgba(239, 68, 68, 0.15);
   border-color: rgba(239, 68, 68, 0.3);
   color: #f87171;
+}
+.chat-drawer-close:hover {
   transform: rotate(90deg);
 }
+.chat-drawer-clear svg,
 .chat-drawer-close svg {
   width: 16px;
   height: 16px;
@@ -1292,16 +1304,19 @@ footer {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: #ffffff;
+  border: 1px solid rgba(74, 222, 128, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
   flex-shrink: 0;
   margin-top: 2px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 .chat-msg.user .chat-msg-avatar {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
 }
 .msg-bubble {
   padding: 12px 16px;
