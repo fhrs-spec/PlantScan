@@ -410,41 +410,16 @@ function showDiagnosis(r, isHistory = false) {
         </button>
       </div>
 
-      <!-- AI PLANT DOCTOR CHATBOT WIDGET -->
-      <div class="chat-widget-box" id="plant-chat-box">
-        <div class="chat-header">
-          <div class="chat-header-info">
-            <div class="chat-avatar">🩺</div>
-            <div>
-              <div class="chat-title">${t('chat_title')}</div>
-              <div class="chat-badge-tag">${t('chat_badge')}</div>
-            </div>
-          </div>
-          <div class="chat-status-pulse">
-            <span class="pulse-dot"></span> Online
-          </div>
+      <!-- AI PLANT DOCTOR — Open Chat Button -->
+      <div class="chat-open-prompt" onclick="openChatWithContext()">
+        <div class="chat-open-icon">🩺</div>
+        <div class="chat-open-info">
+          <div class="chat-open-title">${t('chat_title')}</div>
+          <div class="chat-open-desc">${t('chat_subtitle')}</div>
         </div>
-        <p class="chat-subtitle">${t('chat_subtitle')}</p>
-        <div class="chat-suggestions">
-          <button class="chip-btn" onclick="sendQuickChip('${t('chat_chip1')}')">${t('chat_chip1')}</button>
-          <button class="chip-btn" onclick="sendQuickChip('${t('chat_chip2')}')">${t('chat_chip2')}</button>
-          <button class="chip-btn" onclick="sendQuickChip('${t('chat_chip3')}')">${t('chat_chip3')}</button>
-        </div>
-        <div class="chat-messages" id="chat-messages">
-          <div class="chat-msg ai">
-            <div class="msg-bubble">
-              ${currentLang === 'en'
-                ? `Hello! I am your <strong>AI Plant Doctor</strong>. Based on the diagnosis of <strong>${r.nama_penyakit || 'your plant'}</strong> above, what would you like to ask regarding treatment dosage, care, or prevention? 🌿`
-                : `Halo! Saya <strong>Asisten Dokter Tanaman AI</strong>. Berdasarkan diagnosa <strong>${r.nama_penyakit || 'tanaman Anda'}</strong> di atas, ada yang ingin Anda tanyakan seputar dosis obat, perawatan, atau pencegahannya? 🌿`}
-            </div>
-          </div>
-        </div>
-        <div class="chat-input-row">
-          <input type="text" id="chat-input" placeholder="${t('chat_placeholder')}" onkeypress="handleChatKeyPress(event)">
-          <button class="btn-send-chat" onclick="sendChatMessage()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-          </button>
-        </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" style="flex-shrink:0; opacity:0.6;">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
       </div>
 
     </div>`;
@@ -473,17 +448,123 @@ function showDiagnosis(r, isHistory = false) {
   }, 150);
 }
 
-// ── AI PLANT DOCTOR CHATBOT LOGIC WITH STRICT SCOPE GUARD ─
-function handleChatKeyPress(e) {
-  if (e.key === 'Enter') {
-    sendChatMessage();
+// ── AI PLANT DOCTOR CHATBOT — GLOBAL FLOATING DRAWER ──────
+let chatDrawerInitialized = false;
+let chatDrawerOpen = false;
+
+function toggleChatDrawer() {
+  if (chatDrawerOpen) {
+    closeChatDrawer();
+  } else {
+    openChatDrawer();
   }
 }
 
-function sendQuickChip(text) {
+function openChatDrawer() {
+  const drawer = document.getElementById('chat-drawer');
+  const overlay = document.getElementById('chat-drawer-overlay');
+  const fab = document.getElementById('chat-fab');
+  
+  if (!chatDrawerInitialized) {
+    initChatDrawer();
+    chatDrawerInitialized = true;
+  }
+  
+  updateChatContext();
+  updateChatChips();
+  
+  drawer.classList.add('open');
+  overlay.classList.add('open');
+  fab.classList.add('open');
+  chatDrawerOpen = true;
+  
+  // Focus input after animation
+  setTimeout(() => {
+    const input = document.getElementById('chat-input');
+    if (input) input.focus();
+  }, 380);
+}
+
+function closeChatDrawer() {
+  const drawer = document.getElementById('chat-drawer');
+  const overlay = document.getElementById('chat-drawer-overlay');
+  const fab = document.getElementById('chat-fab');
+  
+  drawer.classList.remove('open');
+  overlay.classList.remove('open');
+  fab.classList.remove('open');
+  chatDrawerOpen = false;
+}
+
+function openChatWithContext() {
+  openChatDrawer();
+}
+
+function initChatDrawer() {
+  const chatContainer = document.getElementById('chat-messages');
+  if (!chatContainer) return;
+  
+  // Add welcome message
+  const welcomeMsg = currentDiagnosisResult
+    ? (currentLang === 'en'
+      ? `Hello! I am your <strong>AI Plant Doctor</strong>. Based on the diagnosis of <strong>${currentDiagnosisResult.nama_penyakit || 'your plant'}</strong>, what would you like to ask regarding treatment dosage, care, or prevention? 🌿`
+      : `Halo! Saya <strong>Asisten Dokter Tanaman AI</strong>. Berdasarkan diagnosa <strong>${currentDiagnosisResult.nama_penyakit || 'tanaman Anda'}</strong>, ada yang ingin Anda tanyakan seputar dosis obat, perawatan, atau pencegahannya? 🌿`)
+    : t('chat_welcome_general');
+  
+  chatContainer.innerHTML = `
+    <div class="chat-msg ai">
+      <div class="chat-msg-avatar">🩺</div>
+      <div class="msg-bubble">${welcomeMsg}</div>
+    </div>`;
+}
+
+function updateChatContext() {
+  const banner = document.getElementById('chat-context-banner');
+  const ctxIcon = document.getElementById('chat-ctx-icon');
+  const ctxValue = document.getElementById('chat-ctx-value');
+  
+  if (currentDiagnosisResult && selectedPlant) {
+    const plantName = currentLang === 'en' && selectedPlant.name_en ? selectedPlant.name_en : selectedPlant.name;
+    const disease = currentDiagnosisResult.nama_penyakit || (currentLang === 'en' ? 'Health Check' : 'Cek Kesehatan');
+    
+    ctxIcon.textContent = selectedPlant.emoji || '🌱';
+    ctxValue.textContent = `${plantName} — ${disease}`;
+    banner.style.display = 'flex';
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+function updateChatChips() {
+  const container = document.getElementById('chat-suggestions');
+  if (!container) return;
+  
+  if (currentDiagnosisResult) {
+    // Diagnosis-specific chips
+    container.innerHTML = `
+      <button class="chip-btn" onclick="fillChatChip(this.textContent)">${t('chat_chip1')}</button>
+      <button class="chip-btn" onclick="fillChatChip(this.textContent)">${t('chat_chip2')}</button>
+      <button class="chip-btn" onclick="fillChatChip(this.textContent)">${t('chat_chip3')}</button>`;
+  } else {
+    // General plant care chips
+    container.innerHTML = `
+      <button class="chip-btn" onclick="fillChatChip(this.textContent)">${t('chat_chip4')}</button>
+      <button class="chip-btn" onclick="fillChatChip(this.textContent)">${t('chat_chip5')}</button>
+      <button class="chip-btn" onclick="fillChatChip(this.textContent)">${t('chat_chip3')}</button>`;
+  }
+}
+
+function fillChatChip(text) {
   const input = document.getElementById('chat-input');
   if (input) {
-    input.value = text;
+    input.value = text.trim();
+    input.focus();
+  }
+}
+
+function handleChatKeyPress(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
     sendChatMessage();
   }
 }
@@ -529,43 +610,72 @@ function isPlantRelatedQuestion(text) {
   return hasPlantKeyword || q.length > 5;
 }
 
+function appendChatMessage(role, content) {
+  const chatContainer = document.getElementById('chat-messages');
+  if (!chatContainer) return;
+  
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `chat-msg ${role}`;
+  
+  const avatarEmoji = role === 'ai' ? '🩺' : '👤';
+  msgDiv.innerHTML = `
+    <div class="chat-msg-avatar">${avatarEmoji}</div>
+    <div class="msg-bubble">${content}</div>`;
+  
+  chatContainer.appendChild(msgDiv);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+  
+  return msgDiv;
+}
+
+function showTypingIndicator() {
+  const chatContainer = document.getElementById('chat-messages');
+  if (!chatContainer) return null;
+  
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'chat-msg ai';
+  typingDiv.id = 'chat-typing-indicator';
+  typingDiv.innerHTML = `
+    <div class="chat-msg-avatar">🩺</div>
+    <div class="msg-bubble">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+    </div>`;
+  
+  chatContainer.appendChild(typingDiv);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+  
+  return typingDiv;
+}
+
+function removeTypingIndicator() {
+  const typing = document.getElementById('chat-typing-indicator');
+  if (typing) typing.remove();
+}
+
 async function sendChatMessage() {
   const input = document.getElementById('chat-input');
   if (!input) return;
   const userText = input.value.trim();
   if (!userText) return;
 
-  const chatContainer = document.getElementById('chat-messages');
-  
   // Render user message
-  const userDiv = document.createElement('div');
-  userDiv.className = 'chat-msg user';
-  userDiv.innerHTML = `<div class="msg-bubble">${escapeHtml(userText)}</div>`;
-  chatContainer.appendChild(userDiv);
-
+  appendChatMessage('user', escapeHtml(userText));
   input.value = '';
-  chatContainer.scrollTop = chatContainer.scrollHeight;
 
-  // Render typing indicator
-  const typingDiv = document.createElement('div');
-  typingDiv.className = 'chat-msg ai typing';
-  typingDiv.id = 'chat-typing-indicator';
-  typingDiv.innerHTML = `<div class="msg-bubble">${t('chat_thinking')}</div>`;
-  chatContainer.appendChild(typingDiv);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  // Hide chips after first message
+  const chips = document.getElementById('chat-suggestions');
+  if (chips) chips.style.display = 'none';
+
+  // Show typing indicator
+  showTypingIndicator();
 
   // Scope check first
   const isScopeValid = isPlantRelatedQuestion(userText);
   if (!isScopeValid) {
     setTimeout(() => {
-      const typing = document.getElementById('chat-typing-indicator');
-      if (typing) typing.remove();
-      const aiDiv = document.createElement('div');
-      aiDiv.className = 'chat-msg ai';
-      aiDiv.innerHTML = `<div class="msg-bubble">${t('chat_guard_refusal')}</div>`;
-      chatContainer.appendChild(aiDiv);
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    }, 400);
+      removeTypingIndicator();
+      appendChatMessage('ai', t('chat_guard_refusal'));
+    }, 500);
     return;
   }
 
@@ -590,8 +700,7 @@ async function sendChatMessage() {
     });
 
     const data = await res.json().catch(() => ({}));
-    const typing = document.getElementById('chat-typing-indicator');
-    if (typing) typing.remove();
+    removeTypingIndicator();
 
     let finalReply = '';
     if (res.ok && data?.reply) {
@@ -601,23 +710,14 @@ async function sendChatMessage() {
       finalReply = generateAIPlantDoctorReply(userText, currentDiagnosisResult);
     }
 
-    const aiDiv = document.createElement('div');
-    aiDiv.className = 'chat-msg ai';
-    aiDiv.innerHTML = `<div class="msg-bubble">${finalReply}</div>`;
-    chatContainer.appendChild(aiDiv);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    appendChatMessage('ai', finalReply);
 
   } catch (err) {
     console.warn("API Chat fetch error, using local engine fallback:", err);
-    const typing = document.getElementById('chat-typing-indicator');
-    if (typing) typing.remove();
+    removeTypingIndicator();
 
     const fallbackReply = generateAIPlantDoctorReply(userText, currentDiagnosisResult);
-    const aiDiv = document.createElement('div');
-    aiDiv.className = 'chat-msg ai';
-    aiDiv.innerHTML = `<div class="msg-bubble">${fallbackReply}</div>`;
-    chatContainer.appendChild(aiDiv);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    appendChatMessage('ai', fallbackReply);
   }
 }
 

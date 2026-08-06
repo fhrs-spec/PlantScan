@@ -122,7 +122,14 @@ const translations = {
     chat_chip2: "🦠 Apakah ini menular ke tanaman lain?",
     chat_chip3: "🛡️ Bagaimana cara pencegahan agar tidak terulang?",
     chat_guard_refusal: "Maaf, saya adalah AI Dokter Tanaman yang khusus dirancang untuk menjawab topik seputar kesehatan tanaman, penyakit tumbuhan, pemupukan, dan perawatan pertanian. Silakan tanyakan hal-hal yang berkaitan dengan tanaman atau hasil pemindaian Anda! 🌿",
-    chat_thinking: "🌿 Asisten dokter tanaman sedang berpikir..."
+    chat_thinking: "🌿 Asisten dokter tanaman sedang berpikir...",
+    chat_open: "Tanya Dokter Tanaman AI",
+    chat_close: "Tutup",
+    chat_context_label: "Konteks Diagnosis Aktif",
+    chat_no_context: "Belum ada diagnosis aktif. Anda tetap bisa bertanya seputar perawatan tanaman secara umum.",
+    chat_welcome_general: "Halo! Saya <strong>Asisten Dokter Tanaman AI</strong> PlantScan. Silakan tanyakan apa saja seputar perawatan tanaman, pupuk, hama, atau penyakit tanaman Anda! 🌿",
+    chat_chip4: "💧 Bagaimana cara menyiram yang benar?",
+    chat_chip5: "🧪 Pupuk apa yang cocok untuk tanaman saya?"
   },
   en: {
     nav_deteksi: "Scan",
@@ -247,7 +254,14 @@ const translations = {
     chat_chip2: "🦠 Is this contagious to other plants?",
     chat_chip3: "🛡️ How to prevent this from recurring?",
     chat_guard_refusal: "Sorry, I am an AI Plant Doctor specifically designed to answer questions related to plant health, pathology, fertilization, and crop care. Please feel free to ask anything about plants or your scan results! 🌿",
-    chat_thinking: "🌿 Plant doctor assistant is thinking..."
+    chat_thinking: "🌿 Plant doctor assistant is thinking...",
+    chat_open: "Ask AI Plant Doctor",
+    chat_close: "Close",
+    chat_context_label: "Active Diagnosis Context",
+    chat_no_context: "No active diagnosis. You can still ask general plant care questions.",
+    chat_welcome_general: "Hello! I'm your <strong>AI Plant Doctor Assistant</strong> from PlantScan. Ask me anything about plant care, fertilizers, pests, or plant diseases! 🌿",
+    chat_chip4: "💧 What's the proper way to water my plant?",
+    chat_chip5: "🧪 What fertilizer suits my plant?"
   }
 };
 

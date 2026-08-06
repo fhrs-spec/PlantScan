@@ -450,6 +450,75 @@
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
+  <!-- FLOATING CHAT FAB -->
+  <button class="chat-fab" id="chat-fab" onclick="toggleChatDrawer()" aria-label="Open AI Plant Doctor Chat">
+    <span class="fab-icon-chat">🩺</span>
+    <span class="fab-icon-close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </span>
+    <span class="fab-badge" id="fab-badge"></span>
+  </button>
+
+  <!-- CHAT DRAWER OVERLAY -->
+  <div class="chat-drawer-overlay" id="chat-drawer-overlay" onclick="closeChatDrawer()"></div>
+
+  <!-- CHAT DRAWER -->
+  <div class="chat-drawer" id="chat-drawer">
+    <!-- Header -->
+    <div class="chat-drawer-header">
+      <div class="chat-drawer-header-info">
+        <div class="chat-drawer-avatar">🩺</div>
+        <div>
+          <div class="chat-drawer-title" data-i18n="chat_title">Asisten Dokter Tanaman AI</div>
+          <div class="chat-drawer-badge" data-i18n="chat_badge">🌿 Khusus Kesehatan Tanaman</div>
+        </div>
+      </div>
+      <button class="chat-drawer-close" onclick="closeChatDrawer()" aria-label="Close chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Context Banner (shown when diagnosis is active) -->
+    <div class="chat-context-banner" id="chat-context-banner" style="display:none;">
+      <div class="ctx-icon" id="chat-ctx-icon">🌱</div>
+      <div class="ctx-info">
+        <div class="ctx-label" data-i18n="chat_context_label">Konteks Diagnosis Aktif</div>
+        <div class="ctx-value" id="chat-ctx-value">—</div>
+      </div>
+    </div>
+
+    <!-- Quick Suggestion Chips -->
+    <div class="chat-suggestions" id="chat-suggestions">
+      <button class="chip-btn" onclick="fillChatChip(this.textContent)">💊 Berapa dosis obat yang digunakan?</button>
+      <button class="chip-btn" onclick="fillChatChip(this.textContent)">🦠 Apakah ini menular ke tanaman lain?</button>
+      <button class="chip-btn" onclick="fillChatChip(this.textContent)">🛡️ Bagaimana cara pencegahan agar tidak terulang?</button>
+    </div>
+
+    <!-- Chat Messages Body -->
+    <div class="chat-drawer-body" id="chat-messages">
+      <!-- Welcome message injected by JS -->
+    </div>
+
+    <!-- Input Footer -->
+    <div class="chat-drawer-footer">
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Ketik pertanyaan seputar tanamanmu..." onkeydown="handleChatKeyPress(event)" data-i18n-placeholder="chat_placeholder">
+        <button class="btn-send-chat" onclick="sendChatMessage()" aria-label="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="lang.js"></script>
   <script src="script.js"></script>
   <script>
