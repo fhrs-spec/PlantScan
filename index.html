@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1A3D0C">
   <meta name="description" content="PlantScan - Deteksi penyakit tanamanmu dengan AI secara akurat.">
   <meta property="og:title" content="PlantScan - Deteksi Penyakit Tanaman AI">
-  <meta property="og:description" content="Upload foto daun atau buah tanamanmu — AI menganalisis kondisinya secara mendalam, memberikan diagnosis akurat dan rekomendasi.">
+  <meta property="og:description"
+    content="Upload foto daun atau buah tanamanmu — AI menganalisis kondisinya secara mendalam, memberikan diagnosis akurat dan rekomendasi.">
   <meta property="og:type" content="website">
   <title data-i18n="page_title">PlantScan — Deteksi Penyakit Tanaman AI</title>
   <link rel="manifest" href="manifest.json">
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <!-- Background blobs -->
   <div class="bg-blobs">
@@ -28,11 +33,13 @@
       <a class="nav-logo" href="#">
         <div class="logo-mark">
           <svg viewBox="0 0 28 28" fill="none">
-            <path d="M14 4C10 4 7 8 7 13c0 3.5 1.8 6.5 4.5 8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-            <path d="M14 4C18 4 21 8 21 13c0 3.5-1.8 6.5-4.5 8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-            <line x1="14" y1="24" x2="14" y2="13" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-            <path d="M14 18L11 15" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M14 21.5L17 18.5" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M14 4C10 4 7 8 7 13c0 3.5 1.8 6.5 4.5 8" stroke="white" stroke-width="1.8"
+              stroke-linecap="round" />
+            <path d="M14 4C18 4 21 8 21 13c0 3.5-1.8 6.5-4.5 8" stroke="white" stroke-width="1.8"
+              stroke-linecap="round" />
+            <line x1="14" y1="24" x2="14" y2="13" stroke="white" stroke-width="1.8" stroke-linecap="round" />
+            <path d="M14 18L11 15" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M14 21.5L17 18.5" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round" />
           </svg>
         </div>
         <span>PlantScan</span>
@@ -43,9 +50,18 @@
         <a href="#cara-pakai" class="nl" data-i18n="nav_panduan">Panduan</a>
         <div class="lang-dropdown" id="lang-dropdown">
           <button class="lang-btn" onclick="toggleLangMenu()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" width="16" height="16">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+              </path>
+            </svg>
             <span id="current-lang-label">ID</span>
-            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </button>
           <div class="lang-menu" id="lang-menu">
             <button class="lang-option" onclick="switchLanguageAndReload('id')">
@@ -58,7 +74,10 @@
         </div>
         <a href="#" class="nl cta-login" onclick="openLoginModal()" id="nav-login-btn" data-i18n="nav_login">Login</a>
         <a href="#deteksi" class="nl cta-nav">
-          <svg viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 20 20" fill="none">
+            <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8" />
+            <line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
           <span data-i18n="nav_scan">Mulai Scan</span>
         </a>
       </div>
@@ -73,7 +92,8 @@
     <!-- HERO -->
     <section class="hero" id="hero">
       <h1 data-i18n-html="hero_title">Deteksi <em>Penyakit</em><br>Tanamanmu</h1>
-      <p class="hero-desc" data-i18n="hero_desc">Upload foto daun atau buah tanamanmu — AI menganalisis kondisinya secara mendalam, memberikan diagnosis akurat dan rekomendasi penanganan.</p>
+      <p class="hero-desc" data-i18n="hero_desc">Upload foto daun atau buah tanamanmu AI menganalisis kondisinya secara
+        mendalam, memberikan diagnosis akurat dan rekomendasi penanganan.</p>
       <div class="hero-pills">
         <div class="pill"><span>🌿</span><span data-i18n="pill_1">Daun & Buah</span></div>
         <div class="pill"><span>🧠</span>AI</div>
@@ -97,8 +117,13 @@
               <span data-i18n="picker_title">Pilih Jenis Tanaman</span>
             </div>
             <div class="search-wrap">
-              <svg viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8"/><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-              <input type="text" class="search-input" placeholder="Cari tanaman..." id="plant-search" oninput="filterPlants(this.value)" data-i18n-placeholder="search_placeholder">
+              <svg viewBox="0 0 20 20" fill="none">
+                <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.8" />
+                <line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" />
+              </svg>
+              <input type="text" class="search-input" placeholder="Cari tanaman..." id="plant-search"
+                oninput="filterPlants(this.value)" data-i18n-placeholder="search_placeholder">
             </div>
           </div>
 
@@ -109,7 +134,11 @@
               <div class="sb-name" id="sb-name">Tomat</div>
               <div class="sb-latin" id="sb-latin">Solanum lycopersicum</div>
             </div>
-            <svg class="sb-check" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="rgba(255,255,255,0.15)"/><polyline points="7 12 10 15 17 8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="sb-check" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" fill="rgba(255,255,255,0.15)" />
+              <polyline points="7 12 10 15 17 8" stroke="white" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
             <button class="sb-change" onclick="clearPlant()">Ganti</button>
           </div>
 
@@ -121,27 +150,43 @@
         <div class="drop-area" id="drop-area">
           <div class="drop-icon">
             <svg viewBox="0 0 48 48" fill="none">
-              <rect x="4" y="4" width="40" height="40" rx="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4"/>
-              <path d="M24 32V16M24 16L18 22M24 16L30 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="4" y="4" width="40" height="40" rx="12" fill="none" stroke="currentColor" stroke-width="1.5"
+                stroke-dasharray="4 4" />
+              <path d="M24 32V16M24 16L18 22M24 16L30 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
             </svg>
           </div>
           <div class="drop-text" data-i18n="drop_text">Seret foto ke sini</div>
           <div class="drop-sub" data-i18n="drop_sub1">JPG · PNG · WEBP · maks 5 MB</div>
-          <div class="drop-sub scan-types" data-i18n-html="drop_sub2">Bisa foto <strong>daun</strong> maupun <strong>buah</strong> tanaman</div>
+          <div class="drop-sub scan-types" data-i18n-html="drop_sub2">Bisa foto <strong>daun</strong> maupun
+            <strong>buah</strong> tanaman</div>
 
           <div class="btn-row">
             <button class="btn-upload" id="btn-upload" onclick="tryUpload()" disabled>
-              <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.8"/><circle cx="7" cy="7" r="1.8" fill="currentColor"/><path d="M2 13L6 9L10 13L14 9L18 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg viewBox="0 0 20 20" fill="none">
+                <rect x="2" y="2" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.8" />
+                <circle cx="7" cy="7" r="1.8" fill="currentColor" />
+                <path d="M2 13L6 9L10 13L14 9L18 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
               <span data-i18n="btn_upload">Pilih Foto</span>
             </button>
             <button class="btn-camera" id="btn-camera" onclick="tryCamera()" disabled>
-              <svg viewBox="0 0 20 20" fill="none"><path d="M18 15a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2h2l2-2h4l2 2h2a2 2 0 012 2v8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="11" r="3" stroke="currentColor" stroke-width="1.8"/></svg>
+              <svg viewBox="0 0 20 20" fill="none">
+                <path d="M18 15a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2h2l2-2h4l2 2h2a2 2 0 012 2v8z"
+                  stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                <circle cx="10" cy="11" r="3" stroke="currentColor" stroke-width="1.8" />
+              </svg>
               <span data-i18n="btn_camera">Kamera</span>
             </button>
           </div>
 
           <div class="upload-hint" id="upload-hint">
-            <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.8"/><line x1="10" y1="7" x2="10" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="13.5" r="0.8" fill="currentColor"/></svg>
+            <svg viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.8" />
+              <line x1="10" y1="7" x2="10" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <circle cx="10" cy="13.5" r="0.8" fill="currentColor" />
+            </svg>
             <span data-i18n="upload_hint">Pilih jenis tanaman terlebih dahulu</span>
           </div>
 
@@ -173,7 +218,11 @@
                   <div class="meta-fsize" id="meta-fsize">—</div>
                 </div>
                 <button class="change-photo-btn" onclick="resetApp()">
-                  <svg viewBox="0 0 20 20" fill="none"><path d="M4 10a6 6 0 0112 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 10l-2-2 2-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path d="M4 10a6 6 0 0112 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                    <path d="M4 10l-2-2 2-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
                   <span data-i18n="change_photo">Ganti Foto</span>
                 </button>
               </div>
@@ -181,10 +230,21 @@
 
             <div class="tips-box" id="tips-box" style="display:none">
               <div class="tips-header" data-i18n="tips_title">💡 Tips Foto Terbaik</div>
-              <div class="tip-row"><div class="tip-num">1</div><span data-i18n="tip1">Fokus pada satu daun atau buah yang jelas terlihat</span></div>
-              <div class="tip-row"><div class="tip-num">2</div><span data-i18n="tip2">Pastikan pencahayaan cukup, hindari bayangan gelap</span></div>
-              <div class="tip-row"><div class="tip-num">3</div><span data-i18n="tip3">Jarak ideal 20–30 cm dari objek foto</span></div>
-              <div class="tip-row"><div class="tip-num">4</div><span data-i18n="tip4">Seluruh objek (daun/buah) harus masuk dalam frame</span></div>
+              <div class="tip-row">
+                <div class="tip-num">1</div><span data-i18n="tip1">Fokus pada satu daun atau buah yang jelas
+                  terlihat</span>
+              </div>
+              <div class="tip-row">
+                <div class="tip-num">2</div><span data-i18n="tip2">Pastikan pencahayaan cukup, hindari bayangan
+                  gelap</span>
+              </div>
+              <div class="tip-row">
+                <div class="tip-num">3</div><span data-i18n="tip3">Jarak ideal 20–30 cm dari objek foto</span>
+              </div>
+              <div class="tip-row">
+                <div class="tip-num">4</div><span data-i18n="tip4">Seluruh objek (daun/buah) harus masuk dalam
+                  frame</span>
+              </div>
             </div>
           </div>
 
@@ -217,13 +277,18 @@
     <!-- RIWAYAT SCAN -->
     <section id="history-section" style="display:none; padding-top: 2rem;">
       <div class="hist-header">
-        <h2 class="sec-title" style="margin-top:0; margin-bottom:0.2rem; font-size:1.4rem;" data-i18n="history_title">Riwayat Pemindaian</h2>
+        <h2 class="sec-title" style="margin-top:0; margin-bottom:0.2rem; font-size:1.4rem;" data-i18n="history_title">
+          Riwayat Pemindaian</h2>
         <button class="btn-clear-hist" onclick="clearHistory()">
-          <svg viewBox="0 0 20 20" fill="none"><path d="M4 5h12M9 9v4M11 9v4M5 5l1 10a2 2 0 002 2h4a2 2 0 002-2l1-10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg viewBox="0 0 20 20" fill="none">
+            <path d="M4 5h12M9 9v4M11 9v4M5 5l1 10a2 2 0 002 2h4a2 2 0 002-2l1-10" stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
           <span data-i18n="history_clear">Hapus</span>
         </button>
       </div>
-      <p class="sec-sub" style="margin-bottom:1rem; text-align:left;" data-i18n="history_sub">Catatan diagnosis tanaman Anda sebelumnya</p>
+      <p class="sec-sub" style="margin-bottom:1rem; text-align:left;" data-i18n="history_sub">Catatan diagnosis tanaman
+        Anda sebelumnya</p>
       <div class="history-list" id="history-list">
         <!-- History items will be injected here -->
       </div>
@@ -237,32 +302,38 @@
         <div class="feat-card fc-highlight">
           <div class="feat-icon">🧠</div>
           <h3 data-i18n="f1_title">AI Vision Nyata</h3>
-          <p data-i18n="f1_desc">Menggunakan Gemini AI yang sesungguhnya untuk menganalisis foto — bukan database statis, melainkan pemahaman visual mendalam.</p>
+          <p data-i18n="f1_desc">Menggunakan Gemini AI yang sesungguhnya untuk menganalisis foto — bukan database
+            statis, melainkan pemahaman visual mendalam.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">🍃</div>
           <h3 data-i18n="f2_title">Daun & Buah</h3>
-          <p data-i18n="f2_desc">Bukan hanya daun — PlantScan bisa mendeteksi penyakit pada buah tanaman juga, dengan analisis menyeluruh.</p>
+          <p data-i18n="f2_desc">Bukan hanya daun — PlantScan bisa mendeteksi penyakit pada buah tanaman juga, dengan
+            analisis menyeluruh.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">🌿</div>
           <h3 data-i18n="f3_title">20+ Jenis Tanaman</h3>
-          <p data-i18n="f3_desc">Database tanaman terus berkembang, mencakup sayuran, buah-buahan, dan tanaman pangan populer Indonesia.</p>
+          <p data-i18n="f3_desc">Database tanaman terus berkembang, mencakup sayuran, buah-buahan, dan tanaman pangan
+            populer Indonesia.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">📋</div>
           <h3 data-i18n="f4_title">Diagnosis Mendalam</h3>
-          <p data-i18n="f4_desc">Hasil analisis lengkap: nama penyakit, penyebab, gejala, tingkat keparahan, dan rekomendasi penanganan spesifik.</p>
+          <p data-i18n="f4_desc">Hasil analisis lengkap: nama penyakit, penyebab, gejala, tingkat keparahan, dan
+            rekomendasi penanganan spesifik.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">📱</div>
           <h3 data-i18n="f5_title">Ramah Semua Perangkat</h3>
-          <p data-i18n="f5_desc">Antarmuka responsif yang nyaman digunakan di HP, tablet, maupun komputer dengan performa optimal.</p>
+          <p data-i18n="f5_desc">Antarmuka responsif yang nyaman digunakan di HP, tablet, maupun komputer dengan
+            performa optimal.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">🔒</div>
           <h3 data-i18n="f6_title">Privasi Terjaga</h3>
-          <p data-i18n="f6_desc">Foto hanya diproses saat analisis berlangsung dan tidak disimpan di server manapun setelah selesai.</p>
+          <p data-i18n="f6_desc">Foto hanya diproses saat analisis berlangsung dan tidak disimpan di server manapun
+            setelah selesai.</p>
         </div>
       </div>
     </section>
@@ -276,35 +347,40 @@
           <div class="howto-num">1</div>
           <div class="howto-body">
             <h4 data-i18n="h1_title">Pilih Jenis Tanaman</h4>
-            <p data-i18n="h1_desc">Pilih jenis tanaman dari daftar yang tersedia. Langkah ini wajib agar AI dapat memberikan analisis yang lebih terfokus dan akurat.</p>
+            <p data-i18n="h1_desc">Pilih jenis tanaman dari daftar yang tersedia. Langkah ini wajib agar AI dapat
+              memberikan analisis yang lebih terfokus dan akurat.</p>
           </div>
         </div>
         <div class="howto-item">
           <div class="howto-num">2</div>
           <div class="howto-body">
             <h4 data-i18n="h2_title">Siapkan Foto yang Baik</h4>
-            <p data-i18n="h2_desc">Ambil foto daun atau buah yang menunjukkan gejala dengan pencahayaan cukup. Jarak ideal 20–30 cm agar detail terlihat jelas.</p>
+            <p data-i18n="h2_desc">Ambil foto daun atau buah yang menunjukkan gejala dengan pencahayaan cukup. Jarak
+              ideal 20–30 cm agar detail terlihat jelas.</p>
           </div>
         </div>
         <div class="howto-item">
           <div class="howto-num">3</div>
           <div class="howto-body">
             <h4 data-i18n="h3_title">Unggah atau Ambil Foto</h4>
-            <p data-i18n="h3_desc">Seret foto ke area drop zone, klik "Pilih Foto" untuk memilih dari galeri, atau gunakan kamera langsung dari aplikasi.</p>
+            <p data-i18n="h3_desc">Seret foto ke area drop zone, klik "Pilih Foto" untuk memilih dari galeri, atau
+              gunakan kamera langsung dari aplikasi.</p>
           </div>
         </div>
         <div class="howto-item">
           <div class="howto-num">4</div>
           <div class="howto-body">
             <h4 data-i18n="h4_title">Tunggu Analisis AI</h4>
-            <p data-i18n="h4_desc">Gemini AI menganalisis gambar secara mendalam — biasanya selesai dalam 5–15 detik tergantung koneksi internet.</p>
+            <p data-i18n="h4_desc">Gemini AI menganalisis gambar secara mendalam — biasanya selesai dalam 5–15 detik
+              tergantung koneksi internet.</p>
           </div>
         </div>
         <div class="howto-item">
           <div class="howto-num">5</div>
           <div class="howto-body">
             <h4 data-i18n="h5_title">Baca & Tindak Lanjuti</h4>
-            <p data-i18n="h5_desc">Baca diagnosis lengkap, pahami penyebab penyakit, dan ikuti rekomendasi penanganan yang diberikan AI.</p>
+            <p data-i18n="h5_desc">Baca diagnosis lengkap, pahami penyebab penyakit, dan ikuti rekomendasi penanganan
+              yang diberikan AI.</p>
           </div>
         </div>
       </div>
@@ -312,7 +388,8 @@
 
     <footer>
       <div class="footer-brand">🌿 PlantScan</div>
-      <p class="footer-desc" data-i18n-html="footer_desc">Aplikasi AI Deteksi Penyakit Tanaman<br>Analisis visual ditenagai oleh Google Gemini AI melalui Vercel Serverless.</p>
+      <p class="footer-desc" data-i18n-html="footer_desc">Aplikasi AI Deteksi Penyakit Tanaman<br>Analisis visual
+        ditenagai oleh Google Gemini AI melalui Vercel Serverless.</p>
     </footer>
 
   </main>
@@ -323,16 +400,24 @@
       <div class="modal-head">
         <h3 data-i18n="cam_title">📷 Ambil Foto Tanaman</h3>
         <button class="modal-close-btn" onclick="closeCamera()">
-          <svg viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 20 20" fill="none">
+            <line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
         </button>
       </div>
       <video id="cam-video" autoplay playsinline></video>
       <div class="modal-actions">
         <button class="btn-upload" onclick="capturePhoto()" style="justify-content:center;flex:1;">
-          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3" fill="currentColor"/><path d="M18 14a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2h2l1.5-2h5L16 5h2a2 2 0 012 2v7z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="3" fill="currentColor" />
+            <path d="M18 14a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2h2l1.5-2h5L16 5h2a2 2 0 012 2v7z"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
           <span data-i18n="cam_snap">Ambil Foto</span>
         </button>
-        <button class="btn-camera" onclick="closeCamera()" style="justify-content:center;flex:0.6;" data-i18n="cam_cancel">Batal</button>
+        <button class="btn-camera" onclick="closeCamera()" style="justify-content:center;flex:0.6;"
+          data-i18n="cam_cancel">Batal</button>
       </div>
       <canvas id="snap-canvas" style="display:none;"></canvas>
     </div>
@@ -344,14 +429,20 @@
       <div class="modal-head">
         <h3 data-i18n="modal_login_title">Masuk ke PlantScan</h3>
         <button class="modal-close-btn" onclick="closeLoginModal()">
-          <svg viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 20 20" fill="none">
+            <line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
         </button>
       </div>
       <p class="modal-desc" data-i18n="modal_login_desc">Dapatkan akses scan tanpa batas</p>
       <form id="login-form" novalidate onsubmit="performLogin(event)">
-        <input type="email" id="login-email" class="modal-input" placeholder="Alamat Email" data-i18n-placeholder="placeholder_email">
-        <input type="password" id="login-password" class="modal-input" placeholder="Kata Sandi" data-i18n-placeholder="placeholder_password">
-        <button type="submit" class="btn-upload" style="justify-content:center; width: 100%;" data-i18n="modal_login_btn">Masuk Sekarang</button>
+        <input type="email" id="login-email" class="modal-input" placeholder="Alamat Email"
+          data-i18n-placeholder="placeholder_email">
+        <input type="password" id="login-password" class="modal-input" placeholder="Kata Sandi"
+          data-i18n-placeholder="placeholder_password">
+        <button type="submit" class="btn-upload" style="justify-content:center; width: 100%;"
+          data-i18n="modal_login_btn">Masuk Sekarang</button>
       </form>
     </div>
   </div>
@@ -367,4 +458,5 @@
     }
   </script>
 </body>
+
 </html>
