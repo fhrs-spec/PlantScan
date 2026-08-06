@@ -1,4 +1,4 @@
-const CACHE_NAME = 'plantscan-v9';
+const CACHE_NAME = 'plantscan-v10';
 const ASSETS = [
   './',
   './index.html',
