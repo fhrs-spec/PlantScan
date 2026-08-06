@@ -831,6 +831,11 @@ function downloadPDFReport() {
 
 function processExportPDF() {
   const r = currentDiagnosisResult;
+  if (!r) {
+    showToast("⚠️ Tidak ada hasil diagnosis untuk diunduh.");
+    return;
+  }
+
   const plantName = selectedPlant ? (currentLang === 'en' && selectedPlant.name_en ? selectedPlant.name_en : selectedPlant.name) : 'Tanaman';
   const plantLatin = selectedPlant ? selectedPlant.latin : '';
   const plantEmoji = selectedPlant ? selectedPlant.emoji : '🌱';
@@ -841,12 +846,17 @@ function processExportPDF() {
     ? r.rekomendasi.map(s => `<li style="margin-bottom:6px;">${s}</li>`).join('')
     : `<li>${r.rekomendasi || 'Lakukan perawatan umum.'}</li>`;
 
-  // Create temporary printable layout container
+  // Create temporary printable layout container in DOM
   const printElement = document.createElement('div');
+  printElement.style.position = 'absolute';
+  printElement.style.left = '-9999px';
+  printElement.style.top = '0';
+  printElement.style.width = '750px';
   printElement.style.padding = '30px';
   printElement.style.fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif";
   printElement.style.color = '#1f2937';
   printElement.style.background = '#ffffff';
+  printElement.style.boxSizing = 'border-box';
 
   printElement.innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #16a34a; padding-bottom:15px; margin-bottom:20px;">
@@ -914,17 +924,21 @@ function processExportPDF() {
     </div>
   `;
 
+  document.body.appendChild(printElement);
+
   const opt = {
     margin:       10,
     filename:     `PlantScan_Report_${plantName.replace(/\s+/g, '_')}_${Date.now()}.pdf`,
     image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2, useCORS: true },
+    html2canvas:  { scale: 2, useCORS: true, logging: false },
     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
   html2pdf().set(opt).from(printElement).save().then(() => {
+    if (document.body.contains(printElement)) document.body.removeChild(printElement);
     showToast(t('toast_pdf_done'));
   }).catch(err => {
+    if (document.body.contains(printElement)) document.body.removeChild(printElement);
     console.error("PDF Export error:", err);
     showToast("❌ Gagal membuat PDF.");
   });
