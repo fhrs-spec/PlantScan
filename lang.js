@@ -129,7 +129,13 @@ const translations = {
     chat_no_context: "Belum ada diagnosis aktif. Anda tetap bisa bertanya seputar perawatan tanaman secara umum.",
     chat_welcome_general: "Halo! Saya <strong>Asisten Dokter Tanaman AI</strong> PlantScan. Silakan tanyakan apa saja seputar perawatan tanaman, pupuk, hama, atau penyakit tanaman Anda! 🌿",
     chat_chip4: "💧 Bagaimana cara menyiram yang benar?",
-    chat_chip5: "🧪 Pupuk apa yang cocok untuk tanaman saya?"
+    chat_chip5: "🧪 Pupuk apa yang cocok untuk tanaman saya?",
+    hero_cta_scan: "Mulai Scan Tanaman",
+    hero_cta_chat: "Tanya AI Dokter",
+    non_plant_title: "Foto Tidak Dikenali Sebagai Tanaman",
+    non_plant_desc: "Sistem mendeteksi bahwa foto yang diunggah bukan merupakan bagian daun atau buah tanaman. Silakan unggah foto tanaman yang jelas untuk mendapatkan diagnosis yang akurat.",
+    non_plant_btn: "Unggah Ulang Foto",
+    footer_admin: "Dashboard Admin (Demo)"
   },
   en: {
     nav_deteksi: "Scan",
@@ -261,7 +267,13 @@ const translations = {
     chat_no_context: "No active diagnosis. You can still ask general plant care questions.",
     chat_welcome_general: "Hello! I'm your <strong>AI Plant Doctor Assistant</strong> from PlantScan. Ask me anything about plant care, fertilizers, pests, or plant diseases! 🌿",
     chat_chip4: "💧 What's the proper way to water my plant?",
-    chat_chip5: "🧪 What fertilizer suits my plant?"
+    chat_chip5: "🧪 What fertilizer suits my plant?",
+    hero_cta_scan: "Start Plant Scan",
+    hero_cta_chat: "Ask AI Doctor",
+    non_plant_title: "Unrecognized Non-Plant Photo",
+    non_plant_desc: "The system detected that the uploaded photo does not appear to be a plant leaf or fruit. Please upload a clear photo of a plant to receive an accurate diagnosis.",
+    non_plant_btn: "Upload New Photo",
+    footer_admin: "Admin Dashboard (Demo)"
   }
 };
 

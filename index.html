@@ -100,6 +100,19 @@
         <div class="pill"><span>🌱</span><span data-i18n="pill_3">20+ Tanaman</span></div>
         <div class="pill"><span>⚡</span><span data-i18n="pill_4">Instan</span></div>
       </div>
+      <div class="hero-actions">
+        <a href="#deteksi" class="btn-hero-primary">
+          <svg viewBox="0 0 20 20" fill="none">
+            <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2" />
+            <line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          <span data-i18n="hero_cta_scan">Mulai Scan Tanaman</span>
+        </a>
+        <button class="btn-hero-secondary" onclick="openChatDrawer()">
+          <span>🩺</span>
+          <span data-i18n="hero_cta_chat">Tanya AI Dokter</span>
+        </button>
+      </div>
     </section>
 
     <!-- DETEKSI -->
@@ -190,7 +203,7 @@
             <span data-i18n="upload_hint">Pilih jenis tanaman terlebih dahulu</span>
           </div>
 
-          <input type="file" id="file-input" accept="image/*">
+          <input type="file" id="file-input" accept="image/*" aria-label="Upload foto tanaman">
         </div>
       </div>
 
@@ -390,12 +403,15 @@
       <div class="footer-brand">🌿 PlantScan</div>
       <p class="footer-desc" data-i18n-html="footer_desc">Aplikasi AI Deteksi Penyakit Tanaman<br>Analisis visual
         ditenagai oleh Google Gemini AI melalui Vercel Serverless.</p>
+      <div class="footer-links">
+        <a href="admin.html" class="footer-admin-link" data-i18n="footer_admin">📊 Dashboard Admin (Demo)</a>
+      </div>
     </footer>
 
   </main>
 
   <!-- CAMERA MODAL -->
-  <div class="modal-overlay" id="camera-modal">
+  <div class="modal-overlay" id="camera-modal" onclick="handleOverlayClick(event, 'camera-modal')">
     <div class="modal-box">
       <div class="modal-head">
         <h3 data-i18n="cam_title">📷 Ambil Foto Tanaman</h3>
@@ -424,7 +440,7 @@
   </div>
 
   <!-- LOGIN MODAL -->
-  <div class="modal-overlay" id="login-modal">
+  <div class="modal-overlay" id="login-modal" onclick="handleOverlayClick(event, 'login-modal')">
     <div class="modal-box">
       <div class="modal-head">
         <h3 data-i18n="modal_login_title">Masuk ke PlantScan</h3>
@@ -494,12 +510,8 @@
       </div>
     </div>
 
-    <!-- Quick Suggestion Chips -->
-    <div class="chat-suggestions" id="chat-suggestions">
-      <button class="chip-btn" onclick="fillChatChip(this.textContent)">💊 Berapa dosis obat yang digunakan?</button>
-      <button class="chip-btn" onclick="fillChatChip(this.textContent)">🦠 Apakah ini menular ke tanaman lain?</button>
-      <button class="chip-btn" onclick="fillChatChip(this.textContent)">🛡️ Bagaimana cara pencegahan agar tidak terulang?</button>
-    </div>
+    <!-- Quick Suggestion Chips (populated dynamically) -->
+    <div class="chat-suggestions" id="chat-suggestions"></div>
 
     <!-- Chat Messages Body -->
     <div class="chat-drawer-body" id="chat-messages">

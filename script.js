@@ -74,7 +74,7 @@ let currentImageB64 = null;
 function buildGrid() {
   const grid = document.getElementById('plant-grid');
   grid.innerHTML = plants.map(p => `
-    <div class="plant-card" id="pc-${p.id}" onclick="selectPlant('${p.id}')">
+    <div class="plant-card" id="pc-${p.id}" tabindex="0" role="button" aria-label="${currentLang === "en" && p.name_en ? p.name_en : p.name}" onclick="selectPlant('${p.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectPlant('${p.id}');}">
       <div class="pc-check">
         <svg viewBox="0 0 12 12" fill="none"><polyline points="2 6 5 9 10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
@@ -123,8 +123,10 @@ function filterPlants(val) {
     if (!el) return;
     const match = !q
       || p.name.toLowerCase().includes(q)
+      || (p.name_en && p.name_en.toLowerCase().includes(q))
       || p.latin.toLowerCase().includes(q)
-      || p.category.toLowerCase().includes(q);
+      || p.category.toLowerCase().includes(q)
+      || (p.category_en && p.category_en.toLowerCase().includes(q));
     el.classList.toggle('hidden', !match);
     if (match) found++;
   });
@@ -160,6 +162,7 @@ zone.addEventListener('dragover', e => {
 zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
 zone.addEventListener('drop', e => {
   e.preventDefault(); zone.classList.remove('drag-over');
+  if (!checkAuthBeforeScan()) return;
   if (!selectedPlant) { shakeHint(); return; }
   const f = e.dataTransfer.files[0];
   if (f && f.type.startsWith('image/')) processFile(f);
@@ -344,6 +347,34 @@ function showDiagnosis(r, isHistory = false) {
   document.getElementById('scan-overlay').classList.add('done');
   document.getElementById('tips-box').style.display = 'block';
 
+  // Anti-Hallucination / Non-plant check
+  const isNonPlant = r.kondisi === 'error' || r.scan_type === 'bukan tanaman' || r.nama_penyakit === 'Objek Tidak Dikenali' || r.nama_penyakit === 'Unrecognized Object';
+  if (isNonPlant) {
+    document.getElementById('img-status-badge').textContent = currentLang === 'en' ? 'Non-Plant' : 'Bukan Tanaman';
+    
+    const html = `
+      <div class="non-plant-card">
+        <div class="non-plant-icon">🌿⚠️</div>
+        <div class="non-plant-title">${t('non_plant_title')}</div>
+        <div class="non-plant-desc">${r.gejala_terlihat || t('non_plant_desc')}</div>
+        <div class="non-plant-actions">
+          <button class="btn-retry" onclick="resetApp()">
+            <svg viewBox="0 0 20 20" fill="none" width="18" height="18"><path d="M3 10a7 7 0 0114 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 10L1 8l2-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>${t('non_plant_btn')}</span>
+          </button>
+          <button class="btn-hero-secondary" onclick="openChatWithContext()" style="padding:11px 20px;">
+            <span>🩺</span>
+            <span>${t('chat_title')}</span>
+          </button>
+        </div>
+      </div>`;
+
+    const content = document.getElementById('diag-content');
+    content.innerHTML = html;
+    content.style.display = 'block';
+    return;
+  }
+
   const cond = (r.kondisi || 'perhatian').toLowerCase();
   
   const sevClass  = cond === 'sehat' ? 'sev-safe' : cond === 'parah' ? 'sev-danger' : 'sev-warn';
@@ -432,6 +463,7 @@ function showDiagnosis(r, isHistory = false) {
   if (!isHistory && selectedPlant) {
     saveToHistory({
       date: new Date().toISOString(),
+      plantId: selectedPlant.id || 'unknown',
       plantName: plantNameDisplay,
       plantEmoji: plantEmojiDisplay,
       plantLatin: plantLatinDisplay,
@@ -995,7 +1027,7 @@ function shareResult(name, conf) {
   }
 }
 
-// ── CAMERA ────────────────────────────────────────────────
+// ── CAMERA & MODAL HANDLERS ──────────────────────────────
 async function openCamera() {
   try {
     cameraStream = await navigator.mediaDevices.getUserMedia({
@@ -1023,6 +1055,22 @@ function capturePhoto() {
     processFile(new File([blob], 'kamera.jpg', { type: 'image/jpeg' }));
   }, 'image/jpeg', 0.92);
 }
+
+// Modal Backdrop Click & ESC Key
+function handleOverlayClick(e, modalId) {
+  if (e.target && e.target.id === modalId) {
+    if (modalId === 'camera-modal') closeCamera();
+    if (modalId === 'login-modal') closeLoginModal();
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeCamera();
+    closeLoginModal();
+    if (typeof chatDrawerOpen !== 'undefined' && chatDrawerOpen) closeChatDrawer();
+  }
+});
 
 // ── TOAST ─────────────────────────────────────────────────
 function showToast(msg) {
@@ -1102,7 +1150,7 @@ function loadHistory() {
       <div class="hist-card" onclick="viewHistory(${idx})" style="cursor:pointer;" title="${currentLang==='en'?'Click to view diagnosis detail':'Klik untuk melihat detail diagnosis'}">
         <img src="${item.image}" alt="Scan" class="hist-img">
         <div class="hist-info">
-          <div class="hist-title">${item.plantEmoji} ${currentLang === 'en' && plants.find(p=>p.name===item.plantName)?.name_en ? plants.find(p=>p.name===item.plantName).name_en : item.plantName}</div>
+          <div class="hist-title">${item.plantEmoji} ${currentLang === 'en' && plants.find(p=>p.name===item.plantName||p.id===item.plantId)?.name_en ? plants.find(p=>p.name===item.plantName||p.id===item.plantId).name_en : item.plantName}</div>
           <div class="hist-disease" style="color: ${sevColor}">${item.diseaseName}</div>
           <div class="hist-date">${date}</div>
         </div>
@@ -1126,9 +1174,12 @@ function viewHistory(idx) {
     return;
   }
   
-  // Set the "selectedPlant" artificially for the view
-  selectedPlant = {
+  // Find full plant object if available so name_en and other metadata are preserved
+  const foundPlant = plants.find(p => (item.plantId && p.id === item.plantId) || p.name === item.plantName || p.name_en === item.plantName);
+  selectedPlant = foundPlant ? foundPlant : {
+    id: item.plantId || 'unknown',
     name: item.plantName,
+    name_en: item.plantName,
     emoji: item.plantEmoji,
     latin: item.plantLatin || (currentLang==='en'?'Unknown species':'Spesies tidak diketahui')
   };
@@ -1144,7 +1195,7 @@ function viewHistory(idx) {
   const dateStr = new Date(item.date).toLocaleDateString(currentLang==='en'?'en-US':'id-ID', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
   document.getElementById('meta-fsize').textContent = dateStr;
   document.getElementById('img-tag-emoji').textContent = item.plantEmoji;
-  document.getElementById('img-tag-name').textContent = item.plantName;
+  document.getElementById('img-tag-name').textContent = currentLang === 'en' && selectedPlant.name_en ? selectedPlant.name_en : item.plantName;
   
   // Render the diagnosis without saving to history again
   showDiagnosis(item.fullResult, true);

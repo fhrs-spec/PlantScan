@@ -171,6 +171,39 @@ h1 em { font-style: italic; color: var(--green-rich); }
   display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
   animation: fadeUp 0.7s 0.3s ease both;
 }
+.hero-actions {
+  display: flex; gap: 14px; justify-content: center; align-items: center;
+  margin-top: 1.5rem; flex-wrap: wrap;
+  animation: fadeUp 0.7s 0.4s ease both;
+}
+.btn-hero-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: 100px;
+  background: linear-gradient(135deg, var(--green-mid), var(--green-rich));
+  color: white; text-decoration: none;
+  font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.92rem;
+  box-shadow: 0 6px 20px rgba(45, 96, 23, 0.35);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-hero-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(45, 96, 23, 0.5);
+  color: white;
+}
+.btn-hero-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 22px; border-radius: 100px;
+  background: white; border: 1.5px solid rgba(61, 122, 30, 0.3);
+  color: var(--green-deep);
+  font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.92rem;
+  cursor: pointer; box-shadow: var(--shadow-sm);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-hero-secondary:hover {
+  background: var(--mint); border-color: var(--green-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 222, 128, 0.2);
+}
 .pill {
   display: flex; align-items: center; gap: 6px;
   background: white; border: 1px solid rgba(61,122,30,0.18);
@@ -282,6 +315,11 @@ h1 em { font-style: italic; color: var(--green-rich); }
 .plant-card:hover {
   border-color: var(--green-soft);
   transform: translateY(-3px) scale(1.02); box-shadow: 0 0 20px rgba(74, 222, 128, 0.12);
+}
+.plant-card:focus-visible {
+  outline: 2.5px solid #10b981;
+  outline-offset: 2px;
+  border-color: #10b981;
 }
 .plant-card.selected {
   border-color: var(--green-rich); border-width: 2px;
@@ -639,8 +677,47 @@ h1 em { font-style: italic; color: var(--green-rich); }
   font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600;
   background: var(--danger); color: white; border: none; border-radius: 100px;
   padding: 8px 20px; cursor: pointer; transition: opacity 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
 }
 .btn-retry:hover { opacity: 0.9; }
+
+/* Non-Plant Anti-Hallucination Warning Card */
+.non-plant-card {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background: rgba(239, 68, 68, 0.05);
+  border: 1.5px dashed rgba(239, 68, 68, 0.35);
+  border-radius: var(--r);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeUp 0.3s ease;
+}
+.non-plant-icon {
+  font-size: 2.8rem;
+  margin-bottom: 0.5rem;
+}
+.non-plant-title {
+  font-family: 'Lora', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--danger);
+  margin-bottom: 0.5rem;
+}
+.non-plant-desc {
+  font-size: 0.86rem;
+  color: var(--soil);
+  line-height: 1.6;
+  max-width: 440px;
+  margin: 0 auto 1.25rem;
+}
+.non-plant-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
 
 /* ── FEATURES ───────────────────────────────────────────── */
 .sec-title {
@@ -723,6 +800,31 @@ footer {
 .footer-desc {
   font-size: 0.77rem; color: var(--green-soft);
   line-height: 1.8; max-width: 440px; margin: 0 auto;
+}
+.footer-links {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+.footer-admin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--green-mid);
+  text-decoration: none;
+  background: var(--mint);
+  border: 1px solid rgba(95, 163, 78, 0.25);
+  padding: 6px 14px;
+  border-radius: 100px;
+  transition: all 0.2s;
+}
+.footer-admin-link:hover {
+  background: var(--mint2);
+  border-color: var(--green-soft);
+  transform: translateY(-1px);
 }
 
 /* ── CAMERA MODAL ───────────────────────────────────────── */
@@ -1582,6 +1684,13 @@ footer {
   }
   .chat-open-desc {
     font-size: 0.78rem;
+  }
+  /* Mobile Clearance for Floating FAB */
+  .wrap {
+    padding-bottom: 75px;
+  }
+  .act-row {
+    margin-bottom: 12px;
   }
 }
 
