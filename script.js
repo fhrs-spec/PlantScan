@@ -477,6 +477,14 @@ function showDiagnosis(r, isHistory = false) {
   setTimeout(() => {
     const cb = document.getElementById('conf-bar');
     if (cb) cb.style.width = (r.tingkat_kepercayaan || 85) + '%';
+    
+    // Auto-scroll to diagnosis on mobile
+    if (window.innerWidth <= 680 && !isHistory) {
+      const diagHead = document.querySelector('.diag-head');
+      if (diagHead) {
+        diagHead.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
   }, 150);
 }
 
