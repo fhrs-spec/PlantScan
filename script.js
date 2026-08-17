@@ -477,15 +477,17 @@ function showDiagnosis(r, isHistory = false) {
   setTimeout(() => {
     const cb = document.getElementById('conf-bar');
     if (cb) cb.style.width = (r.tingkat_kepercayaan || 85) + '%';
-    
-    // Auto-scroll to diagnosis on mobile
-    if (window.innerWidth <= 680 && !isHistory) {
-      const diagHead = document.querySelector('.diag-head');
-      if (diagHead) {
-        diagHead.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
   }, 150);
+
+  // On mobile screen, smoothly scroll down to the diagnosis result
+  if (window.innerWidth <= 680 && !isHistory) {
+    setTimeout(() => {
+      const resultCard = document.getElementById('diag-card');
+      if (resultCard) {
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 250);
+  }
 }
 
 // ── AI PLANT DOCTOR CHATBOT — GLOBAL FLOATING DRAWER ──────
