@@ -483,6 +483,25 @@ function showDiagnosis(r, isHistory = false) {
 // ── AI PLANT DOCTOR CHATBOT — GLOBAL FLOATING DRAWER ──────
 let chatDrawerInitialized = false;
 let chatDrawerOpen = false;
+let chatMaximized = false;
+
+function toggleChatMaximize() {
+  const drawer = document.getElementById('chat-drawer');
+  const btn = document.getElementById('btn-chat-expand');
+  if (!drawer) return;
+  
+  chatMaximized = !chatMaximized;
+  drawer.classList.toggle('maximized', chatMaximized);
+  
+  if (btn) {
+    const iconMax = btn.querySelector('.icon-maximize');
+    const iconMin = btn.querySelector('.icon-minimize');
+    if (iconMax && iconMin) {
+      iconMax.style.display = chatMaximized ? 'none' : 'block';
+      iconMin.style.display = chatMaximized ? 'block' : 'none';
+    }
+  }
+}
 
 function toggleChatDrawer() {
   if (chatDrawerOpen) {
@@ -545,7 +564,7 @@ function initChatDrawer() {
   
   chatContainer.innerHTML = `
     <div class="chat-msg ai">
-      <div class="chat-msg-avatar">🩺</div>
+      <div class="chat-msg-avatar" aria-hidden="true"></div>
       <div class="msg-bubble">${welcomeMsg}</div>
     </div>`;
 }
@@ -649,9 +668,8 @@ function appendChatMessage(role, content) {
   const msgDiv = document.createElement('div');
   msgDiv.className = `chat-msg ${role}`;
   
-  const avatarEmoji = role === 'ai' ? '🩺' : '👤';
   msgDiv.innerHTML = `
-    <div class="chat-msg-avatar">${avatarEmoji}</div>
+    <div class="chat-msg-avatar" aria-hidden="true"></div>
     <div class="msg-bubble">${content}</div>`;
   
   chatContainer.appendChild(msgDiv);
@@ -668,7 +686,7 @@ function showTypingIndicator() {
   typingDiv.className = 'chat-msg ai';
   typingDiv.id = 'chat-typing-indicator';
   typingDiv.innerHTML = `
-    <div class="chat-msg-avatar">🩺</div>
+    <div class="chat-msg-avatar" aria-hidden="true"></div>
     <div class="msg-bubble">
       <div class="typing-dots"><span></span><span></span><span></span></div>
     </div>`;

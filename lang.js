@@ -135,7 +135,8 @@ const translations = {
     non_plant_title: "Foto Tidak Dikenali Sebagai Tanaman",
     non_plant_desc: "Sistem mendeteksi bahwa foto yang diunggah bukan merupakan bagian daun atau buah tanaman. Silakan unggah foto tanaman yang jelas untuk mendapatkan diagnosis yang akurat.",
     non_plant_btn: "Unggah Ulang Foto",
-    footer_admin: "Dashboard Admin (Demo)"
+    footer_admin: "Dashboard Admin (Demo)",
+    fab_chat_btn: "Asisten AI"
   },
   en: {
     nav_deteksi: "Scan",
@@ -273,7 +274,8 @@ const translations = {
     non_plant_title: "Unrecognized Non-Plant Photo",
     non_plant_desc: "The system detected that the uploaded photo does not appear to be a plant leaf or fruit. Please upload a clear photo of a plant to receive an accurate diagnosis.",
     non_plant_btn: "Upload New Photo",
-    footer_admin: "Admin Dashboard (Demo)"
+    footer_admin: "Admin Dashboard (Demo)",
+    fab_chat_btn: "AI Assistant"
   }
 };
 

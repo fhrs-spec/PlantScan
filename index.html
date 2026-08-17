@@ -100,19 +100,6 @@
         <div class="pill"><span>🌱</span><span data-i18n="pill_3">20+ Tanaman</span></div>
         <div class="pill"><span>⚡</span><span data-i18n="pill_4">Instan</span></div>
       </div>
-      <div class="hero-actions">
-        <a href="#deteksi" class="btn-hero-primary">
-          <svg viewBox="0 0 20 20" fill="none">
-            <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2" />
-            <line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-          </svg>
-          <span data-i18n="hero_cta_scan">Mulai Scan Tanaman</span>
-        </a>
-        <button class="btn-hero-secondary" onclick="openChatDrawer()">
-          <span>🩺</span>
-          <span data-i18n="hero_cta_chat">Tanya AI Dokter</span>
-        </button>
-      </div>
     </section>
 
     <!-- DETEKSI -->
@@ -466,11 +453,14 @@
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
-  <!-- FLOATING CHAT FAB -->
+  <!-- FLOATING CHAT BUTTON -->
   <button class="chat-fab" id="chat-fab" onclick="toggleChatDrawer()" aria-label="Open AI Plant Doctor Chat">
-    <span class="fab-icon-chat">🩺</span>
+    <span class="fab-content">
+      <span class="fab-dot"></span>
+      <span class="fab-text" data-i18n="fab_chat_btn">Asisten AI</span>
+    </span>
     <span class="fab-icon-close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
@@ -487,18 +477,28 @@
     <!-- Header -->
     <div class="chat-drawer-header">
       <div class="chat-drawer-header-info">
-        <div class="chat-drawer-avatar">🩺</div>
+        <div class="chat-drawer-avatar" aria-hidden="true"></div>
         <div>
           <div class="chat-drawer-title" data-i18n="chat_title">Asisten Dokter Tanaman AI</div>
           <div class="chat-drawer-badge" data-i18n="chat_badge">🌿 Khusus Kesehatan Tanaman</div>
         </div>
       </div>
-      <button class="chat-drawer-close" onclick="closeChatDrawer()" aria-label="Close chat">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
+      <div class="chat-drawer-actions">
+        <button class="chat-drawer-btn chat-drawer-expand" id="btn-chat-expand" onclick="toggleChatMaximize()" aria-label="Maximize / Minimize chat" title="Perbesar / Perkecil">
+          <svg class="icon-maximize" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+          </svg>
+          <svg class="icon-minimize" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+            <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7"/>
+          </svg>
+        </button>
+        <button class="chat-drawer-btn chat-drawer-close" onclick="closeChatDrawer()" aria-label="Close chat" title="Tutup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
     </div>
 
     <!-- Context Banner (shown when diagnosis is active) -->
