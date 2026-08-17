@@ -478,16 +478,6 @@ function showDiagnosis(r, isHistory = false) {
     const cb = document.getElementById('conf-bar');
     if (cb) cb.style.width = (r.tingkat_kepercayaan || 85) + '%';
   }, 150);
-
-  // On mobile screen, smoothly scroll down to the diagnosis result
-  if (window.innerWidth <= 680 && !isHistory) {
-    setTimeout(() => {
-      const resultCard = document.getElementById('diag-card');
-      if (resultCard) {
-        resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 250);
-  }
 }
 
 // ── AI PLANT DOCTOR CHATBOT — GLOBAL FLOATING DRAWER ──────
