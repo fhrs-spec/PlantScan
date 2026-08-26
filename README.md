@@ -1,82 +1,79 @@
-# 🌱 PlantScan - AI Plant Disease Scanner (Commercial SaaS Template)
+# PlantScan
 
-PlantScan is an intelligent web application (built as a Progressive Web App / PWA) designed to help farmers, plant enthusiasts, and botanists detect plant diseases instantly. Leveraging Artificial Intelligence (Google Gemini Vision API), PlantScan analyzes photos of leaves or fruits, providing accurate diagnoses alongside treatment recommendations.
+Web app untuk mendeteksi penyakit tanaman dari foto daun atau buah menggunakan Google Gemini Vision API. Dilengkapi rekomendasi penanganan dan chatbot dokter tanaman untuk konsultasi perawatan.
 
-This template is built as a **Commercial SaaS Template**, ready to be used as a base project for client work, a commercial micro-SaaS startup, or developer portfolio.
+Demo: [https://plantscan-webapp.vercel.app/](https://plantscan-webapp.vercel.app/)
 
----
+## Fitur
 
-## 🌐 Live Demo
-- **Demo Link**: [https://plantscan-webapp.vercel.app/](https://plantscan-webapp.vercel.app/)
+- **Deteksi Penyakit**: Upload foto atau ambil langsung lewat kamera untuk cek kondisi daun dan buah.
+- **Hasil Diagnosis**: Menampilkan nama penyakit, penyebab, tingkat keparahan, serta saran penanganan organik & kimiawi.
+- **Tanya Dokter Tanaman**: Chatbot berbasis AI untuk tanya-jawab lanjutan seputar perawatan tanaman yang baru di-scan.
+- **Filter Foto**: Prompt sudah disesuaikan agar menolak foto jika yang di-upload bukan bagian tanaman.
+- **PWA (Progressive Web App)**: Bisa di-install di HP atau desktop, dengan caching aset agar cepat dibuka.
+- **Mode Simulasi**: Jika dijalankan tanpa API key, aplikasi otomatis menggunakan data mock agar flow tetap bisa diuji.
+- **Bilingual**: Tersedia pilihan Bahasa Indonesia dan Bahasa Inggris.
+- **Dashboard Admin**: Halaman `admin.html` untuk melihat simulasi statistik dan riwayat scan.
 
----
+## Tech Stack
 
-## ✨ Key Features
+- **Frontend**: HTML5, Vanilla CSS, Vanilla JavaScript
+- **Backend**: Node.js Serverless Functions (Vercel)
+- **AI**: Google Gemini API (Gemini Vision & Chat)
 
-- **🤖 Smart AI Detection**: Powered by Google Gemini Vision API for high-precision plant disease recognition and treatment solutions.
-- **🛡️ Anti-Hallucination AI Guard**: Built-in prompt validation that automatically rejects non-plant photos (e.g., humans, animals, objects).
-- **🔄 Out-of-the-Box Simulation Mode**: Automatically runs mock AI analysis if no API key is provided—perfect for immediate testing & client demos.
-- **🌐 Dual-Language Support (i18n)**: Integrated bilingual system (English & Indonesian) dynamically supported across the entire interface.
-- **🔒 SaaS Template Ready**: Features mock authentication powered by `localStorage`, including a **Guest Scan Limit** (1 free guest scan before requiring sign-in).
-- **📊 Admin Dashboard**: Includes an admin dashboard page (`admin.html`) simulating user history, daily scan statistics, and AI performance metrics.
-- **📱 Progressive Web App (PWA)**: Installable directly on iOS, Android, and Desktop like a native app. Includes a custom Service Worker for offline asset caching.
-- **🛡️ Built-in Security & Rate Limiting**: Serverless IP-based rate limiting to prevent API spam and quota abuse.
-- **⚡ Serverless Architecture**: Fast response times and zero server hosting fees using Vercel Serverless Functions.
-- **🎨 Modern & Responsive UI/UX**: Elegant glassmorphism interface with smooth micro-animations, fully responsive across all screen sizes.
+## Menjalankan di Lokal
 
----
+### 1. Persiapan
+Ambil API key Gemini gratis di [Google AI Studio](https://aistudio.google.com/).
 
-## 🛠️ Tech Stack
+### 2. Setup Environment
+Clone repo ini, lalu buat file `.env` dari template:
 
-- **Frontend**: HTML5, CSS3 (Vanilla), JavaScript (Framework-free, lightweight, & ultra-fast load speed).
-- **Backend / API**: Node.js (Vercel Serverless Functions).
-- **AI Engine**: Google Gemini API (with multi-model fallback).
+```bash
+cp .env.example .env
+```
 
----
+Buka `.env` dan masukkan API key kamu:
+```env
+GEMINI_API_KEY=isi_api_key_kamu_disini
+```
 
-## 🚀 Setup & Installation Guide (Buyer Instructions)
+### 3. Jalankan Aplikasi
 
-Since PlantScan uses Vercel Serverless Functions for the API backend, the easiest way to deploy this application for free is via **Vercel**.
+**Cara 1 — Menggunakan Vercel CLI (Direkomendasikan)**  
+Agar fungsi backend di folder `/api` aktif dan bisa request ke Gemini:
+```bash
+npx vercel dev
+```
+Lalu buka `http://localhost:3000` di browser.
 
-### 1. Get Your Gemini API Key
-1. Visit [Google AI Studio](https://aistudio.google.com/).
-2. Log in and generate a new **API Key** for Gemini API.
-3. Copy and save your API Key securely.
+**Cara 2 — Menggunakan Live Server biasa (Mode Simulasi)**  
+Buka `index.html` langsung lewat VS Code Live Server. Mode ini otomatis memakai data simulasi tanpa memanggil API backend.
 
-### 2. Configure Environment Variables
-1. Duplicate or rename `.env.example` to `.env`.
-2. Open `.env` and paste your Gemini API Key:
-   ```env
-   GEMINI_API_KEY=AIzaSyYourAPIKeyHere...
-   ```
-*(Note: Your `.env` file is excluded from git commits via `.gitignore` to keep your API keys secure).*
+## Deploy ke Vercel
 
-### 3. Deploy to Vercel (Fast & Free)
-This repository includes a pre-configured `vercel.json` file.
-1. Push this project folder to your private GitHub repository.
-2. Log in to [Vercel](https://vercel.com/) using your GitHub account.
-3. Click **Add New Project** and select your uploaded repository.
-4. In the **Environment Variables** section on Vercel Dashboard, add a new variable:
-   - **Name**: `GEMINI_API_KEY`
-   - **Value**: *(Paste your Gemini API Key here)*
-5. Click **Deploy**. Done! Your PlantScan application is live and accessible globally.
+1. Push project ini ke repository GitHub.
+2. Buka [Vercel](https://vercel.com) dan import repository-nya.
+3. Di menu **Environment Variables**, tambahkan `GEMINI_API_KEY`.
+4. Klik **Deploy**.
 
----
+## Struktur Project
 
-## 📖 File & Directory Structure
-- `index.html` : Main application entry point (Landing Page & AI Scanner interface).
-- `admin.html` : Admin Dashboard interface (SaaS user analytics & scan statistics simulation).
-- `style.css` : Complete design system with glassmorphism theme and responsive utilities.
-- `lang.js` : Internationalization (i18n) dictionary and dynamic language switcher.
-- `script.js` : Frontend logic (Camera capture, image upload, mock authentication, guest limit).
-- `manifest.json` & `sw.js` : PWA web manifest and Service Worker caching configuration.
-- `vercel.json` : Vercel Serverless Function rewrites and header cache rules.
-- `.env.example` : Template file for environment variable configuration.
-- `/api` : Vercel Serverless Backend folder.
-  - `analyze.js` : Primary API endpoint handling Gemini Vision API communication, dynamic prompts, and rate-limiting security.
-  - `diseaseData.js` : Plant pathology context dataset providing specific guidelines for 20+ plant types.
+```text
+api/
+  analyze.js       # Endpoint analisis foto (Gemini Vision) + rate limit
+  chat.js          # Endpoint chatbot konsultasi perawatan
+  diseaseData.js   # Konteks data penyakit 20+ jenis tanaman
+index.html         # Halaman utama aplikasi & scanner
+admin.html         # Halaman simulasi admin dashboard
+style.css          # Styling utama
+script.js          # Logika frontend & kamera
+lang.js            # Kamus bahasa (ID / EN)
+sw.js              # Service worker PWA
+vercel.json        # Routing rewrite Vercel
+```
 
----
+## Catatan
 
-## 📄 License
-This project is licensed to the buyer upon purchase completion. Redistribution of this source code publicly without permission is strictly prohibited unless explicitly agreed upon in the purchase contract.
+- Foto yang di-upload hanya diproses saat request analisis berjalan dan tidak disimpan di server.
+- Ada rate limiter sederhana berbasis IP di backend untuk mencegah spam ke API Gemini.
