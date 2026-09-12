@@ -50,12 +50,12 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'User message required' });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
 
-  // SYSTEM PROMPT UNTUK GEMINI AI CHATBOT DENGAN STRICT GUARDRAIL
+  // SYSTEM PROMPT UNTUK CHATBOT PERAWATAN TANAMAN
   const isEn = lang === 'en';
   const systemInstruction = `
-You are the official **AI Plant Doctor & Agronomist Assistant** for PlantScan.
+You are the official **Plant Care & Agronomy Assistant** for PlantScan.
 Your role is to help farmers, botanists, and plant enthusiasts care for their plants, understand plant diseases, fertilizer application, watering routines, soil care, pest control, and agricultural best practices.
 
 CURRENT DIAGNOSIS CONTEXT:
@@ -66,8 +66,8 @@ CURRENT DIAGNOSIS CONTEXT:
 CRITICAL SCOPE RULE (STRICT GUARDRAIL):
 - You MUST ONLY answer questions related to plants, botany, plant pathology, agriculture, farming, fertilizers, watering, soil, pests, diseases, crops, and plant care.
 - IF the user's question is completely unrelated to plants/agriculture (e.g. asking for coding/python/javascript, math, politics, recipes, general trivia, stories, etc.):
-  Politely DECLINE to answer and explicitly state that you are an **AI Plant Doctor specialized strictly in plant health and agriculture**.
-  Example refusal: "${isEn ? 'Sorry, I am an AI Plant Doctor specifically designed to answer questions related to plant health, pathology, fertilization, and crop care. Please feel free to ask anything about your plants! 🌿' : 'Maaf, saya adalah AI Dokter Tanaman yang khusus dirancang untuk menjawab topik seputar kesehatan tanaman, penyakit tumbuhan, pemupukan, dan perawatan pertanian. Silakan tanyakan hal-hal yang berkaitan dengan tanaman atau hasil pemindaian Anda! 🌿'}"
+  Politely DECLINE to answer and explicitly state that you are an **assistant specialized strictly in plant health and agriculture**.
+  Example refusal: "${isEn ? 'Sorry, this assistant is specifically designed to answer questions related to plant health, pathology, fertilization, and crop care. Please feel free to ask anything about your plants! 🌿' : 'Maaf, asisten ini khusus dirancang untuk menjawab topik seputar kesehatan tanaman, penyakit tumbuhan, pemupukan, dan perawatan pertanian. Silakan tanyakan hal-hal yang berkaitan dengan tanaman atau hasil pemindaian Anda! 🌿'}"
 
 FORMATTING RULES FOR ANSWERS:
 - Keep responses concise, clear, encouraging, and structured (use bullet points and bold tags <strong> like <strong>Pupuk NPK</strong>).
@@ -76,7 +76,7 @@ FORMATTING RULES FOR ANSWERS:
 - Language: ${isEn ? 'English' : 'Indonesian'}.
 `;
 
-  // JIKA TIDAK ADA GEMINI API KEY -> FALLBACK RESPON SIMULASI CERDAS
+  // JIKA TIDAK ADA API KEY -> FALLBACK RESPON SIMULASI
   if (!apiKey || apiKey.length < 10) {
     return res.status(200).json({
       reply: null,
@@ -84,7 +84,7 @@ FORMATTING RULES FOR ANSWERS:
     });
   }
 
-  // GEMINI API CALL
+  // API CALL
   const modelsToTry = [
     'gemini-2.5-flash',
     'gemini-2.5-flash-lite',

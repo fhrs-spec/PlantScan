@@ -1,79 +1,86 @@
 # PlantScan
 
-Web app untuk mendeteksi penyakit tanaman dari foto daun atau buah menggunakan Google Gemini Vision API. Dilengkapi rekomendasi penanganan dan chatbot dokter tanaman untuk konsultasi perawatan.
+PlantScan is a web application that helps identify plant diseases from photos of leaves or fruits using an AI vision API. After analyzing an image, the app provides a possible diagnosis, severity level, and treatment recommendations. Users can also continue the conversation through a built-in chatbot for follow-up plant care questions.
 
-Demo: [https://plantscan-webapp.vercel.app/](https://plantscan-webapp.vercel.app/)
+**Live Demo:** https://plantscan-webapp.vercel.app/
 
-## Fitur
+## Features
 
-- **Deteksi Penyakit**: Upload foto atau ambil langsung lewat kamera untuk cek kondisi daun dan buah.
-- **Hasil Diagnosis**: Menampilkan nama penyakit, penyebab, tingkat keparahan, serta saran penanganan organik & kimiawi.
-- **Tanya Dokter Tanaman**: Chatbot berbasis AI untuk tanya-jawab lanjutan seputar perawatan tanaman yang baru di-scan.
-- **Filter Foto**: Prompt sudah disesuaikan agar menolak foto jika yang di-upload bukan bagian tanaman.
-- **PWA (Progressive Web App)**: Bisa di-install di HP atau desktop, dengan caching aset agar cepat dibuka.
-- **Mode Simulasi**: Jika dijalankan tanpa API key, aplikasi otomatis menggunakan data mock agar flow tetap bisa diuji.
-- **Bilingual**: Tersedia pilihan Bahasa Indonesia dan Bahasa Inggris.
-- **Dashboard Admin**: Halaman `admin.html` untuk melihat simulasi statistik dan riwayat scan.
+* **Plant Disease Detection** — Upload an image from your gallery or capture one with your camera to analyze leaves and fruits.
+* **Diagnosis Results** — View the detected disease, possible causes, severity level, and recommended organic and chemical treatments.
+* **Plant Care Chatbot** — Ask follow-up questions and get care recommendations based on the latest scan.
+* **Image Validation** — Filters out non-plant images before sending them for analysis to improve result quality.
+* **Progressive Web App (PWA)** — Install the app on mobile or desktop, with cached assets for faster loading.
+* **Simulation Mode** — Run the app without an API key using mock data, making it easy to test the full user flow locally.
+* **Bilingual Support** — Available in both English and Indonesian.
+* **Admin Dashboard** — Includes a simple dashboard for viewing simulated scan history and usage statistics.
 
 ## Tech Stack
 
-- **Frontend**: HTML5, Vanilla CSS, Vanilla JavaScript
-- **Backend**: Node.js Serverless Functions (Vercel)
-- **AI**: Google Gemini API (Gemini Vision & Chat)
+* **Frontend:** HTML5, CSS, Vanilla JavaScript
+* **Backend:** Node.js Serverless Functions (Vercel)
+* **AI Integration:** Vision API and AI Chat API
 
-## Menjalankan di Lokal
+## Running Locally
 
-### 1. Persiapan
-Ambil API key Gemini gratis di [Google AI Studio](https://aistudio.google.com/).
+### 1. Get an API Key
 
-### 2. Setup Environment
-Clone repo ini, lalu buat file `.env` dari template:
+Generate an API key from your preferred AI provider.
+
+### 2. Set Up Environment Variables
+
+Copy the example environment file and add your API key:
 
 ```bash
 cp .env.example .env
 ```
 
-Buka `.env` dan masukkan API key kamu:
 ```env
-GEMINI_API_KEY=isi_api_key_kamu_disini
+API_KEY=your_api_key
 ```
 
-### 3. Jalankan Aplikasi
+### 3. Start the Application
 
-**Cara 1 — Menggunakan Vercel CLI (Direkomendasikan)**  
-Agar fungsi backend di folder `/api` aktif dan bisa request ke Gemini:
+**Option 1 — Using Vercel CLI (Recommended)**
+
+Run the frontend and serverless API locally:
+
 ```bash
 npx vercel dev
 ```
-Lalu buka `http://localhost:3000` di browser.
 
-**Cara 2 — Menggunakan Live Server biasa (Mode Simulasi)**  
-Buka `index.html` langsung lewat VS Code Live Server. Mode ini otomatis memakai data simulasi tanpa memanggil API backend.
+Then open `http://localhost:3000` in your browser.
 
-## Deploy ke Vercel
+**Option 2 — Using Live Server**
 
-1. Push project ini ke repository GitHub.
-2. Buka [Vercel](https://vercel.com) dan import repository-nya.
-3. Di menu **Environment Variables**, tambahkan `GEMINI_API_KEY`.
-4. Klik **Deploy**.
+Open `index.html` with VS Code Live Server. The app will automatically switch to Simulation Mode and use mock data instead of calling the AI API.
 
-## Struktur Project
+## Deploying to Vercel
+
+1. Push the project to a GitHub repository.
+2. Import the repository into Vercel.
+3. Add your `API_KEY` as an Environment Variable.
+4. Deploy.
+
+## Project Structure
 
 ```text
 api/
-  analyze.js       # Endpoint analisis foto (Gemini Vision) + rate limit
-  chat.js          # Endpoint chatbot konsultasi perawatan
-  diseaseData.js   # Konteks data penyakit 20+ jenis tanaman
-index.html         # Halaman utama aplikasi & scanner
-admin.html         # Halaman simulasi admin dashboard
-style.css          # Styling utama
-script.js          # Logika frontend & kamera
-lang.js            # Kamus bahasa (ID / EN)
-sw.js              # Service worker PWA
-vercel.json        # Routing rewrite Vercel
+├── analyze.js       # Image analysis endpoint + rate limiting
+├── chat.js          # Plant care chatbot endpoint
+└── diseaseData.js   # Plant disease reference data
+
+index.html           # Main application page
+admin.html           # Admin dashboard
+script.js            # Frontend logic
+style.css            # Application styles
+lang.js              # English / Indonesian translations
+sw.js                # Service Worker (PWA)
+vercel.json          # Vercel routing configuration
 ```
 
-## Catatan
+## Notes
 
-- Foto yang di-upload hanya diproses saat request analisis berjalan dan tidak disimpan di server.
-- Ada rate limiter sederhana berbasis IP di backend untuk mencegah spam ke API Gemini.
+* Uploaded images are processed only during analysis requests and are not stored on the server.
+* A simple IP-based rate limiter is used on the backend to prevent API abuse.
+* The application is designed to work with any compatible AI vision and chat API by configuring the API key in the environment variables.

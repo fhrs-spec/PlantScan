@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1A3D0C">
-  <meta name="description" content="PlantScan - Deteksi penyakit tanamanmu dengan AI secara akurat.">
-  <meta property="og:title" content="PlantScan - Deteksi Penyakit Tanaman AI">
+  <meta name="description" content="PlantScan - Identifikasi penyakit tanaman dari foto daun atau buah beserta saran penanganan praktis.">
+  <meta property="og:title" content="PlantScan — Deteksi Penyakit Tanaman">
   <meta property="og:description"
-    content="Upload foto daun atau buah tanamanmu — AI menganalisis kondisinya secara mendalam, memberikan diagnosis akurat dan rekomendasi.">
+    content="Upload foto daun atau buah tanamanmu untuk memeriksa kondisi tanaman dan mendapatkan rekomendasi penanganan praktis.">
   <meta property="og:type" content="website">
-  <title data-i18n="page_title">PlantScan — Deteksi Penyakit Tanaman AI</title>
+  <title data-i18n="page_title">PlantScan — Deteksi Penyakit Tanaman</title>
   <link rel="manifest" href="manifest.json">
   <link
     href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap"
@@ -92,13 +92,12 @@
     <!-- HERO -->
     <section class="hero" id="hero">
       <h1 data-i18n-html="hero_title">Deteksi <em>Penyakit</em><br>Tanamanmu</h1>
-      <p class="hero-desc" data-i18n="hero_desc">Upload foto daun atau buah tanamanmu AI menganalisis kondisinya secara
-        mendalam, memberikan diagnosis akurat dan rekomendasi penanganan.</p>
+      <p class="hero-desc" data-i18n="hero_desc">Upload foto daun atau buah tanamanmu untuk memeriksa kondisinya, mengidentifikasi potensi penyakit, dan mendapatkan saran penanganan praktis.</p>
       <div class="hero-pills">
         <div class="pill"><span>🌿</span><span data-i18n="pill_1">Daun & Buah</span></div>
-        <div class="pill"><span>🧠</span>AI</div>
+        <div class="pill"><span>🔍</span><span data-i18n="pill_2">Vision API</span></div>
         <div class="pill"><span>🌱</span><span data-i18n="pill_3">20+ Tanaman</span></div>
-        <div class="pill"><span>⚡</span><span data-i18n="pill_4">Instan</span></div>
+        <div class="pill"><span>⚡</span><span data-i18n="pill_4">Hasil Cepat</span></div>
       </div>
     </section>
 
@@ -258,12 +257,12 @@
                 <div class="loader-ring r2"></div>
                 <div class="loader-leaf">🔬</div>
               </div>
-              <div class="loader-title" data-i18n="ai_analyzing">AI Menganalisis Foto...</div>
+              <div class="loader-title" data-i18n="ai_analyzing">Menganalisis Foto...</div>
               <div class="loader-step" id="loader-step">Mempersiapkan analisis</div>
               <div class="progress-track">
                 <div class="progress-fill" id="progress-fill"></div>
               </div>
-              <div class="loader-note" data-i18n="ai_note">Menggunakan Google Gemini AI untuk deteksi akurat</div>
+              <div class="loader-note" data-i18n="ai_note">Analisis visual berbasis Vision API</div>
             </div>
 
             <!-- Result -->
@@ -296,44 +295,38 @@
 
     <!-- FITUR -->
     <section id="fitur">
-      <h2 class="sec-title" data-i18n="feat_title">Fitur Unggulan</h2>
-      <p class="sec-sub" data-i18n="feat_sub">Semua yang kamu butuhkan untuk menjaga kesehatan tanaman</p>
+      <h2 class="sec-title" data-i18n="feat_title">Fitur Utama</h2>
+      <p class="sec-sub" data-i18n="feat_sub">Bantu menjaga tanaman tetap sehat dan terawat</p>
       <div class="feat-grid">
         <div class="feat-card fc-highlight">
-          <div class="feat-icon">🧠</div>
-          <h3 data-i18n="f1_title">AI Vision Nyata</h3>
-          <p data-i18n="f1_desc">Menggunakan Gemini AI yang sesungguhnya untuk menganalisis foto — bukan database
-            statis, melainkan pemahaman visual mendalam.</p>
+          <div class="feat-icon">🔍</div>
+          <h3 data-i18n="f1_title">Pemeriksaan Visual</h3>
+          <p data-i18n="f1_desc">Menganalisis foto daun dan buah untuk mengidentifikasi gejala penyakit yang tampak pada tanaman.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">🍃</div>
           <h3 data-i18n="f2_title">Daun & Buah</h3>
-          <p data-i18n="f2_desc">Bukan hanya daun — PlantScan bisa mendeteksi penyakit pada buah tanaman juga, dengan
-            analisis menyeluruh.</p>
+          <p data-i18n="f2_desc">Bisa memeriksa daun maupun buah tanaman untuk deteksi gejala yang lebih menyeluruh.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">🌿</div>
           <h3 data-i18n="f3_title">20+ Jenis Tanaman</h3>
-          <p data-i18n="f3_desc">Database tanaman terus berkembang, mencakup sayuran, buah-buahan, dan tanaman pangan
-            populer Indonesia.</p>
+          <p data-i18n="f3_desc">Mencakup sayuran, buah-buahan, tanaman pangan, dan tanaman hias populer.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">📋</div>
-          <h3 data-i18n="f4_title">Diagnosis Mendalam</h3>
-          <p data-i18n="f4_desc">Hasil analisis lengkap: nama penyakit, penyebab, gejala, tingkat keparahan, dan
-            rekomendasi penanganan spesifik.</p>
+          <h3 data-i18n="f4_title">Laporan Diagnosis Jelas</h3>
+          <p data-i18n="f4_desc">Menampilkan nama kondisi, penyebab umum, gejala visual, tingkat keparahan, serta langkah penanganan.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">📱</div>
-          <h3 data-i18n="f5_title">Ramah Semua Perangkat</h3>
-          <p data-i18n="f5_desc">Antarmuka responsif yang nyaman digunakan di HP, tablet, maupun komputer dengan
-            performa optimal.</p>
+          <h3 data-i18n="f5_title">Mudah Digunakan di Semua Perangkat</h3>
+          <p data-i18n="f5_desc">Tampilan responsif dan nyaman digunakan di ponsel, tablet, maupun komputer.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon">🔒</div>
           <h3 data-i18n="f6_title">Privasi Terjaga</h3>
-          <p data-i18n="f6_desc">Foto hanya diproses saat analisis berlangsung dan tidak disimpan di server manapun
-            setelah selesai.</p>
+          <p data-i18n="f6_desc">Foto hanya diproses saat analisis berlangsung dan tidak disimpan di server setelah selesai.</p>
         </div>
       </div>
     </section>
@@ -341,46 +334,41 @@
     <!-- CARA PAKAI -->
     <section id="cara-pakai">
       <h2 class="sec-title" data-i18n="how_title">Cara Menggunakan</h2>
-      <p class="sec-sub" data-i18n="how_sub">Lima langkah mudah menuju diagnosis akurat</p>
+      <p class="sec-sub" data-i18n="how_sub">Lima langkah mudah menuju diagnosis tanaman</p>
       <div class="howto-list">
         <div class="howto-item">
           <div class="howto-num">1</div>
           <div class="howto-body">
             <h4 data-i18n="h1_title">Pilih Jenis Tanaman</h4>
-            <p data-i18n="h1_desc">Pilih jenis tanaman dari daftar yang tersedia. Langkah ini wajib agar AI dapat
-              memberikan analisis yang lebih terfokus dan akurat.</p>
+            <p data-i18n="h1_desc">Pilih jenis tanaman dari daftar agar sistem dapat mencocokkan gejala dengan referensi yang tepat.</p>
           </div>
         </div>
         <div class="howto-item">
           <div class="howto-num">2</div>
           <div class="howto-body">
-            <h4 data-i18n="h2_title">Siapkan Foto yang Baik</h4>
-            <p data-i18n="h2_desc">Ambil foto daun atau buah yang menunjukkan gejala dengan pencahayaan cukup. Jarak
-              ideal 20–30 cm agar detail terlihat jelas.</p>
+            <h4 data-i18n="h2_title">Siapkan Foto yang Jelas</h4>
+            <p data-i18n="h2_desc">Ambil foto daun atau buah yang menunjukkan gejala dengan pencahayaan cukup dan jarak ideal 20–30 cm.</p>
           </div>
         </div>
         <div class="howto-item">
           <div class="howto-num">3</div>
           <div class="howto-body">
             <h4 data-i18n="h3_title">Unggah atau Ambil Foto</h4>
-            <p data-i18n="h3_desc">Seret foto ke area drop zone, klik "Pilih Foto" untuk memilih dari galeri, atau
-              gunakan kamera langsung dari aplikasi.</p>
+            <p data-i18n="h3_desc">Pilih foto dari galeri atau gunakan kamera langsung untuk mengambil gambar tanaman.</p>
           </div>
         </div>
         <div class="howto-item">
           <div class="howto-num">4</div>
           <div class="howto-body">
-            <h4 data-i18n="h4_title">Tunggu Analisis AI</h4>
-            <p data-i18n="h4_desc">Gemini AI menganalisis gambar secara mendalam — biasanya selesai dalam 5–15 detik
-              tergantung koneksi internet.</p>
+            <h4 data-i18n="h4_title">Tunggu Hasil Analisis</h4>
+            <p data-i18n="h4_desc">Sistem memeriksa pola pada gambar tanaman Anda — biasanya selesai dalam 5–15 detik.</p>
           </div>
         </div>
         <div class="howto-item">
           <div class="howto-num">5</div>
           <div class="howto-body">
-            <h4 data-i18n="h5_title">Baca & Tindak Lanjuti</h4>
-            <p data-i18n="h5_desc">Baca diagnosis lengkap, pahami penyebab penyakit, dan ikuti rekomendasi penanganan
-              yang diberikan AI.</p>
+            <h4 data-i18n="h5_title">Tinjau Saran Perawatan</h4>
+            <p data-i18n="h5_desc">Pelajari hasil diagnosis, pahami faktor penyebabnya, dan terapkan saran perawatan yang direkomendasikan.</p>
           </div>
         </div>
       </div>
@@ -388,8 +376,7 @@
 
     <footer>
       <div class="footer-brand">🌿 PlantScan</div>
-      <p class="footer-desc" data-i18n-html="footer_desc">Aplikasi AI Deteksi Penyakit Tanaman<br>Analisis visual
-        ditenagai oleh Google Gemini AI melalui Vercel Serverless.</p>
+      <p class="footer-desc" data-i18n-html="footer_desc">Aplikasi Deteksi Penyakit Tanaman<br>Analisis foto dan panduan perawatan tanaman.</p>
       <div class="footer-links">
         <a href="admin.html" class="footer-admin-link" data-i18n="footer_admin">📊 Dashboard Admin (Demo)</a>
       </div>
@@ -454,10 +441,10 @@
   <div class="toast" id="toast"></div>
 
   <!-- FLOATING CHAT BUTTON -->
-  <button class="chat-fab" id="chat-fab" onclick="toggleChatDrawer()" aria-label="Open AI Plant Doctor Chat">
+  <button class="chat-fab" id="chat-fab" onclick="toggleChatDrawer()" aria-label="Open Plant Care Chat">
     <span class="fab-content">
       <span class="fab-dot"></span>
-      <span class="fab-text" data-i18n="fab_chat_btn">Asisten AI</span>
+      <span class="fab-text" data-i18n="fab_chat_btn">Tanya Tanaman</span>
     </span>
     <span class="fab-icon-close">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
@@ -479,8 +466,8 @@
       <div class="chat-drawer-header-info">
         <div class="chat-drawer-avatar" aria-hidden="true"></div>
         <div>
-          <div class="chat-drawer-title" data-i18n="chat_title">Asisten Dokter Tanaman AI</div>
-          <div class="chat-drawer-badge" data-i18n="chat_badge">🌿 Khusus Kesehatan Tanaman</div>
+          <div class="chat-drawer-title" data-i18n="chat_title">Konsultasi Dokter Tanaman</div>
+          <div class="chat-drawer-badge" data-i18n="chat_badge">🌿 Panduan Perawatan Tanaman</div>
         </div>
       </div>
       <div class="chat-drawer-actions">
@@ -521,7 +508,7 @@
     <!-- Input Footer -->
     <div class="chat-drawer-footer">
       <div class="chat-input-row">
-        <input type="text" id="chat-input" placeholder="Ketik pertanyaan seputar tanamanmu..." onkeydown="handleChatKeyPress(event)" data-i18n-placeholder="chat_placeholder">
+        <input type="text" id="chat-input" placeholder="Tanyakan sesuatu tentang tanaman ini..." onkeydown="handleChatKeyPress(event)" data-i18n-placeholder="chat_placeholder">
         <button class="btn-send-chat" onclick="sendChatMessage()" aria-label="Send">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="22" y1="2" x2="11" y2="13"></line>

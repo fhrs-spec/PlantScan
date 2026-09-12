@@ -1,9 +1,10 @@
-const CACHE_NAME = 'plantscan-v9';
+const CACHE_NAME = 'plantscan-v10';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
   './script.js',
+  './lang.js',
   './icon.svg',
   './manifest.json'
 ];
@@ -36,8 +37,8 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   // Strategi: Network First, Fallback to Cache
-  // Cocok untuk aplikasi yang butuh koneksi internet (seperti akses API AI).
-  // Selalu mencoba mengambil file terbaru dari server Vercel,
+  // Cocok untuk aplikasi yang butuh koneksi internet (seperti akses API).
+  // Selalu mencoba mengambil file terbaru dari server,
   // jika gagal/offline, baru gunakan cache lokal.
   if (event.request.method !== 'GET') return;
 

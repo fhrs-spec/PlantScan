@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════
-//  PlantScan — script.js  (Gemini AI Edition)
+//  PlantScan — script.js
 // ══════════════════════════════════════════════════════════
 
 // ── DATA TANAMAN (expanded) ───────────────────────────────
@@ -62,7 +62,7 @@ const plants = [
   { id:'turmeric', emoji:'🫚', name:'Kunyit', name_en:'Turmeric', latin:'Curcuma longa', diseases:4, category:'Rempah', category_en:'Spice' },
 ];
 
-// ── SYSTEM PROMPT UNTUK AI ────────────────────────────────
+// ── SYSTEM PROMPT ────────────────────────────────
 // System prompt telah dipindahkan ke backend (api/analyze.js) agar aman dari inspeksi browser.
 
 // ── STATE ─────────────────────────────────────────────────
@@ -238,7 +238,7 @@ function processFile(file) {
   reader.readAsDataURL(file);
 }
 
-// ── AI ANALYSIS (SERVERLESS) ──────────────────────────────
+// ── IMAGE ANALYSIS (SERVERLESS) ──────────────────────────
 async function runAIAnalysis() {
   if (!navigator.onLine) {
     showError(t('toast_offline'));
@@ -397,7 +397,7 @@ function showDiagnosis(r, isHistory = false) {
       <div class="diag-sev-badge ${sevClass}">${sevLabel}</div>
       <div class="diag-disease-name">${r.nama_penyakit || (currentLang==='en'?'Unidentified':'Tidak Teridentifikasi')}</div>
       <div class="diag-plant-label">${plantEmojiDisplay} ${plantNameDisplay} · <em>${plantLatinDisplay}</em></div>
-      <div class="diag-scan-type">${currentLang==='en'?'⚡ Gemini Serverless AI Analysis':'⚡ Analisis AI Serverless Gemini'}</div>
+      <div class="diag-scan-type">${currentLang==='en'?'⚡ Serverless Image Analysis':'⚡ Analisis Foto Serverless'}</div>
     </div>
     <div class="diag-body">
       <div class="conf-section">
@@ -441,7 +441,7 @@ function showDiagnosis(r, isHistory = false) {
         </button>
       </div>
 
-      <!-- AI PLANT DOCTOR — Open Chat Button -->
+      <!-- PLANT DOCTOR — Open Chat Button -->
       <div class="chat-open-prompt" onclick="openChatWithContext()">
         <div class="chat-open-icon">🩺</div>
         <div class="chat-open-info">
@@ -480,7 +480,7 @@ function showDiagnosis(r, isHistory = false) {
   }, 150);
 }
 
-// ── AI PLANT DOCTOR CHATBOT — GLOBAL FLOATING DRAWER ──────
+// ── PLANT CARE CHATBOT — GLOBAL FLOATING DRAWER ──────
 let chatDrawerInitialized = false;
 let chatDrawerOpen = false;
 let chatMaximized = false;
@@ -558,8 +558,8 @@ function initChatDrawer() {
   // Add welcome message
   const welcomeMsg = currentDiagnosisResult
     ? (currentLang === 'en'
-      ? `Hello! I am your <strong>AI Plant Doctor</strong>. Based on the diagnosis of <strong>${currentDiagnosisResult.nama_penyakit || 'your plant'}</strong>, what would you like to ask regarding treatment dosage, care, or prevention? 🌿`
-      : `Halo! Saya <strong>Asisten Dokter Tanaman AI</strong>. Berdasarkan diagnosa <strong>${currentDiagnosisResult.nama_penyakit || 'tanaman Anda'}</strong>, ada yang ingin Anda tanyakan seputar dosis obat, perawatan, atau pencegahannya? 🌿`)
+      ? `Hello! Based on the diagnosis of <strong>${currentDiagnosisResult.nama_penyakit || 'your plant'}</strong>, what would you like to ask regarding treatment, dosage, or prevention? 🌿`
+      : `Halo! Berdasarkan diagnosis <strong>${currentDiagnosisResult.nama_penyakit || 'tanaman Anda'}</strong>, ada yang ingin Anda tanyakan seputar dosis obat, perawatan, atau pencegahannya? 🌿`)
     : t('chat_welcome_general');
   
   chatContainer.innerHTML = `
@@ -729,7 +729,7 @@ async function sendChatMessage() {
     return;
   }
 
-  // Call /api/chat (Vercel Serverless Function powered by Gemini API)
+  // Call /api/chat (Serverless Function)
   const plantNameDisplay = selectedPlant ? (currentLang === 'en' && selectedPlant.name_en ? selectedPlant.name_en : selectedPlant.name) : 'Tanaman';
   const plantLatinDisplay = selectedPlant ? selectedPlant.latin : '';
   const diseaseNameDisplay = currentDiagnosisResult?.nama_penyakit || 'Diagnosa Kesehatan Tanaman';
@@ -756,7 +756,7 @@ async function sendChatMessage() {
     if (res.ok && data?.reply) {
       finalReply = data.reply;
     } else {
-      // Fallback ke local engine jika API key belum dikonfigurasi di Vercel
+      // Fallback ke local engine jika API belum dikonfigurasi di server
       finalReply = generateAIPlantDoctorReply(userText, currentDiagnosisResult);
     }
 
@@ -850,8 +850,8 @@ function generateAIPlantDoctorReply(userText, diag) {
 
   // 🌿 JAWABAN KHUSUS DINAMIS BERDASARKAN PERTANYAAN PENGGUNA (Dynamic Specific Reply)
   return lang === 'en'
-    ? `🌿 <strong>Plant Doctor Answer regarding ${plant}:</strong><br>To help your ${plant} recover from <strong>${disease}</strong> regarding your query "<em>${escapeHtml(userText)}</em>":<br>• Focus on restoring root health and maintaining good air circulation.<br>• Remove badly infected leaves to prevent secondary fungal spore buildup.<br>• Maintain a consistent routine of balanced organic nutrition and proper morning watering.`
-    : `🌿 <strong>Jawaban Dokter Tanaman mengenai ${plant}:</strong><br>Terkait pertanyaan Anda "<em>${escapeHtml(userText)}</em>" untuk tanaman <strong>${plant}</strong> yang terdeteksi <strong>${disease}</strong>:<br>• Fokus utama adalah menjaga daya tahan akar dan kebersihan area sekitar pot.<br>• Potong daun yang sudah parah terinfeksi agar nutrisi fokus ke pucuk baru.<br>• Berikan perhatian ekstra pada pencahayaan matahari pagi (minimal 4-6 jam sehari) untuk mempercepat fotosintesis pemulihan.`;
+    ? `🌿 <strong>Care Guidance regarding ${plant}:</strong><br>To help your ${plant} recover from <strong>${disease}</strong> regarding your query "<em>${escapeHtml(userText)}</em>":<br>• Focus on restoring root health and maintaining good air circulation.<br>• Remove badly infected leaves to prevent secondary fungal spore buildup.<br>• Maintain a consistent routine of balanced organic nutrition and proper morning watering.`
+    : `🌿 <strong>Panduan Perawatan mengenai ${plant}:</strong><br>Terkait pertanyaan Anda "<em>${escapeHtml(userText)}</em>" untuk tanaman <strong>${plant}</strong> yang terdeteksi <strong>${disease}</strong>:<br>• Fokus utama adalah menjaga daya tahan akar dan kebersihan area sekitar pot.<br>• Potong daun yang sudah parah terinfeksi agar nutrisi fokus ke pucuk baru.<br>• Berikan perhatian ekstra pada pencahayaan matahari pagi (minimal 4-6 jam sehari) untuk mempercepat fotosintesis pemulihan.`;
 }
 
 function escapeHtml(str) {
@@ -911,8 +911,8 @@ function processExportPDF() {
   printElement.innerHTML = `
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #16a34a; padding-bottom:15px; margin-bottom:20px;">
       <div>
-        <h1 style="margin:0; font-size:24px; color:#16a34a; font-family:serif;">🌱 PlantScan — Laporan Diagnosis AI</h1>
-        <p style="margin:4px 0 0 0; font-size:12px; color:#6b7280;">Sistem Deteksi Kesehatan Tanaman Cerdas (Gemini AI Vision)</p>
+        <h1 style="margin:0; font-size:24px; color:#16a34a; font-family:serif;">🌱 PlantScan — Laporan Diagnosis</h1>
+        <p style="margin:4px 0 0 0; font-size:12px; color:#6b7280;">Sistem Pemeriksaan Kesehatan Tanaman (Vision API)</p>
       </div>
       <div style="text-align:right;">
         <div style="font-size:11px; color:#6b7280;">Tanggal Pemindaian:</div>
@@ -928,7 +928,7 @@ function processExportPDF() {
         <div style="font-size:13px; font-style:italic; color:#4b5563; margin-bottom:10px;">${plantLatin}</div>
         
         <div style="display:inline-block; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:bold; background:${r.kondisi==='sehat'?'#dcfce7':r.kondisi==='parah'?'#fee2e2':'#fef3c7'}; color:${r.kondisi==='sehat'?'#15803d':r.kondisi==='parah'?'#b91c1c':'#b45309'};">
-          Status: ${(r.kondisi || 'Perhatian').toUpperCase()} · Keyakinan AI: ${(r.tingkat_kepercayaan||85).toFixed(0)}%
+          Status: ${(r.kondisi || 'Perhatian').toUpperCase()} · Keyakinan Analisis: ${(r.tingkat_kepercayaan||85).toFixed(0)}%
         </div>
       </div>
     </div>
@@ -969,7 +969,7 @@ function processExportPDF() {
     </div>
 
     <div style="border-top:1px dashed #d1d5db; padding-top:12px; font-size:10px; color:#9ca3af; text-align:center; line-height:1.4;">
-      Dokumen ini dihasilkan secara otomatis oleh <strong>PlantScan AI Vision Platform</strong>.<br>
+      Dokumen ini dihasilkan secara otomatis oleh <strong>PlantScan Vision Platform</strong>.<br>
       *Laporan ini bersifat panduan awal penanganan tanaman. Konsultasikan dengan penyuluh pertanian setempat untuk tindakan berisiko tinggi.
     </div>
   `;
@@ -1004,7 +1004,7 @@ function showError(msg) {
     <div class="error-state">
       <div class="error-icon">⚠️</div>
       <div class="error-title">${currentLang==='en'?'Analysis Failed':'Analisis Gagal'}</div>
-      <div class="error-msg">${msg || (currentLang==='en'?'An error occurred while analyzing the image. Make sure your internet connection is active and try again.':'Terjadi kesalahan saat menganalisis gambar. Pastikan koneksi internet aktif dan coba lagi.')}</div>
+      <div class="error-msg">${msg || (currentLang==='en'?'An error occurred while analyzing the image. Please check your internet connection and try again.':'Terjadi kendala saat menganalisis gambar. Pastikan koneksi internet aktif dan coba lagi.')}</div>
       <button class="btn-retry" onclick="resetApp()">${currentLang==='en'?'Try Again':'Coba Lagi'}</button>
     </div>`;
   content.style.display = 'block';
@@ -1188,7 +1188,7 @@ function viewHistory(idx) {
   const history = JSON.parse(localStorage.getItem('plantscan_history') || '[]');
   const item = history[idx];
   if (!item || !item.fullResult) {
-    showToast(currentLang==='en'?'❌ Old history details unavailable (no full AI log saved). Please re-scan.':'❌ Detail riwayat lama tidak tersedia (karena tidak menyimpan log AI penuh). Silakan scan ulang.');
+    showToast(currentLang==='en'?'❌ Details unavailable for this history item. Please scan again.':'❌ Detail riwayat tidak tersedia. Silakan lakukan scan ulang.');
     return;
   }
   

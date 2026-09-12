@@ -122,14 +122,14 @@ export default async function handler(req, res) {
     });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
 
   // ==== MODE SIMULASI (DEMO) ====
   if (!apiKey || apiKey.length < 10) {
     console.log("Menjalankan Mode Simulasi Serverless...");
     
-    // Tunda acak antara 1-3 detik agar terlihat seperti AI asli
-    const delay = Math.floor(Math.random() * 2000) + 1000;
+    // Tunda acak antara 1-2 detik agar proses analisis terasa natural
+    const delay = Math.floor(Math.random() * 1500) + 1000;
     await new Promise(resolve => setTimeout(resolve, delay));
 
     const isHealthy = Math.random() > 0.5;
@@ -168,7 +168,7 @@ export default async function handler(req, res) {
     return res.status(200).json(mockResult);
   }
 
-  // ==== MODE AI GEMINI ASLI ====
+  // ==== MODE VISION API ====
   const modelsToTry = [
     'gemini-2.5-flash',
     'gemini-2.5-flash-lite',
@@ -224,14 +224,14 @@ export default async function handler(req, res) {
 
       const textResponse = data.candidates[0].content.parts[0].text;
       
-      // Membersihkan markdown JSON jika AI mengembalikannya dengan backticks
+      // Membersihkan format JSON jika terdapat pembungkus markdown
       const cleanJson = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
       
       let parsed;
       try {
         parsed = JSON.parse(cleanJson);
       } catch(e) {
-        throw new Error("Gagal mem-parsing JSON dari AI: " + cleanJson);
+        throw new Error("Gagal mengurai respons JSON: " + cleanJson);
       }
 
       return res.status(200).json(parsed);
@@ -244,7 +244,7 @@ export default async function handler(req, res) {
 
   // Jika semua model gagal
   return res.status(500).json({ 
-    error: `Semua varian model Gemini gagal atau ditolak. Error terakhir: ${lastError}` 
+    error: `Layanan analisis gambar tidak dapat diakses saat ini. Error: ${lastError}` 
   });
 }
 
