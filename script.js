@@ -503,6 +503,13 @@ function toggleChatMaximize() {
   }
 }
 
+function autoResizeChatInput(el) {
+  if (!el) return;
+  el.style.height = 'auto';
+  const newHeight = Math.min(el.scrollHeight, 120);
+  el.style.height = (newHeight > 44 ? newHeight : 44) + 'px';
+}
+
 function toggleChatDrawer() {
   if (chatDrawerOpen) {
     closeChatDrawer();
@@ -529,11 +536,14 @@ function openChatDrawer() {
   fab.classList.add('open');
   chatDrawerOpen = true;
   
-  // Focus input after animation
-  setTimeout(() => {
-    const input = document.getElementById('chat-input');
-    if (input) input.focus();
-  }, 380);
+  // Only auto-focus on desktop to prevent mobile keyboard from jarring the viewport
+  const isTouch = window.matchMedia('(pointer: coarse)').matches;
+  if (!isTouch) {
+    setTimeout(() => {
+      const input = document.getElementById('chat-input');
+      if (input) input.focus();
+    }, 320);
+  }
 }
 
 function closeChatDrawer() {
@@ -545,6 +555,7 @@ function closeChatDrawer() {
   overlay.classList.remove('open');
   fab.classList.remove('open');
   chatDrawerOpen = false;
+  drawer.style.transform = '';
 }
 
 function openChatWithContext() {
@@ -564,7 +575,12 @@ function initChatDrawer() {
   
   chatContainer.innerHTML = `
     <div class="chat-msg ai">
-      <div class="chat-msg-avatar" aria-hidden="true"></div>
+      <div class="chat-msg-avatar" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+        </svg>
+      </div>
       <div class="msg-bubble">${welcomeMsg}</div>
     </div>`;
 }
@@ -573,6 +589,7 @@ function updateChatContext() {
   const banner = document.getElementById('chat-context-banner');
   const ctxIcon = document.getElementById('chat-ctx-icon');
   const ctxValue = document.getElementById('chat-ctx-value');
+  const statusBadge = document.getElementById('chat-header-status');
   
   if (currentDiagnosisResult && selectedPlant) {
     const plantName = currentLang === 'en' && selectedPlant.name_en ? selectedPlant.name_en : selectedPlant.name;
@@ -581,8 +598,10 @@ function updateChatContext() {
     ctxIcon.textContent = selectedPlant.emoji || '🌱';
     ctxValue.textContent = `${plantName} — ${disease}`;
     banner.style.display = 'flex';
+    if (statusBadge) statusBadge.textContent = `${selectedPlant.emoji || '🌿'} ${plantName}`;
   } else {
     banner.style.display = 'none';
+    if (statusBadge) statusBadge.textContent = (typeof translations !== 'undefined' && translations[currentLang]?.chat_badge) || '🌿 Panduan Perawatan Tanaman';
   }
 }
 
@@ -609,6 +628,7 @@ function fillChatChip(text) {
   const input = document.getElementById('chat-input');
   if (input) {
     input.value = text.trim();
+    autoResizeChatInput(input);
     input.focus();
   }
 }
@@ -668,12 +688,21 @@ function appendChatMessage(role, content) {
   const msgDiv = document.createElement('div');
   msgDiv.className = `chat-msg ${role}`;
   
+  const avatarHtml = role === 'ai'
+    ? `<div class="chat-msg-avatar" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+        </svg>
+      </div>`
+    : '';
+  
   msgDiv.innerHTML = `
-    <div class="chat-msg-avatar" aria-hidden="true"></div>
+    ${avatarHtml}
     <div class="msg-bubble">${content}</div>`;
   
   chatContainer.appendChild(msgDiv);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
   
   return msgDiv;
 }
@@ -686,13 +715,18 @@ function showTypingIndicator() {
   typingDiv.className = 'chat-msg ai';
   typingDiv.id = 'chat-typing-indicator';
   typingDiv.innerHTML = `
-    <div class="chat-msg-avatar" aria-hidden="true"></div>
+    <div class="chat-msg-avatar" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+      </svg>
+    </div>
     <div class="msg-bubble">
       <div class="typing-dots"><span></span><span></span><span></span></div>
     </div>`;
   
   chatContainer.appendChild(typingDiv);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
   
   return typingDiv;
 }
@@ -711,6 +745,7 @@ async function sendChatMessage() {
   // Render user message
   appendChatMessage('user', escapeHtml(userText));
   input.value = '';
+  autoResizeChatInput(input);
 
   // Hide chips after first message
   const chips = document.getElementById('chat-suggestions');
@@ -1088,6 +1123,51 @@ document.addEventListener('keydown', e => {
     closeLoginModal();
     if (typeof chatDrawerOpen !== 'undefined' && chatDrawerOpen) closeChatDrawer();
   }
+});
+
+// Mobile swipe-down gesture to dismiss chat drawer
+document.addEventListener('DOMContentLoaded', () => {
+  const drawer = document.getElementById('chat-drawer');
+  if (!drawer) return;
+
+  let startY = 0;
+  let currentY = 0;
+  let isDragging = false;
+
+  const onTouchStart = (e) => {
+    if (!chatDrawerOpen || window.innerWidth > 640) return;
+    // Only drag when touching header or handle
+    if (e.target.closest('#chat-drawer-handle') || e.target.closest('.chat-drawer-header')) {
+      startY = e.touches[0].clientY;
+      isDragging = true;
+    }
+  };
+
+  const onTouchMove = (e) => {
+    if (!isDragging) return;
+    currentY = e.touches[0].clientY;
+    const diff = currentY - startY;
+    if (diff > 0) {
+      drawer.style.transform = `translateY(${diff}px)`;
+    }
+  };
+
+  const onTouchEnd = () => {
+    if (!isDragging) return;
+    isDragging = false;
+    const diff = currentY - startY;
+    if (diff > 100) {
+      closeChatDrawer();
+    } else {
+      drawer.style.transform = '';
+    }
+    startY = 0;
+    currentY = 0;
+  };
+
+  drawer.addEventListener('touchstart', onTouchStart, { passive: true });
+  drawer.addEventListener('touchmove', onTouchMove, { passive: true });
+  drawer.addEventListener('touchend', onTouchEnd, { passive: true });
 });
 
 // ── TOAST ─────────────────────────────────────────────────

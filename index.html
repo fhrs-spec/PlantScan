@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
   <meta name="theme-color" content="#1A3D0C">
   <meta name="description" content="PlantScan - Identifikasi penyakit tanaman dari foto daun atau buah beserta saran penanganan praktis.">
   <meta property="og:title" content="PlantScan — Deteksi Penyakit Tanaman">
@@ -459,15 +459,26 @@
   <div class="chat-drawer-overlay" id="chat-drawer-overlay" onclick="closeChatDrawer()"></div>
 
   <!-- CHAT DRAWER -->
-  <div class="chat-drawer" id="chat-drawer">
-    <div class="chat-drawer-handle"></div>
+  <div class="chat-drawer" id="chat-drawer" role="dialog" aria-modal="true" aria-label="Konsultasi Dokter Tanaman">
+    <div class="chat-drawer-handle" id="chat-drawer-handle"></div>
     <!-- Header -->
     <div class="chat-drawer-header">
+      <button class="chat-drawer-btn chat-drawer-back" id="btn-chat-back" onclick="closeChatDrawer()" aria-label="Kembali" title="Kembali">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </button>
       <div class="chat-drawer-header-info">
-        <div class="chat-drawer-avatar" aria-hidden="true"></div>
-        <div>
+        <div class="chat-drawer-avatar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+          </svg>
+        </div>
+        <div class="chat-drawer-header-text">
           <div class="chat-drawer-title" data-i18n="chat_title">Konsultasi Dokter Tanaman</div>
-          <div class="chat-drawer-badge" data-i18n="chat_badge">🌿 Panduan Perawatan Tanaman</div>
+          <div class="chat-drawer-badge" id="chat-header-status" data-i18n="chat_badge">🌿 Panduan Perawatan Tanaman</div>
         </div>
       </div>
       <div class="chat-drawer-actions">
@@ -508,8 +519,8 @@
     <!-- Input Footer -->
     <div class="chat-drawer-footer">
       <div class="chat-input-row">
-        <input type="text" id="chat-input" placeholder="Tanyakan sesuatu tentang tanaman ini..." onkeydown="handleChatKeyPress(event)" data-i18n-placeholder="chat_placeholder">
-        <button class="btn-send-chat" onclick="sendChatMessage()" aria-label="Send">
+        <textarea id="chat-input" rows="1" placeholder="Tanyakan sesuatu tentang tanaman ini..." oninput="autoResizeChatInput(this)" onkeydown="handleChatKeyPress(event)" data-i18n-placeholder="chat_placeholder"></textarea>
+        <button class="btn-send-chat" id="btn-send-chat" onclick="sendChatMessage()" aria-label="Kirim Pesan" title="Kirim">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="22" y1="2" x2="11" y2="13"></line>
             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
